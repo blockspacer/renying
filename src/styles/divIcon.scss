@@ -1,0 +1,121 @@
+@mixin wind() {
+  div{
+      height: 30px !important;
+      width: 30px !important;
+      display: block;
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+      background-position: center center;
+      background-repeat: no-repeat;
+  }
+}
+
+@mixin divIcon-mix() {
+  div{
+      display: block;
+      color: black;
+      border-radius: 50%;
+      font-size: 12px;
+      text-align: center;
+      opacity: .8;
+  }
+}
+
+.divIcon-wind{
+  @include wind()
+}
+
+.divIcon-cluster{
+  @include divIcon-mix()
+}
+.divIcon{
+  width: auto !important;
+  height: auto !important;
+  // div{
+  //     display: block;
+  //     color: black;
+  //     border-radius: 50%;
+  //     font-size: 12px;
+  //     text-align: center;
+  //     opacity: .8;
+  // }
+}
+
+.divIcon-temp{
+  color: #00A0E9;
+  white-space: nowrap;
+}
+.divIcon-ps{
+  color: #10C469;
+  white-space: nowrap;
+}
+.divIcon-hourrf{
+  color: #58CDC7;
+  white-space: nowrap;
+}
+.divIcon-dp{
+  color: #FF5B5B;
+  white-space: nowrap;
+}
+.divIcon-wind{
+  color: #bf9123;
+  white-space: nowrap;
+}
+.divIcon-rh{
+  color: #ED5589;
+  white-space: nowrap;
+}
+.divIcon-water{
+  color: #5B69BC;
+  white-space: nowrap;
+}
+.temp{
+  position: absolute;
+  top: -20px;
+}
+.ps{
+  position: absolute;
+  top: -5px;
+  left: 18px;
+}
+.hourrf{
+  position: absolute;
+  top: 10px;
+  left: 15px;
+}
+.dp{
+  position: absolute;
+  top: 20px;
+  left: -10px;
+}
+.wind{
+  position: absolute;
+  top: 10px;
+  left: -30px;
+}
+.rh{
+  position: absolute;
+  top: -2px;
+  left: -35px;
+}
+.water{
+  position: absolute;
+  top: -13px;
+  left: -35px;
+}
+.el-transfer{
+  margin-left: 50px;
+}
+.el-transfer-panel{
+  width: 300px!important;
+}
+.el-transfer-panel__body{
+  height: 500px!important;
+}
+.el-transfer__buttons .el-button:first-child{
+  margin-bottom: 15px!important;
+} 
+.el-transfer__buttons .el-button{
+  width: 80px!important;
+}

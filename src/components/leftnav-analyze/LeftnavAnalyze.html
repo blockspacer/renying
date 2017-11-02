@@ -1,0 +1,132 @@
+<main id="LeftnavAnalyze"
+      class="scrollbar"
+      @mouseenter="hideIconPopup=true" 
+      @mouseleave="hideIconPopup=false">
+    <transition name="el-zoom-in-center">
+        <div :class="['hide_class transition-box',{'on': !isNavExtended}]" 
+              :style="{left: isNavExtended ? '289px' : '65px'}"
+              v-show="hideIconPopup"
+              @click="toggleHideChar">
+          <i class="hide"></i>
+        </div>
+    </transition>
+  
+  <!-- 展开 -->
+  <template v-if="isNavExtended">
+    <ul class="detail">
+      <!-- 文档目录 -->
+      <li v-for="opt of subMenu_global"
+          :class="['for_article','cf',{'on': leftNavSelected === opt.id}]"
+          v-on:click.stop="toggleleftNav(opt)"
+          v-if="opt && opt.document">
+        <div class="wrapper" :title="opt.name">
+          <div class="leftNaveIcon">
+            <i class="article_files"></i>
+          </div>
+          <div class="leftNaveTitle">{{ opt.name}}</div>
+        </div>
+        <!-- <transition name="fade"> -->
+        <div class="require_analyze"
+             v-if="leftNavSelected === opt.id">
+          <ul>
+            <li :class="['create_article',{'on': 'create' === leftNavSubSelected}]"
+                v-on:click.stop="toggleArticle('create', opt.id)">
+              <i class="leftNav_subIcon"></i>
+              <span>生成文档</span>
+            </li>
+            <li :class="['history_article',{'on': 'history' === leftNavSubSelected}]"
+                v-on:click.stop="toggleArticle('history', opt.id)">
+              <i class="leftNav_subIcon"></i>
+              <span>历史文档</span>
+            </li>
+          </ul>
+        </div>
+        <!-- </transition> -->
+      </li>
+      <div class="border_bot"></div>
+
+      <li v-for="opt of subMenu_global"
+          :class="['cf',{'on': (leftNavSelected === opt.id && (!opt.subMenus.length || (opt.subMenus.length === 1 && !opt.subMenus[0]))) }]"
+          v-on:click.stop="toggleleftNav(opt)"
+          v-if="opt && !opt.document">
+        <!-- 二 三级目录 -->
+        <template v-if="opt && opt.subMenus && opt.subMenus.length && !(opt.subMenus.length === 1 && !opt.subMenus[0])">
+          <div class="analyze_twodiv">
+            <span class="analyze_twolist">{{ opt.name }}</span>
+          </div>
+          <div class="border_bot"></div>
+          <div class="wrapper"
+               v-for="item in opt.subMenus"
+               v-if="item && leftNavSelected === opt.id"
+               :class="['cf', thridMenuSelected === item.id ? 'on' : 'off']"
+               :title="item.name"
+               v-on:click.stop="toggleSubNav(item)">
+            <div class="leftNaveIcon">
+              <i :class="thridMenuClassName[item.id]" v-if="thridMenuClassName[item.id]"></i>
+              <i :class="secondMenuClassName[opt.id]"  v-else-if="secondMenuClassName[opt.id]"></i>
+              <i class="custom" v-else></i>
+            </div>
+            <div class="leftNaveTitle">{{ item.name }}</div>
+          </div>
+        </template>
+        <!-- 二级目录 -->
+        <div class="wrapper" :title="opt.name" v-else>
+          <div class="leftNaveIcon">
+            <i :class="secondMenuClassName[opt.id]"  v-if="secondMenuClassName[opt.id]"></i>
+            <i :class="thridMenuClassName[opt.id]"  v-else-if="thridMenuClassName[opt.id]"></i>
+            <i class="custom" v-else></i>
+          </div>
+          <div class="leftNaveTitle">{{ opt.name }}</div>
+        </div>
+
+      </li>
+
+    </ul>
+  </template>
+
+  <!-- 收缩 -->
+  <template v-else>
+    <ul class="logo">
+      <!-- 文档目录 -->
+      <li v-for="opt of subMenu_global"
+          class="for_article cf"
+          v-on:click.stop="toggleleftNav(opt, true)"
+          v-if="opt && opt.document">
+        <div class="wrapper" :title="opt.name">
+          <div class="leftNaveIcon">
+            <i class="article_files"></i>
+          </div>
+        </div>
+      </li>
+      <li v-for="opt of subMenu_global"
+      :class="['cf',{'on': (leftNavSelected === opt.id && (!opt.subMenus.length || (opt.subMenus.length === 1 && !opt.subMenus[0]))) }]"
+          v-on:click.stop="toggleleftNav(opt)"
+          v-if="opt && !opt.document">
+        <!-- 二 三级目录 -->
+        <template v-if="opt && opt.subMenus && opt.subMenus.length && !(opt.subMenus.length === 1 && !opt.subMenus[0])">
+          <div class="wrapper"
+                :title="item.name"
+                v-if="item"
+                v-for="item in opt.subMenus"
+                :class="['cf', thridMenuSelected === item.id ? 'on' : 'off']"
+                v-on:click.stop="toggleSubNav(item, opt)">
+            <div class="leftNaveIcon">
+              <i :class="thridMenuClassName[item.id]" v-if="thridMenuClassName[item.id]"></i>
+              <i :class="secondMenuClassName[opt.id]"  v-else-if="secondMenuClassName[opt.id]"></i>
+              <i class="custom" v-else></i>
+            </div>
+          </div>
+        </template>
+        <!-- 二级目录 -->
+        <div class="wrapper" :title="opt.name" v-else>
+          <div class="leftNaveIcon">
+            <i :class="secondMenuClassName[opt.id]"  v-if="secondMenuClassName[opt.id]"></i>
+            <i :class="thridMenuClassName[opt.id]"  v-else-if="thridMenuClassName[opt.id]"></i>
+            <i class="custom" v-else></i>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </template>
+
+</main>

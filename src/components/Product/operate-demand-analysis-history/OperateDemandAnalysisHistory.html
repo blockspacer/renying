@@ -1,0 +1,42 @@
+<main id="OperateDemandAnalysisHistory"
+      class="weather-product-window"
+      v-drag=""
+      :style="{width: minify ? '330px' : '1100px', height: minify ? '40px' : '740px'}">
+  <header>
+    <span>需求分析报告-历史文档</span>
+    <aside>
+      <button class="close"
+              v-on:click="changeArticleViewHolder_global({id: 'nsm1', action: 'history'})"></button>
+    </aside>
+  </header>
+
+  <div class="popup_con">
+    <div class="history_left">
+      <div class="history_article cf">
+        <ul>
+          <li class="history_article_list"
+              v-for="item in optionData">
+            <div class="history_article_left">
+              <div class="history_article_leftIn">
+                <p class="history_article_day">{{year(item)}}年</p>
+                <p class="history_article_month">{{month(item)}}月</p>
+              </div>
+            </div>
+            <div class="history_article_right">
+              <p class="history_article_title">作业需求分析</p>
+              <p class="history_article_introduction ">{{item.datetime}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- <div class="history_center">
+          <i></i>
+        </div> -->
+    <div class="history_right">
+      <div class="popup_aricle">
+        <div class="history_conIn popup_aricleIn"></div>
+      </div>
+    </div>
+  </div>
+</main>

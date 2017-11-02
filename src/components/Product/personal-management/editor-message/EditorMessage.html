@@ -1,0 +1,62 @@
+<main id="EditorMessage"
+      class="weather-product-window" 
+      v-drag=''>
+  <header>
+    <span>编辑信息</span>
+    <aside>
+      <button class="close" @click="closeFn"></button>
+    </aside>
+  </header>
+  <section class="editor_msg">
+    <dl class="cf">
+      <dt>姓名</dt>
+      <dd class="name">
+        <input type="text" v-model="userInfo.userName">
+      </dd>
+    </dl>
+    <dl class="cf">
+      <dt>手机号</dt>
+      <dd class="tel">
+        <input type="text">
+      </dd>
+    </dl>
+    <dl class="cf">
+      <dt>部门</dt>
+      <dd class="department">
+        <select>
+          <option value="">气象部门</option>
+        </select>
+      </dd>
+    </dl>
+    <dl class="cf">
+      <dt>职务</dt>
+      <dd  class="worker"><select>
+          <option value="">工作人员</option>
+        </select>
+      </dd>
+    </dl>
+    <dl class="cf">
+      <dt>县/区</dt>
+      <dd class="area"><select>
+        <option value="">选择县/区</option>
+      </select></dd>
+    </dl class="cf">
+    <dl class="cf">
+      <dt>年审</dt>
+      <dd>未年审</dd>
+    </dl>
+    <dl class="cf">
+      <dt>分组</dt>
+      <dd class="group">
+        <select>
+          <option value="">分组A;分组B</option>
+        </select>
+      </dd>
+    </dl>      
+  </section>
+  <section class="eitor_btn">
+      <button class="eitor_btn_one">保存</button>
+      <!-- <button class="eitor_btn_two">修改</button> -->
+  </section>
+
+</main>

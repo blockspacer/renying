@@ -1,0 +1,30 @@
+<main id="HistoryMessage">
+  <section class="history_left">
+    <ul class="scrollbar">
+      <li v-for="i in 10">
+        <p class="history_title">
+          <span class="title">{{ articleList.art.title }}</span>
+          <span class="date">{{ articleList.art.date }}</span>
+        </p>
+        <p class="history_content">
+          <span class="content">{{ articleList.art.con }}</span>
+        </p>
+      </li>
+    </ul>
+  </section>
+  <section class="history_right">
+    <ul class="scrollbar">
+      <li v-for="i in 10">
+        <p class="msg_top">
+          <em></em>
+          <span class="addressee">{{ email.addressee }}</span>
+          <span class="tel">{{ email.tel }}</span>
+          <button class="urge">催促</button>
+        </p>
+        <p class="msg_bottom">
+          <span>{{ email.con }}</span>
+        </p>
+      </li>
+    </ul>
+  </section>
+</main>

@@ -1,0 +1,42 @@
+<main id="NewTrajectory" element-loading-text="正在加载航迹数据" v-loading="loading">
+  <section class="new_msg">
+    <dl class="cf">
+      <dt>作业区域</dt>
+      <dd class="area">
+        <ul class="area_in scrollbar">
+          <li v-for="i in 9" :class="{on: areaSelected.indexOf(i+5000) !== -1}" v-on:click="toggleAreaSelected(i+5000)">{{i+5000}}</li>
+        </ul>
+      </dd>
+    </dl>
+    <dl class="cf">
+      <dt>最大回波</dt>
+      <dd class="big">
+        <input v-model="maxDbz" type="number" />
+      </dd>
+    </dl>
+    <dl class="cf">
+      <dt>最小回波</dt>
+      <dd class="mini">
+        <input v-model="minDbz" type="number" />
+      </dd>
+    </dl>
+    <dl class="cf">
+      <dt>作业机场</dt>
+      <dd class="worker">
+        <select v-model="airport">
+          <option v-for="(item, index) in airportData" :value="item.chinesename">{{item.chinesename}}</option>
+        </select>
+      </dd>
+    </dl>
+    <button v-on:click="design" class="design_btn_in design_btn_des">自动设计</button>
+    <dl class="cf" v-show="convertedData.length > 0">
+      <dt>航迹命名</dt>
+      <dd class="name">
+        <input v-model="name" type="text" />
+      </dd>
+    </dl>
+  </section>
+  <section class="design_btn" v-show="convertedData.length > 0">
+    <button @click="savePlane" class="design_btn_in">保存航迹</button>
+  </section>
+</main>

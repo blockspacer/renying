@@ -1,0 +1,115 @@
+<main id="AmmunitionInternet"
+      class="weather-product-window" 
+      v-drag=''>
+  <header>
+  <span>弹药装备物联网</span>
+  <aside>
+  <button class="mini"
+          v-on:click="minify = !minify"
+          :style="{backgroundPositionX: minify ? '-44px' : '0'}"></button>
+  <button class="close"
+          v-on:click="toggleProductView_global({id: productId, action: false})"></button>
+  </aside>
+  </header>
+  <section class="internet_left">
+    <div class="internet_left_search">
+      <p class="search_input">
+        <span>搜索</span>
+        <i></i><input type="text" v-model="keyString">
+      </p>
+      <p class="search_select">
+        <span>请选择</span>
+        <select name="" id="" v-model="ammunitionCounty">
+          <option value="all">市</option>
+          <option :value="el.city" v-for="el in cityList">{{ el.city }}</option>
+        </select>
+      </p>
+    </div>
+    <div class="internet_left_area">
+      <ul class="scrollbar internet_list">
+        <li v-for="(item, index) in addStoreLists" 
+            :class="{'on' : selectedRepository === item.id}"
+            @click="toggleAmmunition(item.id)">
+          <span class="store" :title="item.name">{{ item.name }}</span>
+          <span class="county" :title="item.region">{{ item.region }}</span>
+          <span class="number">{{  item.number }}
+            <i  @click="toggleEditor(item)"
+                :class="{on: item.popup}"
+                v-if="true">
+              <ul class="rename_delete" 
+                  v-if="item.popup">
+                <li class="rename_delete_li" @click="toggleModifyStoreHouse(item)">修改</li>
+                <li class="rename_delete_li" @click="deleteRepository(item.id)">删除</li>
+              </ul>
+            </i>
+          </span>
+        </li>
+      </ul>
+    </div>
+    <button class="add_storeHouse"
+            @click="addStoreHouse">新增仓库</button>
+  </section>
+  <section class="internet_right">
+    <ul class="title_list">
+      <li class="useway header_li">
+        <span>炮弹用途</span>
+        <i class="ammunition_useway" @click="toggleAppuserType" :class="{'on':appuserTypePop}"></i>
+        <div class="appuserPop appuserPop_out" v-if="appuserTypePop">
+          <ul class="scrollbar searchUseway">
+            <li @click="toggleUsage('全部')" 
+                :class="{'on': usageSelected === '全部'}"
+                :title="'全部'">全部</li>
+            <li v-for="item in usageList" 
+                @click="toggleUsage(item)" 
+                :class="{'on': usageSelected === item}"
+                :title="item">{{ item }}</li>
+          </ul> 
+        </div>
+      </li>
+      <li class="header_li">类型</li>
+      <li class="header_li">数量</li>
+      <li class="header_li">生产厂家</li>
+      <li class="createdate header_li">
+        <span>生产日期</span>
+        <!-- <i class="icon_top"></i><i class="icon_bottom"></i> -->
+      </li>
+    </ul>
+    <ul class="ammunition_list scrollbar">
+      <li v-for="(item, index) in selAmmunitionList">
+        <span>{{ item.usage || '---' }}</span>
+        <span>{{ item.code.slice(0,2) == '03' ?  '弹药箱' : '弹药' }}</span>
+        <span>{{ item.code.slice(0,2) == '03' ?  4 : 1 }}</span>
+        <span>{{ item.mfr || '---' }}</span>
+        <span>{{ item.year || '---' }}</span>
+      </li>
+    </ul>
+  </section>
+  <div v-if="addModifyStorePop" 
+           class="add_store"
+           v-drag=''>
+    <header>
+      <span>{{ popupType === 'add' ? '新增仓库' : '修改仓库' }}</span>
+      <aside>
+      <button class="close"
+              @click="popupType = null; addModifyStorePop = false"></button>
+      </aside>
+    </header>
+    <section class="add_store_con">
+      <dl class="cf" v-for="(item, key) in addStoreTitle" v-if="'name' in item">
+        <dt>{{ item.name }}</dt>
+        <dd>
+          <select v-if="key==='level'" v-model="item.value">
+            <option value="province">省</option>
+            <option value="city">市</option>
+            <option value="station">作业点</option>
+          </select>
+          <select name="" id="" v-else-if="key==='region'" v-model="item.value">
+            <option :value="el.city" v-for="el in cityList">{{ el.city }}</option>
+          </select>
+          <input type="text" v-else v-model="item.value">
+        </dd>
+      </dl>
+    </section>
+    <button class="conservation" @click="updateRepository">保存</button>
+  </div>
+</main>

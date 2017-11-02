@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible"
+        content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="text"
+         id="ws">
+  <input type="submit"
+         id="link"
+         text="链接"
+         value="链接">
+  <input type="text"
+         id="msg">
+  <input type="submit"
+         id="submit"
+         text="提交"
+         value="提交">
+  <script>
+    let socket
+    document.querySelector('#link').addEventListener('click', () => {
+      socket = new WebSocket(document.querySelector('#ws').value)
+      socket.onopen = () => {
+        console.info('ws opened')
+      }
+      socket.onmessage = e => console.info(e)
+    })
+    let data = { mark: '#rk', stage: 0, 'osId': 440202066, state: 1, message: {}, fileName: '1111.txt', groupIds: [1], userIds: [], note: '' }
+    document.querySelector('#submit').addEventListener('click', () => {
+      console.info(data)
+      socket.send(
+        JSON.stringify(data)
+      )
+    })
+  </script>
+</body>
+
+</html>

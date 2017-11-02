@@ -1,0 +1,37 @@
+<main id="HeaderTitle">
+  <div class="header_left">
+    <p>人工影响天气系统</p>
+  </div>
+  <div class="header_right">
+    <span class="header_right_council">
+    </span>
+    <span class="header_right_one">
+      <i></i>
+    </span>
+    <span :class="[{'on': managementView},'header_right_set']"
+          @click="toggleManagement">
+      <i></i>
+    </span>
+    <span class="header_right_per"
+          style="transform: translateY(0px)">
+      <i v-if="!userInfo_global.username"></i>
+      <div v-else class="cf">
+        <a>{{userInfo_global.username}}</a>
+        <em></em>
+      </div>
+    </span>
+    <span class="header_right_area" :class="{'on': cityListPop }">
+      <p @click="toggleCityList">
+        <a>{{ citySelected }}</a>
+        <em v-if="userInfo_global.power"></em>
+      </p> 
+      <ul v-if="cityListPop && userInfo_global.power">
+        <li v-for="item in cityList"
+            :class="{'on': citySelected === item.city }"
+            @click="toggleCity(item.city)">{{ item.city }}</li>
+      </ul> 
+    </span>
+  </div>
+  <component :is="managementView"
+             :closeFn="toggleManagement"></component>
+</main>

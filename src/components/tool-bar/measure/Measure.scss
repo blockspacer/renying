@@ -1,0 +1,23 @@
+li {
+  float: left;
+  text-align: center;
+  width: 42px;
+  height: 39px;
+  padding-top: 3px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  i{
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+  }
+  &.measure{
+    i { background: url(../../../../static/img/toolbar_tool.png)no-repeat -72px 0/900% 200%; }
+    &.on{ i{ background-position:  -72px -36px; } }
+  }
+  &.clears {
+      i { background: url(~Img/toolbar_tool.png)no-repeat 0 0/900% 200%; }
+      &:active{ i{ background-position-y: -36px; } }
+  }
+}

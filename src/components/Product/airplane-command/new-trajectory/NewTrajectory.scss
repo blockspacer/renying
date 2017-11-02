@@ -1,0 +1,76 @@
+#NewTrajectory{
+  padding-bottom: 20px;
+  .new_msg{
+    margin: 20px 0;
+  }
+  dl{
+    margin:6px 0 0 30px;
+    font-size: 14px;
+    height: 50px;
+    line-height: 50px;
+    dt{
+      float: left;
+      color: #575757;
+      width: 90px;
+    }
+    dd{
+
+      float: left;
+      color: #1c1c1c;
+      &.big,&.mini,&.name{
+        input{
+          margin-top: 10px;
+          padding: 0 15px;
+          height: 28px;
+          line-height: 28px;
+          width: 136px;
+          border: 1px solid #D8DAE0;
+        }
+        
+      }
+      &.area{
+        ul.area_in{
+          margin-top: 10px;
+          width: 168px;
+          height: 120px;
+          border: 1px solid #D8DAE0;
+          overflow: auto;
+          li{ 
+            padding: 0 15px;
+            height: 30px;
+            line-height: 30px;
+            &:hover, &.on{
+              cursor: pointer;
+              color: #fff;
+              background-color: #4787E1;
+            }
+          }
+        }
+        
+      }
+      &.worker,&.group,{
+        select{
+          width: 168px;
+        }
+      }
+    }
+  }
+  .design_btn{
+    margin: 15px 0 0 140px;
+  }
+  button.design_btn_in{
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px;
+    width: 120px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #3E7CD7;
+    margin-right: 10px;
+    text-align: center;
+   
+  }
+  .design_btn_des{
+    margin: 15px 0 10px 144px;
+  }
+}

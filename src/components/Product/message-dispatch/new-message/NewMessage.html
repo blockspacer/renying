@@ -1,0 +1,84 @@
+<main id="NewMessage">
+  <section class="new_title">
+    <ul>
+      <li :class="{on: groupWordSelected === 'group'}" 
+          @click="toggleGroupWord('group')">
+      <p>分组</p>
+    </li>
+      <li :class="{on: groupWordSelected === 'work'}" 
+          @click="toggleGroupWord('work')">
+      <p>作业点</p>
+    </li>
+    </ul>
+  </section>
+  <section class="new_search">
+    <div class="search_top">
+      <p class="groups_top_search">
+        <span>搜索</span>
+        <i></i>
+        <input type="text" v-model="keyString">
+      </p>
+    </div>
+    <div class="search_bottom">
+        <ul class="forecase_product_ul" v-if="!keyString">
+          <li class="forecase_product_li" 
+              v-for="(item, index) in groups"
+              v-on:click.stop="item.show = !item.show"
+              :state="item.show ? 'true' : 'false'">
+            <div>
+              <em :state="item.show ? 'true' : 'false'"></em>
+              <span class="hori-dash-line"></span>
+              <span class="vert-dash-line top"
+                    v-show="index !== 0"></span>
+              <span class="vert-dash-line bottom"></span>
+              <a>{{ item.groupName }}</a>
+            </div>
+            <ul class="subItem"
+                v-show="item.show">
+              <li class="forecase_subItem_li"
+                  v-for="(subItem,key) in item.appUsers"
+                  @click.stop="toggleCheckPeople(subItem)">
+                <div>
+                  <span class="vert-dash-line"></span>
+                  <span class="hori-dash-line"></span>
+                  <i :class="['checkIcon', {'on': subItem.id in selectedPeople }]"></i>
+                  <em></em>
+                  <a>{{ subItem.username }}</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <ul v-else class="forecase_product_uls scrollbar">
+          <li v-for="item in searchList" 
+              @click.stop="toggleCheckPeople(item)">
+              <i :class="['checkIcons', {'on': item.id in selectedPeople }]"></i>
+              <a>{{ item.username }}</a>
+          </li>
+        </ul>
+    </div>
+      
+  </section>
+  <section class="new_message">
+    <dl class="cf dl_man">
+      <dt>收信人</dt>
+      <dd>
+        <input type="text" v-model="addresseeList" readonly>
+      </dd>
+    </dl>
+    <!-- <dl class="cf">
+      <dt>主题</dt>
+      <dd>
+        <input type="text">
+      </dd>
+    </dl> -->
+    <dl class="cf dl_con">
+      <dt>内容</dt>
+      <dd>
+        <textarea v-model="msgContent" cols="30" rows="10"></textarea>
+      </dd>
+    </dl>
+    <button class="sent_msg" @click="sendMsg">发送短信</button>
+      
+  </section>
+</main>

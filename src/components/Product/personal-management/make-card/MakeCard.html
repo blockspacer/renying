@@ -1,0 +1,61 @@
+<main id="MakeCard"
+      class="weather-product-window" 
+      v-drag=''>
+<header>
+<span>制作工作证</span>
+<aside>
+  <button class="close" @click="closeFn"></button>
+</aside>
+</header>
+
+<section class="card_left cf">
+    <dl class="cf">
+        <dt>单位</dt>
+        <dd class="tel">
+          <input type="text">
+        </dd>
+      </dl>
+  <dl class="cf">
+    <dt>姓名</dt>
+    <dd class="name">
+        <input type="text" v-model="userInfo.userName">
+    </dd>
+  </dl>
+  <dl class="cf">
+    <dt>职务</dt>
+    <dd  class="worker"><select>
+        <option value="">XX职务</option>
+      </select>
+    </dd>
+  </dl>
+  <dl class="cf">
+      <dt>从事岗位</dt>
+      <dd class="department">
+        <select>
+          <option value="">工作人员</option>
+        </select>
+      </dd>
+    </dl>
+  <dl class="cf">
+    <dt>作业区域</dt>
+    <dd class="area"><select>
+      <option value="">广东省行政区域范围</option>
+    </select></dd>
+  </dl class="cf">
+  
+  <dl class="cf">
+    <dt>上传照片</dt>
+    <dd class="group">
+      <select>
+        <option value=""></option>
+      </select>
+    </dd>
+  </dl>      
+</section>
+<section class="card_right cf">
+
+</section>
+<section class="card_btn cf">
+    <button>制作</button>
+</section>
+</main>

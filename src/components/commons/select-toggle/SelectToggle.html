@@ -1,0 +1,20 @@
+<main id="SelectToggle"
+      :style="{backgroundColor: backgroundColor, width: width + 'px', height: height + 'px'}"
+      class="cf">
+  <div class="text-wrapper"
+       @click="isOptionPopupShow = !isOptionPopupShow">{{optionSelected}}</div>
+  <aside class="btn-wrapper">
+    <span @click="upward">
+      <i></i>
+    </span>
+    <span @click="downward">
+      <i></i>
+    </span>
+  </aside>
+  <ul v-show="isOptionPopupShow"
+      class="scrollbar"
+      :class="[classBinding]">
+    <li v-for="item in optionData"
+        @click="selectOption(item)">{{item}}</li>
+  </ul>
+</main>

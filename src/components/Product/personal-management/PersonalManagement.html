@@ -1,0 +1,108 @@
+<main id="PersonalManagement" 
+      class="weather-product-window" 
+      v-drag=''>
+    <header>
+      <span>人员管理</span>
+      <aside>
+        <button class="mini"
+                v-on:click="minify = !minify"
+                :style="{backgroundPositionX: minify ? '-44px' : '0'}"></button>
+        <button class="close"
+                v-on:click="toggleProductView_global({id: productId, action: false})"></button>
+      </aside>
+    </header>
+    <section class="personal_left">
+      <div class="groups_top">
+        <span>请选择</span>
+        <p class="groups_top_new" 
+           @mouseenter="groupsListPopup=true" 
+           @mouseleave="groupsListPopup=false">
+          <span>分组</span>
+          <i></i>
+          <ul class="groups_list scrollbar" v-if="groupsListPopup">
+            <li v-on:click.stop="toggleAll" :class="{on: !groupSelected}">全部</li>
+             <li v-for="(item, key) of group"
+                  v-on:click.stop="toggleGroup(item)"
+                  :class="{on: groupSelected === item.groupId}"
+              >{{item.groupName}}</li>
+          </ul>
+        </p>
+        <p class="groups_top_search">
+          <span>搜索</span>
+          <i></i>
+          <input type="text" v-model="keyString">
+        </p>
+        <p class="groups_top_add" @click="toggleCreateGroup">添加到分组</p>
+      </div>
+      <div class="groups_bottom">
+        <ul class="head_list">
+          <li>姓名</li>
+          <li>手机号</li>
+          <li>部门</li>
+          <li>职务</li>
+          <li>县/区</li>
+          <li>年审</li>
+          <li>操作</li>
+        </ul>
+        <ul class="person_list">
+          <li v-for="(item, key) in currentPageList" :class="{'on': item.selected}">
+            <span class="name">
+              <i class="name_check"
+                 @click="toggleCheckPerson(key)">
+              </i>
+              <p :title="item.userName">{{ item.userName }}</p>
+            </span>
+            <span class="tel" :title="item.phonenum">{{ item.phonenum }}</span>
+            <span class="department" :title="item.department">{{ item.department }}</span>
+            <span class="post" :title="item.post">{{ item.post }}</span>
+            <span class="area" :title="item.workpoint">{{ item.workpoint }}</span>
+            <span class="verification" :title="item.verification">{{ item.verification }}</span>
+            <span class="icon">
+              <i class="card" @click="toggleMakeCard(item)"></i>
+              <i class="editor" @click="toggleEditor(item)"></i>
+              <i class="delete" ></i>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="personal_right">
+      <div class="check_number">
+        <p>{{ Object.keys(personList).length }}</p>
+        <p>待审核</p>
+      </div>
+      <div class="check_list">
+          <p class="check_list_title">待审核列表</p>
+          <ul class="check_list_ul scrollbar">
+            <li v-for="(item, key) in personList">
+              <p class="cf check_areaTop">
+                <span class="checking_name" :title="item.name">{{item.name || '---' }}</span>
+                <span>通过</span>
+                <span>拒绝</span>
+              </p>
+              <p class="cf check_areaBot">
+                <span class="">{{item.area || '11111111111111'}}</span>
+                <span>{{item.department || '22222222222222222'}}</span>
+                <span>{{item.tel || '33333333333333333333'}}</span>
+              </p>
+              
+            </li>
+          </ul>
+      </div>
+    </section>
+    <section class="product_page cf">
+      <div class="product_pageIn">
+          <el-pagination
+          small
+          :page-size="pageSize"
+          layout="prev, pager, next"
+          @current-change="currentChange"
+          :total="personList.length">
+        </el-pagination>
+      </div>
+      
+    </section>
+    <component :is="createGroupView" :closeFn="toggleCreateGroup" :getGroup="getGroup" :group='group'></component>
+    <component :is="editorMessageView" :closeFn="toggleEditor" :userMsg="userMsg"></component>
+    <component :is="makeCardView" :closeFn="toggleMakeCard" :userMsg="userMsg"></component>
+</main>

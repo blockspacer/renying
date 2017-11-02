@@ -1,0 +1,40 @@
+#SearchJobpoint {
+  position: absolute;
+  width: 378px;
+  height: 42px;
+  z-index: 1000;
+  right: 0;
+  bottom: 52px;
+  background-color: #fff;
+  font-size: 12px;
+  color: #1c1c1c;
+  .search_jobtitle{
+    position: relative;
+    display: inline-block;
+    line-height: 42px;
+    margin: 0 10px 0 24px;
+  }
+  .search_jobcon{
+    position: relative;
+    .search_jobinput{
+      position: absolute;;
+      display: inline-block;
+      height: 30px;
+      width: 200px;
+      margin-top: 6px;
+      padding: 0 10px 0 40px;
+      border: 1px solid #DDDFE4;
+    }
+    i{
+      position: absolute;
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      top: 2px;
+      left: 15px;
+      background: url(../../../../static/img/toolbar_search.png)no-repeat 0 0/100% 100%;
+      cursor: pointer;
+    }
+  }
+  
+}
