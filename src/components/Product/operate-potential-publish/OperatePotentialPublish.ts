@@ -4,13 +4,19 @@ import { Action, Getter } from 'vuex-class'
 import * as Config from '../../../config/productId'
 import WithRender from './OperatePotentialPublish.html?style=./OperatePotentialPublish.scss'
 import PublishDocument from '../../commons/publish-document/PublishDocument'
+import SelectToggle from '../../commons/select-toggle/SelectToggle'
 import { Message } from 'element-ui'
+import * as moment from 'moment'
 
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
 
 @WithRender
-@Component
+@Component({
+  components: {
+    SelectToggle
+  }
+})
 export default class OperatePotentialPublish extends Vue {
   @Getter('systemStore/articleViewHolder_global') articleViewHolder_global
   @Action('systemStore/changeArticleViewHolder_global') changeArticleViewHolder_global
@@ -25,6 +31,25 @@ export default class OperatePotentialPublish extends Vue {
   operateReqUrl = 'http://10.148.16.217:11160/renyin5/fp/exists'
   rkOperateData: any[] = []
   plOperateData: any[] = []
+  datetime = moment().format('YYYY-MM-DD HH:mm:ss')
+  utcSelected = 0
+  forecastOptionData = (() => {
+    let arr = []
+    for (let i = 1; i <= 48; i++) {
+      arr.push(i < 10 ? '00' + i : (i < 100 ? '0' + i : i))
+    }
+    return arr
+  })()
+  forecastOptionSelected = '01'
+  prescriptionOptionData = ['08', '20']
+  prescriptionSelected = '08'
+  latOptionData = [19, 22, 24, 26, 28, 30]
+  latOptionSelected = 22
+  htmlString = ''
+  htmlStringHolder = ''
+  docData
+  docDataReqUrl = 'http://10.148.16.217:9020/doc/4?&data='
+  imgPrefix = 'http://10.148.16.217:9020/dao/png?&path='
 
   created() {
     this.getOperateData()
@@ -37,9 +62,61 @@ export default class OperatePotentialPublish extends Vue {
 
     axios({
       url: '/static/technical_papers/OperatePotential.html',
-    }).then(res => {
-      this.editor.txt.html(res.data)
+    }).then(async res => {
+      this.htmlStringHolder = res.data
+      await this.getDocData()
+      this.replaceHTMLString()
     })
+  }
+
+  @Watch('prescriptionSelected')
+  async onPrescriptionSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  @Watch('datetime')
+  async onDatetimeSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  @Watch('forecastOptionSelected')
+  async onForecastOptionSelectedSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  @Watch('latOptionSelected')
+  async onLatOptionSelectedSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+
+  replaceHTMLString() {
+    this.htmlString = this.htmlStringHolder.replace(/datetime/, this.docData.time)
+      .replace(/year/g, this.docData.year)
+      .replace(/datetime/, this.docData.time)
+      .replace(/imgSrc1/, this.imgPrefix + this.docData.png2Visl)
+      .replace(/imgSrc2/, this.imgPrefix + this.docData.png3Qvtc)
+      .replace(/imgSrc3/, this.imgPrefix + this.docData.png4Qvtr)
+      .replace(/imgSrc4/, this.imgPrefix + this.docData.png5Rain3_6)
+      .replace(/imgSrc5/, this.imgPrefix + this.docData.png6Rain3_12)
+      .replace(/imgSrc6/, this.imgPrefix + this.docData.png7Rain3_24)
+      .replace(/imgSrc7/, this.imgPrefix + this.docData.png8Rain3_48)
+      .replace(/imgSrc8/, this.imgPrefix + this.docData.png1Cband)
+    this.editor.txt.html(this.htmlString)
+  }
+
+  async getDocData() {
+    let res = await axios({
+      url: this.docDataReqUrl + 
+        `{"datetime": "${moment(this.datetime).format('YYYY-MM-DD HH:mm:ss')}";` + 
+      `"lat": "${this.latOptionSelected}"}`,
+      adapter: jsonp
+    })
+    this.docData = res.data
+  }
+
+  latChange(val) {
+    this.latOptionSelected = val
   }
 
 
@@ -71,10 +148,14 @@ export default class OperatePotentialPublish extends Vue {
       mark: operateType,
       osId: workStation,
       stage: 2,
-      // message: this.editor.txt.html(),
+      message: `<html><head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        </head><body>` +  
+      this.editor.txt.html() + `</body></html>`,
       note: extraInfoText,
       // userIds: [],
-      groupIds: appGroup
+      groupIds: appGroup,
+      word: '20'
     }))
     Message({
       type: 'success',

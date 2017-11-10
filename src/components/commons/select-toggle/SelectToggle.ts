@@ -24,12 +24,12 @@ export default class SelectToggle extends Vue {
 
   @Watch('isOptionPopupShow')
   isOptionPopupShowChanged(val: any, oldVal: any): void {
-    if(val) {
+    if (val) {
       let ele = <HTMLDivElement>document.querySelector('#SelectToggle')
       let winHeight = window.innerHeight
       let top = ele.getBoundingClientRect().top
       let popupHeight = this.optionData.length * 30
-      if(top + popupHeight < winHeight) 
+      if (top + popupHeight < winHeight)
         this.classBinding = 'topPos'
       else
         this.classBinding = 'bottomPos'
@@ -38,17 +38,18 @@ export default class SelectToggle extends Vue {
   @Watch('optionSelected')
   optionSelectedChanged(val: any, oldVal: any): void {
     this.selectOption(val)
-    this.selectionChange(this.optionSelected)
+    if (typeof this.selectionChange === 'function')
+      this.selectionChange(this.optionSelected)
   }
   @Watch('preSelectedOption')
   preSelectedOptionChanged(val: any, oldVal: any): void {
-    if(this.optionData.indexOf(val) !== -1) {
+    if (this.optionData.indexOf(val) !== -1) {
       this.optionSelected = val
     }
   }
   @Watch('optionData')
   optionDataChange(val) {
-    if(this.optionData.indexOf(this.optionSelected) === -1) {
+    if (this.optionData.indexOf(this.optionSelected) === -1) {
       this.optionSelected = this.optionData[0]
     }
   }

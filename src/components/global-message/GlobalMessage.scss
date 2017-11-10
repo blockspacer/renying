@@ -56,19 +56,29 @@
     line-height: 42px;
     font-size: 12px;
     position: relative;
+    span{
+        display: inline-block;
+    }
     .message-type {
         margin-left: 20px;
         margin-right: 10px;
+        transform: translateY(-16px);
     }
     .message-target {
         margin-right: 10px;
         color: #4787e1;
+        cursor: pointer;
+        transform: translateY(-16px);
+        &:hover{
+            text-decoration: underline;
+        }
     }
     .message-content {
         color: #585858;
-        max-width: 145px;
+        max-width: 125px;
         white-space: nowrap;
         text-overflow: ellipsis;
+        overflow: hidden;
     }
     .message-datetime {
         color: #989898;

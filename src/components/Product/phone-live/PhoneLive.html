@@ -1,0 +1,23 @@
+<main id="PhoneLive"
+      class="weather-product-window"
+      v-drag>
+  <header>
+    <span>GRAPES中尺度模式产品</span>
+    <aside>
+      <button class="close"
+              v-on:click="toggleProductView_global({id: productId, action: false})"></button>
+    </aside>
+  </header>
+  <main>
+    <object class="self-live-wraper">
+      <embed wmode="transparent"
+             id="rtmp-streamer"
+             src="./static/RtmpStreamer.swf"
+             width="100%"
+             height="100%"
+             allowScriptAccess="always"
+             quality="best"
+             type="application/x-shockwave-flash"></embed>
+    </object>
+  </main>
+</main>

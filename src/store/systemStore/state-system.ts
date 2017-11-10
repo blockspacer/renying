@@ -7,13 +7,22 @@ import jsonp from 'axios-jsonp'
 export class State {
   constructor() {
     this.getAppGroupData().then(data => {
-      this.appGroupData = data
+      this.appGroupData = [].concat(data)
     })
     this.getWorkStationData().then(data => {
-      this.operateStationData = data
+      this.operateStationData = [].concat(data)
     })
     this.getAllMember().then(data => {
-      this.appUserData = data
+      this.appUserData = [].concat(data)
+    })
+    this.getRepoData().then(data => {
+      this.repoData = [].concat(data)
+    })
+    this.getPhoneLiveData().then(data => {
+      this.phoneLiveData = data
+    })
+    this.getAirRequestData().then(data => {
+      this.airRequestData = data
     })
   }
   userInfo: any = {}
@@ -37,7 +46,30 @@ export class State {
   socketIntervalHolder: any = null
   socketMessage: any[] = []
   socketCurrentMessage: any = ''
+  // 强制刷新任务跟踪
   freshOperate: any = ''
+  // 是否显示运输弹药航迹
+  isShowTransportLayer: boolean = true
+  // 是否显示空域申报图纸
+  isShowAirRequestLayer: boolean = true
+  // 是否显示飞机航迹
+  isShowAirLineLayer: boolean = true
+  // 是否显示直播图标
+  isShowPhoneLiveLayer: boolean = true
+
+  // 直播数据
+  phoneLiveData: any[] = []
+  // 申请空域数据
+  airRequestData: any[] = []
+  
+  // 手机直播id
+  phoneLiveId = ''
+
+  // 运输数组
+  transportData = {}
+  isTransportDataChange = 0
+  // 仓库数据
+  repoData = []
 
   // #todo 每个修改app人员 作业点 人员群组的都要更新全局仓库的数据
   // 作业点
@@ -60,6 +92,13 @@ export class State {
     return res.data.data
   }
 
+  async getRepoData() {
+    let res = await axios({
+      url: 'http://10.148.16.217:11160/renying/repository'
+    })
+    return res.data
+  }
+
   async  getAppGroupData() {
     let res = await axios({
       url: this.appGroupRequestUrl,
@@ -75,7 +114,21 @@ export class State {
     })
     return res.data.data
   }
+  async getPhoneLiveData() {
+    let res = await axios({
+      url: 'http://10.148.16.217:11160/renying/live?started'
+    })
+    return res.data
+  }
+  async getAirRequestData() {
+    let res = await axios({
+      url: 'http://10.148.16.217:11160/renying/airspaceApplication?started'
+    })
+    return res.data
+  }
 
   workStationRequestUrl = 'http://10.148.16.217:11160/renyin5/fp/operation/finds'
   appGroupRequestUrl = 'http://10.148.16.217:11160/renyin5/webuser/group'
+  // 获取运输所有数据
+  getTransportDataUrl = 'http://10.148.16.217:11160/renying/event/'
 }

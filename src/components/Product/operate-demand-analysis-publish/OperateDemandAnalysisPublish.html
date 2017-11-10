@@ -4,6 +4,8 @@
     <header>
         <components :is="publishDocumentView"
                     :stage="0"
+                    :close="close"
+                    :publishToAll="true"
                     :publishFunction="publishDocument"></components>
         <span>需求分析报告-生成文档</span>
         <aside>
@@ -19,6 +21,32 @@
         </div>
     </div>
     <div class="create_right">
+        <section class="date-time-forsee-wrapper">
+            <ul style="top: 15px; left: 0">
+                <li>
+                    <aside class="left-label-wrapper"
+                           style="font-size: 14px">日期</aside>
+                    <aside style="margin-bottom: 10px"
+                           class="right-btn-wrapper">
+                        <el-date-picker v-model="datetime"
+                                        type="datetime"
+                                        :clearable="false"
+                                        placeholder="选择日期">
+                        </el-date-picker>
+                    </aside>
+                </li>
+                <li>
+                    <aside class="left-label-wrapper"
+                           style="font-size: 14px">城市</aside>
+                    <aside style="margin-bottom: 10px"
+                           class="right-btn-wrapper">
+                        <select-toggle :selectionChange="citySelectionChange"
+                                       :operateSelected="cityOperateSelected"
+                                       :optionData="cityOperateData"></select-toggle>
+                    </aside>
+                </li>
+            </ul>
+        </section>
         <ul>
             <li class="create_downLoad"
                 @click="downloadFile"

@@ -5,6 +5,7 @@ import WithRender from './PublishDocument.html?style=./PublishDocument.scss'
 
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
+const Message = Vue.prototype['$message']
 
 @WithRender
 @Component
@@ -40,6 +41,7 @@ export default class PublishDocument extends Vue {
   @Prop() rkOperateData: any[]
   @Prop() plOperateData: any[]
   @Prop() stage: number
+  @Prop() publishToAll: boolean
 
   created() {
     if (!this.preAppGroupSelected)
@@ -78,6 +80,13 @@ export default class PublishDocument extends Vue {
   }
 
   publish() {
+    if (this.stage != 0 && this.operateData.length === 0) {
+      Message({
+        type: 'error',
+        message: '当前没有可发布正在进行的五段流程',
+      })
+      return
+    }
     this.publishFunction(this.workStationSelected, this.appGroupSelected, this.extraInfoText, this.operateType)
   }
   selectAppGroup(id) {

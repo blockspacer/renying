@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import WithRender from './SateliteCloud.html?style=./SateliteCloud.scss'
-import moment from 'moment'
+import * as moment from 'moment'
 import * as CONFIG from '../../../config/productId'
 
 let map, L, imgLayer

@@ -5,6 +5,7 @@ import * as Config from '../../../config/productId'
 import WithRender from './OperateWarningAirReportPublish.html?style=./OperateWarningAirReportPublish.scss'
 import PublishDocument from '../../commons/publish-document/PublishDocument'
 import { Message } from 'element-ui'
+import * as moment from 'moment'
 
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
@@ -23,6 +24,16 @@ export default class OperateWarningAirReportPublish extends Vue {
   docToHtml = 'http://10.148.16.217:11160/renyin5/fp/files/doc/converter'
   operateReqUrl = 'http://10.148.16.217:11160/renyin5/fp/exists'
   plOperateData: any[] = []
+  datetime = moment().format('YYYY-MM-DD HH:mm:ss')
+  htmlString = ''
+  htmlStringHolder = ''
+  docData
+  docDataReqUrl = 'http://10.148.16.217:9020/doc/6?&data='
+  imgPrefix = 'http://10.148.16.217:9020/dao/png?&path='
+
+  created() {
+    this.getOperateData()
+  }
 
   mounted() {
     this.Editor = window['wangEditor']
@@ -31,13 +42,39 @@ export default class OperateWarningAirReportPublish extends Vue {
 
     axios({
       url: '/static/technical_papers/OperateWarningAirReport.html',
-    }).then(res => {
-      this.editor.txt.html(res.data)
+    }).then(async res => {
+      this.htmlStringHolder = res.data
+      await this.getDocData()
+      this.replaceHTMLString()
     })
   }
 
-  created() {
-    this.getOperateData()
+  @Watch('datetime')
+  async onDatetimeSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+
+  replaceHTMLString() {
+    this.htmlString = this.htmlStringHolder.replace(/datetime/, this.docData.time)
+      .replace(/year/g, this.docData.year)
+      .replace(/datetime/, this.docData.time)
+      .replace(/imgSrc1/, this.imgPrefix + this.docData.png1Ttop)
+      .replace(/imgSrc2/, this.imgPrefix + this.docData.png2Optn)
+      .replace(/imgSrc3/, this.imgPrefix + this.docData.png3Clound)
+      .replace(/imgSrc4/, this.imgPrefix + this.docData.png4Radar)
+      .replace(/imgSrc5/, this.imgPrefix + this.docData.png5Ztop)
+      .replace(/imgSrc6/, this.imgPrefix + this.docData.png6RadarProfile)
+    this.editor.txt.html(this.htmlString)
+  }
+
+  async getDocData() {
+    let res = await axios({
+      url: this.docDataReqUrl +
+      `{"datetime": "${moment(this.datetime).format('YYYY-MM-DD HH:mm:ss')}"}`,
+      adapter: jsonp
+    })
+    this.docData = res.data
   }
 
   close() {
@@ -60,11 +97,19 @@ export default class OperateWarningAirReportPublish extends Vue {
       mark: operateType,
       osId: workStation,
       stage: 3,
-      // message: this.editor.txt.html(),
+      message: `<html><head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        </head><body>` +
+      this.editor.txt.html() + `</body></html>`,
       note: extraInfoText,
       // userIds: [],
-      groupIds: appGroup
+      groupIds: appGroup,
+      word: '31'
     }))
+    Message({
+      type: 'success',
+      message: '发布成功'
+    })
   }
 
   openPublishDocumentPopup() {

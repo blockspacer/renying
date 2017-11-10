@@ -21,8 +21,8 @@ export default class RiverLevel extends Vue {
   datetime = moment('2017-09-13').subtract(10, 'minute').format('YYYY-MM-DD HH:mm')
   url = 'http://10.148.16.217:11160/renyin5/waterline/river?&addrType=province&name=广东'
   data = null
-  iconImgUrl_normal = '/static/img/home_Wal.png'
-  iconImgUrl_warning = '/static/img/home_Wal_pre.png'
+  iconImgUrl_normal = '/static/img/home_WaL.png'
+  iconImgUrl_warning = '/static/img/home_WaL_pre.png'
   loading: boolean = false
   productId = CONFIG.riverLevel
 

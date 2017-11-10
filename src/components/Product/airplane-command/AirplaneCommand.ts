@@ -28,5 +28,6 @@ export default class AirplaneCommand extends Vue {
     if (key === this.designSelected) return
     this.designSelected = key
     this.currentView = key === 'new' ? NewTrajectory : HistoryTrajectory
+    this.designSelected = key === 'new' ? 'history' : 'new'
   }
 }

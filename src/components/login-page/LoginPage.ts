@@ -2,9 +2,9 @@ import Vue from 'vue'
 import { Component, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import WithRender from './LoginPage.html?style=./LoginPage.scss'
-
 import { userClient } from '../../util/clientHelper'
-import { CookieHelper } from '../../util/cookie'
+// import { CookieHelper } from '../../util/cookie'
+import Cookies from 'js-cookie'
 import { Message } from 'element-ui'
 
 let layer = null
@@ -31,7 +31,8 @@ export default class LoginPage extends Vue {
     if (data) {
       this.isLoginSuccessed = false
       this.changeUserInfo_global(data)
-      CookieHelper.setCookie('login', `${this.username}%${this.password}`, 7)
+      // CookieHelper.setCookie('login', `${this.username}%${this.password}`, 7)
+      Cookies.set('login', `${this.username}%${this.password}`, { expires: 7 })
       Message({
         type: 'success',
         message: '成功登陆'

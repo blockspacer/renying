@@ -6,7 +6,7 @@ import { Message } from 'element-ui'
 
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
-import moment from 'moment'
+import * as moment from 'moment'
 
 let airportData = null
 @WithRender

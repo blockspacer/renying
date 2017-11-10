@@ -50,7 +50,6 @@
                             </li>
                         </ul>
                     </li>
-
                 </ul>
             </section>
             <section class="date-time-forsee-wrapper">
@@ -186,8 +185,9 @@
                     <li>
                         <aside class="left-label-wrapper">时效</aside>
                         <aside class="right-btn-wrapper">
-                            <select-toggle :optionData="forecastOptionData" :selectionChange="forecastChange"></select-toggle>
-                           <!--  <select class="time_effect"
+                            <select-toggle :optionData="forecastOptionData"
+                                           :selectionChange="forecastChange"></select-toggle>
+                            <!--  <select class="time_effect"
                                     v-model="forecast">
                                 <option :value="item"
                                         v-for="item in forecastOptionData">

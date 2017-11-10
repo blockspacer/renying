@@ -15,7 +15,9 @@
       <div class="history_article cf">
         <ul>
           <li class="history_article_list"
-              v-for="item in optionData">
+              v-for="item in optionData"
+              @click="selectedOption = item.id"
+              :class="[selectedOption === item.id ? 'on' : '']">
             <div class="history_article_left">
               <div class="history_article_leftIn">
                 <p class="history_article_day">{{year(item)}}年</p>
@@ -23,7 +25,7 @@
               </div>
             </div>
             <div class="history_article_right">
-              <p class="history_article_title">作业预报-{{item.operateType}}</p>
+              <p class="history_article_title">作业计划-{{item.operateType}}</p>
               <p class="history_article_introduction ">{{item.datetime}}</p>
             </div>
           </li>
@@ -35,7 +37,7 @@
         </div> -->
     <div class="history_right">
       <div class="popup_aricle">
-        <div class="history_conIn popup_aricleIn"></div>
+        <div class="history_conIn popup_aricleIn" v-html="htmlString"></div>
       </div>
     </div>
   </div>

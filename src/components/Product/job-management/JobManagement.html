@@ -60,15 +60,15 @@
           <span class="county wid">{{ item.county }}</span>
           <span class=" wid">{{ item.lon }}</span>
           <span class=" wid">{{ item.lat }}</span>
-          <span class="fireDirection wid">{{ item.fireDirection }}</span>
+          <span class="fireDirection wid">{{ item.fireDirection ? item.fireDirection : '---'}}</span>
           <span class="fireRadius wid">{{ item.fireRadius }}</span>
           <span class="airport wid">{{ item.airport }}</span>
-          <span class="id wid">{{ item.id }}</span>
+          <span class="id wid">{{ item.opId }}</span>
           <!-- <span class="appUser">{{ item.appUser ? item.appUser.username : '' }}</span> -->
           <span class="appUser wid">
             <div class="appusers">
               <p :class="{'on': item.popup}"
-                 @click="toggleAppUserPanel(item)">{{ item.appUser ? item.appUser.username : '' }}</p>
+                 @click="toggleAppUserPanel(item)">{{ item.appUser ? item.appUser.name : '---' }}</p>
               <div class="appuserPop appuserPop_out"
                    v-if="item.popup">
                 <span class="">
@@ -79,9 +79,9 @@
                          v-model="seachAppUser">
                 </span>
                 <ul class="scrollbar">
-                  <li :class="{'on': item.appUser.id === el.id, 'disabled': el.id in appUserListSelected}"
+                  <li :class="{'on': item.appUser && item.appUser.id === el.id, 'disabled': el.id in appUserListSelected}"
                       v-for="el of AppUserList"
-                      @click="changeAppUser(item, el)">{{ el.username }}</li>
+                      @click="changeAppUser(item, el)">{{ el.name }}</li>
                 </ul>
               </div>
             </div>
@@ -131,7 +131,7 @@
                   id=""
                   v-model="el.value"
                   v-if="key === 'city'">
-            <option :value="city"
+            <option :value="item.city"
                     v-for="(item,index) of allCities">{{ item.city }}</option>
           </select>
           <input type="text"
@@ -140,7 +140,7 @@
           <div class="appuser"
                v-else>
             <p :class="{'on': appUserPopup}"
-               @click="toggleAppUser">{{ el.value.username }}</p>
+               @click="toggleAppUser">{{ el.value ? el.value.name : '' }}</p>
             <div class="appuserPop"
                  v-if="appUserPopup">
               <span class="">
@@ -151,9 +151,9 @@
                        v-model="seachAppUser">
               </span>
               <ul class="scrollbar">
-                <li :class="{'on': popupInfo.appUser.value.id === el.id, 'disabled': el.id in appUserListSelected}"
+                <li :class="{'on': popupInfo.appUser.value && popupInfo.appUser.value.id === el.id, 'disabled': el.id in appUserListSelected}"
                     v-for="el of AppUserList"
-                    @click="selectAppUser(el)">{{ el.username }}</li>
+                    @click="selectAppUser(el)">{{ el.name }}</li>
               </ul>
             </div>
           </div>

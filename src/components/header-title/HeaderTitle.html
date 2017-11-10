@@ -13,23 +13,30 @@
       <i></i>
     </span>
     <span class="header_right_per"
-          style="transform: translateY(0px)">
+          style="transform: translateY(0px)" :class="{'on': loginOutPop }">
       <i v-if="!userInfo_global.username"></i>
       <div v-else class="cf">
-        <a>{{userInfo_global.username}}</a>
-        <em></em>
+        <p @click="loginOut">
+          <a>{{userInfo_global.username}}</a>
+          <em></em>
+        </p>
+        <p class="login_out" v-if="loginOutPop" @click="loginOutBtn">
+          <span class="login_out_in">退出登录</span>
+        </p>
       </div>
     </span>
-    <span class="header_right_area" :class="{'on': cityListPop }">
+    <span class="header_right_area"
+          :class="{'on': cityListPop }">
       <p @click="toggleCityList">
         <a>{{ citySelected }}</a>
         <em v-if="userInfo_global.power"></em>
-      </p> 
-      <ul v-if="cityListPop && userInfo_global.power">
+      </p>
+      <ul style="z-index: 3000"
+          v-if="cityListPop && userInfo_global.power">
         <li v-for="item in cityList"
             :class="{'on': citySelected === item.city }"
             @click="toggleCity(item.city)">{{ item.city }}</li>
-      </ul> 
+      </ul>
     </span>
   </div>
   <component :is="managementView"

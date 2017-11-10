@@ -19,6 +19,8 @@ export default class OperatePlanHistory extends Vue {
   reqUrl: string = 'http://10.148.16.217:11160/renyin5/fp/word/records'
   optionData: any[] = []
   selectedOption: any = ''
+  htmlUrl = ''
+  htmlString = ''
   
   year(data) {
     return moment(data.datetim).get('year')
@@ -31,27 +33,48 @@ export default class OperatePlanHistory extends Vue {
     this.getHistoryData()
   }
 
+  @Watch('selectedOption')
+  async  onSelectedOptionChange(val) {
+    for (let item of this.optionData) {
+      if (val === item.id) {
+        this.htmlUrl = item.message
+        break
+      }
+    }
+    this.getHtmlString()
+  }
+
+  async getHtmlString() {
+    let res = await axios({
+      url: this.htmlUrl,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8"
+      }
+    })
+    this.htmlString = res.data 
+  }
+
+
   async getHistoryData() {
     this.optionData = []
     let res = await axios({
       url: this.reqUrl,
       params: {
-        type: 'rk',
-        stage: 0
+        word: '10'
       }
     })
     for(let item of res.data) {
-      this.optionData.push(Object.assign(item, {operateType: '火箭作业'}))
+      this.optionData.push(Object.assign(item, {operateType: ''}))
     }
-    res = await axios({
-      url: this.reqUrl,
-      params: {
-        type: 'pl',
-        stage: 0
-      }
-    })
-    for(let item of res.data) {
-      this.optionData.push(Object.assign(item, {operateType: '飞机作业'}))
-    }
+    // res = await axios({
+    //   url: this.reqUrl,
+    //   params: {
+    //     type: 'pl',
+    //     word: '10'
+    //   }
+    // })
+    // for(let item of res.data) {
+    //   this.optionData.push(Object.assign(item, {operateType: ''}))
+    // }
   }
 }

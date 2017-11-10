@@ -64,3 +64,35 @@
         opacity: 0;
     }
 }
+
+.right-btn-wrapper {
+    span {
+        display: inline-block;
+        font-size: 14px;
+        color: #1c1c1c;
+        &.ecwmf_check {
+            i {
+                display: inline-block;
+                margin-top: 5px;
+                width: 20px;
+                height: 20px;
+                background: url(~Img/home_radio.png)no-repeat 0 0/ 200% 100%;
+                color: #282828;
+                margin-right: 10px;
+                cursor: pointer;
+            }
+            span {
+                transform: translateY(-4px);
+            }
+            &.on {
+                i {
+                    background: url(~Img/home_radio.png)no-repeat -20px 0/ 200% 100%;
+                }
+                span {
+                    color: #1c1c1c;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+  }

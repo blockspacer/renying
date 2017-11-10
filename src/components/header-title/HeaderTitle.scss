@@ -95,8 +95,35 @@
                 width: 20px;
                 height: 20px;
                 margin-bottom: 8px;
-                margin-left: 20px;
                 background: url(~Img/nav_login.png) no-repeat -20px 0 / 400% 100%;
+            }
+            .login_out{
+                position: absolute;
+                height: 20px;
+                width: 60px;
+                line-height: 20px;
+                top: 45px;
+                right: 0;
+                padding: 10px;
+                font-size: 12px;
+                background-color: #4787E1;
+                span.login_out_in{
+                    display: inline-block;
+                    height: 20px;
+                    line-height: 20px;
+                    padding: 0;
+                    margin: 0;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    &:hover{
+                        background-color: #2D68B7;
+                    }
+                }
+            }
+            &.on{
+                em{
+                    transform: rotateZ(-270deg) translateY(-13px) translateX(6px);
+                }
             }
         }
         .header_right_area{

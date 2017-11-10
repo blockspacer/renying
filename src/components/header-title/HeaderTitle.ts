@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import WithRender from './HeaderTitle.html?style=./HeaderTitle.scss'
 import ManagecenterPopup from './managecenter-popup/ManagecenterPopup'
@@ -11,11 +11,15 @@ let boundaryLine = []
 @Component
 export default class HeaderTitle extends Vue {
   @Getter('systemStore/userInfo_global') userInfo_global
+  @Action('systemStore/changeUserInfo_global') changeUserInfo_global
+  @Prop() viewLoginPage  
+
   managementView: any = null
   cityList:any = []
   citySelected: string = ''
   cityListPop: boolean = false
   citiesBoundry: any = {}
+  loginOutPop: boolean = false
   mounted(){
     this.geoClient()
     this.getCitiesBoundary()
@@ -45,6 +49,16 @@ export default class HeaderTitle extends Vue {
   }
   toggleCityList() {   //点击获取城市列表
     this.cityListPop = !this.cityListPop
+    if(this.loginOutPop) this.loginOutPop = false
+  }
+  loginOut() {  //退出登录
+    this.loginOutPop = !this.loginOutPop
+    if(this.cityListPop) this.cityListPop = false
+  }
+  loginOutBtn() {  //退出登录按钮
+    this.changeUserInfo_global(null)
+    this.viewLoginPage()
+    this.loginOutPop = false
   }
   async getCitiesBoundary() {
     if (boundaryLine) {

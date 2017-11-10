@@ -21,6 +21,25 @@ p{
     white-space: normal;
 }
 
+.history_conIn{
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 15px;
+}
+.history_article_list{
+    box-sizing: border-box;
+    border: solid 1px transparent;
+    cursor: pointer;
+    &.on{
+      border-color: #4787e1;
+    }
+    div:first-of-type{
+      height: 98px !important;
+    }
+    div:last-of-type{
+      height: 74px !important;
+    }
+  }
 .cf:after,
 .cf:before {
     content: '';
@@ -92,7 +111,7 @@ ul {
 }
 
 .el-input__inner{
-  background-color: #f0f1f4;
+  background-color: #f0f1f4 !important;
   border: none !important;
   cursor: pointer;
   height: 30px !important;
@@ -198,4 +217,10 @@ ul {
 .w-e-text-container{
   height: calc(100% - 28px) !important;
   box-sizing: border-box;
+}
+
+.transport-icon{
+  min-width: 50px;
+  height: auto;
+  white-space: nowrap;
 }

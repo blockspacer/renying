@@ -46,8 +46,14 @@ export const cappiProfile_global = (state: State): any => state.cappiProfile
 export function isCappiProfileOn_global (state: State):any {
   return state.isCappiProfileOn
 }
+
 export function socketCurrentMessage_global(state: State) {
   return state.socketCurrentMessage
+}
+
+
+export function phoneLiveId_global(state: State) {
+  return state.phoneLiveId
 }
 
 export function isSearchOperateStationWindowOn_global (state: State): any {
@@ -60,6 +66,48 @@ export function isLeftNavOpened_global(state: State) {
 
 export function freshOperate_global (state: State): any {
   return state.freshOperate
+}
+
+export function transportData_global (state: State): any {
+  return state.transportData
+}
+
+export function isTransportDataChange_global (state: State): any {
+  return state.isTransportDataChange
+}
+
+export function appGroupData_global (state: State): any {
+  return state.appGroupData
+}
+
+export function appUserData_global (state: State): any {
+  return state.appUserData
+}
+
+export function operateStationData_global (state: State): any {
+  return state.operateStationData
+}
+
+
+export function isShowTransportLayer_global (state: State): any {
+  return state.isShowTransportLayer
+}
+
+export function isShowAirRequestLayer_global (state: State): any {
+  return state.isShowAirRequestLayer
+}
+export function isShowAirLineLayer_global (state: State): any {
+  return state.isShowAirLineLayer
+}
+export function isShowPhoneLiveLayer_global (state: State): any {
+  return state.isShowPhoneLiveLayer
+}
+
+export function phoneLiveData_global (state: State): any {
+  return state.phoneLiveData
+}
+export function airRequestData_global (state: State): any {
+  return state.airRequestData
 }
 
 export default <GetterTree<State, any>>{
@@ -79,4 +127,16 @@ export default <GetterTree<State, any>>{
   cappiProfile_global,
   isCappiProfileOn_global,
   freshOperate_global,
+  transportData_global,
+  isTransportDataChange_global,
+  appGroupData_global,
+  appUserData_global,
+  operateStationData_global,
+  phoneLiveId_global,
+  isShowTransportLayer_global,
+  isShowAirRequestLayer_global,
+  isShowAirLineLayer_global,
+  isShowPhoneLiveLayer_global,
+  airRequestData_global,
+  phoneLiveData_global
 }

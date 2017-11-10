@@ -22,7 +22,7 @@ div {
     top: 30px;
     li {
         &:last-of-type {
-            border-bottom: solid 1px #d0d3da;
+            // border-bottom: solid 1px #d0d3da;
         }
     }
 }
@@ -39,6 +39,7 @@ ul {
     overflow-y: scroll;
     border-top: solid 1px #d0d3da;
     border-bottom: solid 1px #d0d3da;
+    z-index: 1020;
     li {
         font-size: 12px;
         color: #575757;

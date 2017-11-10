@@ -20,4 +20,18 @@ export class CookieHelper {
     }
     return "";
   }
+  static delCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = document.cookie;
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      var reg = new RegExp(name)
+      if (reg.test(c)) {
+        ca.splice(i, 1)
+        break
+      }
+    }
+    document.cookie = ca.join(';')
+  }
 }

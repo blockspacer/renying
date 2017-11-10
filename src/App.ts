@@ -3,7 +3,8 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import { Getter, Action } from "vuex-class";
 import WithRender from './App.html?style=./App.scss'
 
-import { CookieHelper } from './util/cookie'
+// import { CookieHelper } from './util/cookie'
+import Cookies from 'js-cookie'
 import { userClient } from './util/clientHelper'
 
 import ProductEntry from './components/product-entry/ProductEntry'
@@ -19,6 +20,7 @@ import ManagecenterPopup from "./components/managecenter-popup/ManagecenterPopup
 import DemandWarning from './components/GlobalPopup/demand-warning/DemandWarning'
 import AssignmentTrack from './components/assignment-track/AssignmentTrack'
 import CappiProfile from './components/GlobalPopup/cappi-profile/CappiProfile'
+
 
 @WithRender
 @Component({
@@ -47,10 +49,17 @@ export default class App extends Vue {
 
   closeLoginPage() {
     this.loginPageView = null
+    // CookieHelper.delCookie('login')
+    Cookies.remove('login')
+  }
+  viewLoginPage() {
+    this.loginPageView = LoginPage
   }
 
   async created() {
-    let cookie = CookieHelper.getCookie('login')
+    // let cookie = CookieHelper.getCookie('login')
+    let cookie = Cookies.get('login')
+    
     if (cookie.length === 0) {
       this.loginPageView = LoginPage
     } else {

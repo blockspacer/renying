@@ -14,9 +14,10 @@
                style="padding-bottom: 10px">
         <ul>
           <li class="cf">
-            <aside class="left-label-wrapper">预报类型</aside>
+            <aside class="left-label-wrapper">选择市局</aside>
             <aside class="right-btn-wrapper radio-wrapper">
-              <select-toggle :optionData="forecastTypeData" :selectChange="forecastTypeSelectedChange"></select-toggle>
+              <select-toggle :optionData="forecastTypeData"
+                             :selectionChange="forecastTypeSelectedChange"></select-toggle>
               <!-- <select name=""
                       id=""
                       v-model="forecastTypeSelected">

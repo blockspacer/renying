@@ -4,7 +4,7 @@ import { Action, Getter } from 'vuex-class'
 import WithRender from './ShortRadar.html?style=./ShortRadar.scss'
 import * as CONFIG from '../../../config/productId'
 import { Message } from 'element-ui'
-import moment from 'moment'
+import * as moment from 'moment'
 
 let map, L
 

@@ -1,9 +1,11 @@
-var path = require('path')
-var config = require('../config')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+'use strict'
+const path = require('path')
+const fs = require('fs')
+const config = require('../config')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 exports.assetsPath = function (_path) {
-  var assetsSubDirectory = process.env.NODE_ENV === 'production'
+  const assetsSubDirectory = process.env.NODE_ENV === 'production'
     ? config.build.assetsSubDirectory
     : config.dev.assetsSubDirectory
   return path.posix.join(assetsSubDirectory, _path)
@@ -12,7 +14,7 @@ exports.assetsPath = function (_path) {
 exports.cssLoaders = function (options) {
   options = options || {}
 
-  var cssLoader = {
+  const cssLoader = {
     loader: 'css-loader',
     options: {
       minimize: process.env.NODE_ENV === 'production',
@@ -25,7 +27,7 @@ exports.cssLoaders = function (options) {
 
   // generate loader string to be used with extract text plugin
   function generateLoaders (loader, loaderOptions) {
-    var loaders = [cssLoader]
+    const loaders = [cssLoader]
     if (loader) {
       loaders.push({
         loader: loader + '-loader',
@@ -40,10 +42,10 @@ exports.cssLoaders = function (options) {
     if (options.extract) {
       return ExtractTextPlugin.extract({
         use: loaders,
-        fallback: 'style-loader'
+        fallback: 'vue-style-loader'
       })
     } else {
-      return ['style-loader'].concat(loaders)
+      return ['vue-style-loader'].concat(loaders)
     }
   }
 
@@ -61,10 +63,10 @@ exports.cssLoaders = function (options) {
 
 // Generate loaders for standalone style files (outside of .vue)
 exports.styleLoaders = function (options) {
-  var output = []
-  var loaders = exports.cssLoaders(options)
-  for (var extension in loaders) {
-    var loader = loaders[extension]
+  const output = []
+  const loaders = exports.cssLoaders(options)
+  for (const extension in loaders) {
+    const loader = loaders[extension]
     output.push({
       enforce: 'post', // To support scoped css properly
       test: new RegExp('\\.' + extension + '$'),
@@ -73,3 +75,31 @@ exports.styleLoaders = function (options) {
   }
   return output
 }
+
+// Workaround for .babelrc env merge issues (waiting for babel>=7 .babelrc.js file)
+exports.buildBabelOptions = function() {
+  let babelOptions = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '.babelrc')));
+  const env = babelOptions.env;
+
+  if (env) {
+    delete babelOptions.env;
+
+    for (const key in env) {
+      if (!env.hasOwnProperty(key)) continue;
+
+      if (process.env['BABEL_ENV'] === key) {
+        babelOptions = env[process.env['BABEL_ENV']];
+        break;
+      }
+
+      if (process.env['NODE_ENV'] === key) {
+        babelOptions = env[process.env['NODE_ENV']];
+        break;
+      }
+    }
+  }
+
+  babelOptions.babelrc = false;
+  return babelOptions;
+}
+

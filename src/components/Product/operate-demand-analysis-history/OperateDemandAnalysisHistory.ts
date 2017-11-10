@@ -20,6 +20,8 @@ export default class OperateDemandAnalysisHistory extends Vue {
   reqUrl: string = 'http://10.148.16.217:11160/renyin5/fp/word/records'
   optionData: any[] = []
   selectedOption: any = ''
+  htmlUrl = ''
+  htmlString = ''
 
   year(data) {
     return moment(data.datetim).get('year')
@@ -32,14 +34,35 @@ export default class OperateDemandAnalysisHistory extends Vue {
     this.getHistoryData()
   }
 
+  @Watch('selectedOption')
+  async  onSelectedOptionChange(val) {
+    for (let item of this.optionData) {
+      if (val === item.id) {
+        this.htmlUrl = item.message
+        break
+      }
+    }
+    this.getHtmlString()
+  }
+
+  async getHtmlString() {
+    let res = await axios({
+      url: this.htmlUrl,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8"
+      }
+    })
+    this.htmlString = res.data 
+    console.info(this.htmlString)
+  }
+
   async getHistoryData() {
     let res = await axios({
       url: this.reqUrl,
       params: {
-        type: 'wk',
+        word: '00'
       }
     })
-    console.info(res.data)
     this.optionData = res.data
   }
 }

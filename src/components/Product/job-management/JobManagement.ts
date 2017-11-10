@@ -55,6 +55,7 @@ export default class JobManagement extends Vue {
   async getAllCity() {    // 获取所有城市
     let data = await geoClient.getCities()
     this.allCities = data
+    console.log(this.allCities)
   }
   async findsJobPoint() {   //查询作业点
 
@@ -119,7 +120,7 @@ export default class JobManagement extends Vue {
           break
         }
         for(let j in el.appUser){
-          if (j === 'department' || j === 'id' || j === 'phoneNum' || j ==='workPoint') continue
+          if (j === 'department' || j === 'opId' || j === 'phoneNum' || j ==='workPoint') continue
           if(exp.test(el.appUser[j])){
             isMatch = true
             break
@@ -247,7 +248,6 @@ export default class JobManagement extends Vue {
   
   async getAllMember() {   //获取全部成员列表
     let data = await groupsClient.getAllMember()
-    console.log(data)
     this.allAppUser = data
     this.AppUserList = data
   }
@@ -267,7 +267,7 @@ export default class JobManagement extends Vue {
   }
 
   selectAppUser(el) {    //修改指挥员
-    if (this.popupInfo.appUser.value.id === el.id) {
+    if (this.popupInfo.appUser.value && this.popupInfo.appUser.value.id === el.id) {
       this.appUserPopup = false
       return
     }

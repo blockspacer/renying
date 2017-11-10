@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import * as CONFIG from '../../../config/productId'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import WithRender from './DemandWarning.html?style=./DemandWarning.scss'
@@ -10,7 +11,11 @@ import jsonp from 'axios-jsonp'
 @WithRender
 @Component
 export default class DemandWarning extends Vue {
+  @Action('systemStore/toggleProductView_global') toggleProductView_global
 
+  dryProductId = CONFIG.dryCondition
+  reservoirProductId = CONFIG.reservoirLevel
+  forestProductID = CONFIG.forestFire
   displayPopup: boolean = false
   panelNum: number = 0
   tempData = []
@@ -19,7 +24,7 @@ export default class DemandWarning extends Vue {
   dryData = []
   warnItem = []
   reqUrl: string[] = [
-    'http://10.148.16.217:9020/productry/dao/ghjcData',
+    'http://10.148.16.217:9020/dao/ghjcData',
     'http://10.148.16.217:11160/renyin5/waterline/reservoir',
     'http://10.148.16.217:11160/renyin5/warn/tf',
     'http://10.148.16.217:11160/renyin5/warn/tf'
@@ -34,6 +39,7 @@ export default class DemandWarning extends Vue {
   created() {
     this.getTempAndForest()
     this.getReservoirData()
+    this.getDryData()
   }
 
   mouseOver(num: number) {
@@ -110,9 +116,9 @@ export default class DemandWarning extends Vue {
     }
     let res = await axios({
       adapter: jsonp,
-      params
+      params,
+      url: this.reqUrl[0]
     })
-
     this.dryData = []
     if (res.data.status) {
       for (let item of res.data.list) {
@@ -120,7 +126,6 @@ export default class DemandWarning extends Vue {
           this.dryData.push(item)
         }
       }
-      this.dryData = res.data.list
     }
   }
   getDryLevelText(val) {

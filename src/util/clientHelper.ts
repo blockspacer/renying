@@ -1,5 +1,5 @@
 // import fetchJsonp from 'fetch-jsonp'
-import moment from 'moment'
+import * as moment from 'moment'
 import axios from 'axios'
 import jsonpAdapter from 'axios-jsonp'
 
@@ -354,7 +354,6 @@ export class examinationClient {
     let res: any = await axios({
       url: baseUrl + 'exam' + url
     })
-    console.log(res)
   }
 }
 
@@ -472,7 +471,10 @@ export class messageDispatchClient{
     let res: any = await axios({
       url: baseUrl + `msg/msgSend`,
       method: 'post',
-      data: param
+      data: param,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=url-8"
+      }
     })
     if (res.status === 200) return true
     else return false
@@ -491,7 +493,6 @@ export class safetyClient{
 
   static async getSafetyRating() {
     let res: any = await axios(`http://10.148.16.217:11160/renying/safetyRating`)
-    console.log(res)
     if (res.status === 200) return res.data
     else return false
   }
@@ -503,6 +504,116 @@ export class safetyClient{
       data: param
     })
     if (res.status === 201) return true
+    else return false
+  }
+}
+//规范文件管理
+export class specificationClient{  
+  static async getSpecification(){  //获取文件列表
+    let res: any = await axios({
+      url:`http://10.148.16.217:11160/renying/specification`,  
+    })
+    if (res.status === 200) return res.data
+    else return false
+  }
+  static async uploadSpecification(form){  //上传文件
+    let res: any = await axios({
+      url:`http://10.148.16.217:11160/renying/specification`, 
+      method: 'post', 
+      data: form
+    })
+    if (res.status === 200) return true
+    else return false
+  }
+  static async deleteSpecification(id){  //删除文件
+    let res: any = await axios({
+      url:`http://10.148.16.217:11160/renying/specification/${id}`, 
+      method: 'delete',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    if (res.status === 204) return true
+    else return false
+  }
+
+}
+//各市作业点查看审核
+export class operationClient{
+  static async getOperation(opId) {      //选择作业点查看文档列表接口
+    let res: any = await axios({ 
+      url: baseUrl + `fp/operation/files/list?osId=${opId}&cacheCtrl=${Date.now()}`, 
+      adapter: jsonpAdapter,
+    })
+    if (res.status === 200 && res.data.stateCode === 0) return res.data.data
+    else return false
+  }
+  static async uploadOperation(form) {      //上传文件图片接口
+    let res: any = await axios({ 
+      url: baseUrl + `fp/operation/files/upload`,  
+      method: 'post', 
+      data: form
+    })
+    if (res.status === 200 && res.data.stateCode === 0) return true
+    else return false
+  }
+  static async updateOperation(id,isTarget) {      //修改是否通过
+    let res: any = await axios({ 
+      url: baseUrl + `fp/operation/update?id=${id}&isTarget=${isTarget}`, 
+      adapter: jsonpAdapter,
+    })
+    if (res.status === 200 && res.data.stateCode === 0) return true
+    else return false
+  }
+  
+  static async deleteOperation(id,fileName) {      //删除作业点文档
+    let res: any = await axios({ 
+      url: baseUrl + `fp/operation/files/delete?osId=${id}&fileName=${fileName}`, 
+      adapter: jsonpAdapter,
+    })
+    console.log(res.data)
+    if (res.status === 200 && res.data.stateCode === 0) return true
+    else return false
+  }
+
+}
+
+//空域
+export class airspaceClient{
+  static async getAirspace() {   // 获取空域
+    let res: any = await axios({
+      url: `http://10.148.16.217:11160/renying/airspace/`
+    })
+    if (res.status === 200) return res.data
+    else return false
+  }
+  static async modifyAirspace(param, id) {   // 修改空域
+    let res: any = await axios({
+      url: `http://10.148.16.217:11160/renying/airspace/${id}`,  
+      method: 'patch',
+      data: JSON.stringify(param),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    if (res.status === 200) return res.data
+    else return false
+  }
+
+  static async addAirspace(param) {   // 新增空域
+    let res: any = await axios({
+      url: `http://10.148.16.217:11160/renying/airspace`,  
+      method: 'post',
+      data: JSON.stringify(param),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    if (res.status === 201) return res.data
+    else return false
+  }
+
+  static async deleteAirspace(id) {   // 删除空域
+    let res: any = await axios({
+      url: `http://10.148.16.217:11160/renying/airspace/${id}`,  
+      method: 'delete',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    if (res.status === 204) return true
     else return false
   }
 }

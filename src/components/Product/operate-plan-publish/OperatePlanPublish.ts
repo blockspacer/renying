@@ -6,12 +6,18 @@ import WithRender from './OperatePlanPublish.html?style=./OperatePlanPublish.scs
 import PublishDocument from '../../commons/publish-document/PublishDocument'
 import { OperateClient } from '../../../util/operateClient'
 import { Message } from 'element-ui'
+import * as moment from 'moment'
+import SelectToggle from '../../commons/select-toggle/SelectToggle'
 
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
 
 @WithRender
-@Component
+@Component({
+  components: {
+    SelectToggle
+  }
+})
 export default class OperatePlanPublish extends Vue {
   @Getter('systemStore/articleViewHolder_global') articleViewHolder_global
   @Action('systemStore/changeArticleViewHolder_global') changeArticleViewHolder_global
@@ -26,21 +32,90 @@ export default class OperatePlanPublish extends Vue {
   operateReqUrl = 'http://10.148.16.217:11160/renyin5/fp/exists'
   rkOperateData: any[] = []
   plOperateData: any[] = []
+  datetime = moment().format('YYYY-MM-DD HH:mm:ss')
+  utcSelected = 0
+  forecastOptionData = (() => {
+    let arr = []
+    for (let i = 0; i <= 240; i++) {
+      arr.push(i < 10 ? '00' + i : (i < 100 ? '0' + i : i))
+    }
+    return arr
+  })()
+  forecastOptionSelected = '000'
+  prescriptionOptionData = ['00', '12', '06', '18']
+  prescriptionSelected = '00'
+  htmlString = ''
+  htmlStringHolder = ''
+  docData
+  docDataReqUrl = 'http://10.148.16.217:9020/doc/3?&data='
+  imgPrefix = 'http://10.148.16.217:9020/dao/png?&path='
 
-  created() {
+
+  async created() {
     this.getOperateData()
   }
 
-  mounted() {
+  async mounted() {
     this.Editor = window['wangEditor']
     this.editor = new this.Editor('#editor')
     this.editor.create()
-
     axios({
       url: '/static/technical_papers/OperatePlan.html',
-    }).then(res => {
-      this.editor.txt.html(res.data)
+    }).then(async res => {
+      this.htmlStringHolder = res.data
+      this.editor.txt.html(this.htmlString)
+      await this.getDocData()
+      this.replaceHTMLString()
     })
+  }
+
+  @Watch('prescriptionSelected')
+  async onPrescriptionSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  @Watch('datetime')
+  async onDatetimeSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  @Watch('forecastOptionSelected')
+  async onForecastOptionSelectedSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+
+  replaceHTMLString() {
+    this.htmlString = this.htmlStringHolder.replace(/datetime/, this.docData.time)
+      .replace(/year/g, this.docData.year)
+      .replace(/gdCity/g, this.docData.gdCity)
+      .replace(/imgSrc1/, this.imgPrefix + this.docData.png2500Hpa)
+      .replace(/imgSrc2/, this.imgPrefix + this.docData.png3700Hpa)
+      .replace(/imgSrc3/, this.imgPrefix + this.docData.png4SeaPressure)
+      .replace(/imgSrc4/, this.imgPrefix + this.docData.png5Rain24)
+      .replace(/imgSrcDry/, this.imgPrefix + this.docData.png1Dry)
+    this.editor.txt.html(this.htmlString)
+  }
+
+  async getDocData() {
+    let res = await axios({
+      url: this.docDataReqUrl + 
+        `{"datetime": "${moment(this.datetime).format('YYYY-MM-DD DD:mm:ss')}"}`,
+      adapter: jsonp
+    })
+    this.docData = res.data
+  }
+
+  forecastChange(val) {
+    this.forecastOptionSelected = val
+  }
+
+  prescriptionChange(val) {
+    this.prescriptionSelected = val
+  }
+
+  toggleUtcTime(val) {
+    this.utcSelected = val
   }
 
   close() {
@@ -51,11 +126,10 @@ export default class OperatePlanPublish extends Vue {
     let res = await axios({
       url: this.operateReqUrl,
       params: {
-        type: 'rk'
+        word: '10'
       }
     })
     this.rkOperateData = res.data.data
-    console.info(this.rkOperateData)
     res = await axios({
       url: this.operateReqUrl,
       params: {
@@ -70,10 +144,14 @@ export default class OperatePlanPublish extends Vue {
       mark: operateType,
       osId: workStation,
       stage: 1,
-      message: this.editor.txt.html(),
+      message: `<html><head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        </head><body>` +
+      this.editor.txt.html() + `</body></html>`,
       note: extraInfoText,
       // userIds: [],
-      groupIds: appGroup
+      groupIds: appGroup,
+      word: '10'
     }))
     Message({
       type: 'success',

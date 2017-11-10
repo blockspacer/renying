@@ -10,8 +10,7 @@ import { Message } from 'element-ui'
 import * as CONFIG from '../../../config/productId'
 
 let layerGroup = null,
-  icon_normal = null,
-  icon_warning = null
+  icon = []
 
 @WithRender
 @Component
@@ -21,8 +20,7 @@ export default class DryCondition extends Vue {
   datetime = moment().format('YYYY-MM-DD HH:mm')
   url = 'http://10.148.16.217:9020/dao/ghjcData'
   data = null
-  iconImgUrl_normal = '/static/img/home_drought.png'
-  iconImgUrl_warning = '/static/img/home_drought_pre.png'
+  iconImgUrl_normal = '/static/img/home_drought'
   loading: boolean = false
   productId = CONFIG.dryCondition
   minify: boolean = true
@@ -73,7 +71,7 @@ export default class DryCondition extends Vue {
 
   async getImgData() {
     let res = await axios({
-      url: 'http://10.148.16.217:11160/renyin5/weather/climatic/allimgs?type=dry&currentPage=1&pageSize=20',
+      url: 'http://10.148.16.217:11160/renyin5/weather/climatic/allimgs?type=dry&currentPage=1&pageSize=1000',
       adapter: jsonp
     })
     if (res.data.stateCode === -99) {
@@ -99,7 +97,7 @@ export default class DryCondition extends Vue {
     for (let item of this.data) {
       layerGroup.addLayer(
         window['L'].marker([item.lat, item.lon], {
-          icon: item.dj < 3 ? icon_normal : icon_warning
+          icon: icon[item.dj]
         }).bindPopup(this.createPopup(item))
       )
     }
@@ -140,22 +138,15 @@ export default class DryCondition extends Vue {
   }
 
   createIcon() {
-    if (!icon_normal) {
-      icon_normal = window['L'].icon({
-        iconUrl: this.iconImgUrl_normal,
-        iconSize: [24, 37],
-        iconAnchor: [12, 37],
-        popupAnchor: [0, -37],
-      })
-    }
-    if (!icon_warning) {
-      icon_warning = window['L'].icon({
-        iconUrl: this.iconImgUrl_warning,
-        iconSize: [24, 37],
-        iconAnchor: [12, 37],
-        popupAnchor: [0, -37],
-      })
+    for (let i = 0; i <= 4; i++) {
+      icon.push(
+        window['L'].icon({
+          iconUrl: this.iconImgUrl_normal + (i + 1) + '.png',
+          iconSize: [24, 37],
+          iconAnchor: [12, 37],
+          popupAnchor: [0, -37],
+        })
+      )
     }
   }
-
 }

@@ -41,10 +41,14 @@ export default class OperateDemandSurveyPublish extends Vue {
       mark: operateType,
       osId: operateType === '#rk' ? workStation : null,
       stage: 0,
-      message: `<html><head></head>${this.editor.txt.html()}</html>`,
+      message: `<html><head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        </head><body>` +  
+      this.editor.txt.html() + `</body></html>`,
       note: extraInfoText,
       // userIds: [],
-      groupIds: appGroup
+      groupIds: appGroup,
+      word: '01'
     }))
     Message({
       type: 'success',

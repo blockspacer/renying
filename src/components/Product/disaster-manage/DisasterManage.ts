@@ -4,7 +4,7 @@ import { Action, Getter } from 'vuex-class'
 import WithRender from './DisasterManage.html?style=./DisasterManage.scss'
 import * as CONFIG from '../../../config/productId'
 import { Message } from 'element-ui'
-import moment from 'moment'
+import * as moment from 'moment'
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
 import { disasterClient } from '../../../util/clientHelper'
@@ -21,13 +21,25 @@ export default class DisasterManage extends Vue {
   disasterDate: any = new Date()
   disasterMsg: any = {}
   url = 'http://10.148.16.217:11160/renyin5/disaster'
+  pickerOptions = {
+    async disabledDate(val) {
+      let res = await axios({
+        method: 'post',
+        url: 'http://10.148.16.217:11160/renyin5/disaster/selectByTime',
+        data: {
+          time: new Date(val).getTime()
+        }
+      })
+      return res.data.data.length > 0
+    }
+  }
 
   mounted() {
     this.selectDisasterByTime()
-  } 
-  async selectDisasterByTime(){          //灾情查询（按时间）
+  }
+  async selectDisasterByTime() {          //灾情查询（按时间）
     let data = await disasterClient.selectDisasterByTime(new Date(this.disasterDate).getTime())
-    if(!data){
+    if (!data) {
       Vue.prototype['$message']({
         type: 'warning',
         message: '获取数据失败'
@@ -37,14 +49,16 @@ export default class DisasterManage extends Vue {
     console.log(this.disasterMsg)
   }
 
-  toggleImgDetails(item) {            
+  toggleImgDetails(item) {
     this.storeDisasterManageImg_global()
     this.storedisasterMsg_global(item)
 
   }
   @Watch('disasterDate')
-  ondisasterDateChanged (val: any, oldVal: any) {
+  ondisasterDateChanged(val: any, oldVal: any) {
     this.selectDisasterByTime()
   }
+
+
 
 }

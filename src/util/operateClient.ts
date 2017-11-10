@@ -4,7 +4,9 @@ export class OperateClient {
   private static downloadPrefix = 'http://10.148.16.217:11160/renyin5/fp/files/doc/download/'
   static async downloadFile(htmlString: string) {
     console.info(htmlString.indexOf('<hr'))
-    let blob = new Blob([`<html><head></head><body>${htmlString}</body></html>`], { type: 'text/html' })
+    let blob = new Blob([`<html><head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    </head><body>${htmlString}</body></html>`], { type: 'text/html' })
     let form = new FormData()
     form.append('uploadFile', blob)
     // let res = await fetch(this.htmlToDocUrl, {

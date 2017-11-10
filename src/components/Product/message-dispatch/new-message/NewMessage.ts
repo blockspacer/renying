@@ -7,57 +7,156 @@ import { groupsClient, messageDispatchClient } from '../../../../util/clientHelp
 @Component
 export default class NewMessage extends Vue {
   @Getter('systemStore/userInfo_global') userInfo_global
-  groupWordSelected: string = 'group'
-  groups: any =[]   //分组列表
+  @Getter('systemStore/appUserData_global') appUserData_global
+  @Getter('systemStore/appGroupData_global') appGroupData_global
+  @Getter('systemStore/operateStationData_global') operateStationData_global
+
+  listType: 'group' | 'station' = 'group'
+  subject: string = ''
+  groups: any = []   //分组列表
   selectedPeople: any = {}
   addresseeList: any = ''  //收信人
   msgContent: string = ''  // 短信内容
   keyString: string = ''  //搜索
   searchList = []      //搜索列表
-  mounted(){
-    this.getGroup()
-  }
-  @Watch('keyString')
-  onkeyStringChanged (val: any, oldVal: any) {
-    this.searchList = []
-    let isMatch: boolean = false
-    let exp = new RegExp(val)
-    for(let el of this.groups){
-      for(let item of el.appUsers){
-        if(exp.test(item.username))
-          this.searchList.push(item)
-      }
+  groupOptionData = []
+  groupOptionDataHolder = []
+  stationOptionData = []
+  stationOptionDataHolder = []
+  sendTarget = []
+  timeoutHolder = null
+
+  created() {
+    if (this.appGroupData_global.length > 0) {
+      this.listType === 'group' ? this.computeGroupOptionData() : this.computeStationData()
     }
-  }
-  toggleGroupWord(key) {
-    if(this.groupWordSelected === key) return
-    this.groupWordSelected =  key
-  }
-   
-  async getGroup(){           //获取分组成员
-    let data = await groupsClient.getGroup()
-    if (!data || !data.length) return
-    for (let opt of data) {
-      for (let item of opt.appUsers) {
-        item.selected = false
-      }
-      this.$set(opt, 'show', false)
-    }
-    this.groups = data
-    console.log(this.groups)
   }
 
-  toggleCheckPeople(item) {
-    if(item.id in this.selectedPeople) 
-      delete this.selectedPeople[item.id]
-    else
-      this.selectedPeople[item.id] =  item
-    this.selectedPeople = { ...this.selectedPeople }
-    let list = []
-    for (let i in this.selectedPeople) {
-      list.push(this.selectedPeople[i].username)
+  computeStationData() {
+    this.stationOptionDataHolder = []
+    for (let item of this.operateStationData_global) {
+      let temp = Object.assign({}, item)
+      this.stationOptionDataHolder.push({
+        name: `编号:${item.opId} 指挥员:${item.appUser ? item.appUser.name : ''}`,
+        isToggle: false
+      })
     }
-    this.addresseeList = list.join('; ')
+    this.stationOptionData = Object.assign(this.stationOptionDataHolder, {})
+  }
+
+  computeGroupOptionData() {
+    this.groupOptionDataHolder = []
+    for (let item of this.appGroupData_global) {
+      let temp = Object.assign(item, {})
+      temp.isSelected = false
+      temp.isToggle = false
+      for (let subItem of temp.appUsers) {
+        subItem.isSelected = false
+        subItem.isToggle = false
+      }
+      this.groupOptionDataHolder.push(temp)
+    }
+    this.groupOptionData = Object.assign({}, this.groupOptionDataHolder)
+  }
+
+  @Watch('appGroupData_global')
+  appGroupData_globalChanged(val: any, oldVal: any): void {
+    this.computeGroupOptionData()
+  }
+
+  @Watch('operateStationData_global')
+  operateStationData_globalChanged(val: any, oldVal: any): void {
+    this.computeGroupOptionData()
+  }
+
+  @Watch('listType')
+  listTypeChanged(val: any, oldVal: any): void {
+    this.computeGroupOptionData()
+    this.computeStationData()
+  }
+
+  @Watch('keyString')
+  onkeyStringChanged(val: any, oldVal: any) {
+    if (this.timeoutHolder)
+      clearTimeout(this.timeoutHolder)
+    this.timeoutHolder = setTimeout(() => {
+      let holder = []
+      if (this.listType === 'group') {
+        if (val.length == 0)
+          this.groupOptionData = Object.assign({}, this.groupOptionDataHolder)
+        else {
+          for (let item of this.groupOptionDataHolder) {
+            if (item.groupname && item.groupname.includes(val)) {
+              holder.push(item)
+            } else {
+              let temp = Object.assign({}, item)
+              temp.appUsers = []
+              for (let user of item.appUsers) {
+                if (user.name !== null && user.name.includes(val))
+                  temp.appUsers.push(user)
+              }
+              if (temp.appUsers.length !== 0)
+                holder.push(temp)
+            }
+          }
+          this.groupOptionData = holder
+        }
+      } else {
+        if (val.length == 0)
+          this.stationOptionData = Object.assign({}, this.stationOptionDataHolder)
+        else {
+          let holder = []
+          for (let item of this.stationOptionDataHolder) {
+            if (item.name.includes(val))
+              holder.push(item)
+          }
+          this.stationOptionData = holder
+        }
+      }
+    }, 300)
+  }
+
+  toggleItem(item) {
+    item.isToggle = !item.isToggle
+    this.$forceUpdate()
+  }
+
+  selectSendTarget(item) {
+    item.isSelected = !item.isSelected
+    if (item.appUsers) {
+      for (let user of item.appUsers) {
+        user.isSelected = item.isSelected
+      }
+    }
+    this.$forceUpdate()
+    this.computeSendTarget()
+  }
+
+  computeSendTarget() {
+    this.sendTarget = []
+    if (this.listType === 'group') {
+      console.log(this.groupOptionData)
+      for (let key in this.groupOptionData) {
+        let item = this.groupOptionData[key]
+        let isThisGroupSelected = false
+        item.isSelected ? isThisGroupSelected = true : isThisGroupSelected = false
+        for (let user of item.appUsers) {
+          if (isThisGroupSelected || user.isSelected)
+            this.sendTarget.push({
+              phone: user.phone,
+              userId: user.id
+            })
+        }
+      }
+    }
+    else
+      for (let item of this.stationOptionData) {
+        if (item.isToggle)
+          this.sendTarget.push({
+            userId: item.id,
+            phone: item.phone
+          })
+      }
   }
 
   async sendMsg() {
@@ -68,22 +167,24 @@ export default class NewMessage extends Vue {
       })
       return
     }
-    if (!Object.keys(this.selectedPeople).length) {
+    if (this.sendTarget.length === 0) {
       Vue.prototype['$message']({
         type: 'warning',
         message: '请选择至少一个收信人'
       })
       return
     }
-    let list = [] 
-    for(let i in this.selectedPeople){
-      list.push( { phone: this.selectedPeople[i].phone, id: i } )
+    let param = `msgContent=${this.msgContent}&sender=${this.userInfo_global.id}` +
+      `&subject=${this.subject}`
+    for (let i in this.sendTarget) {
+      param += `&list[${i}].phone=${this.sendTarget[i].phone}` +
+        `&list[${i}].userId=${this.sendTarget[i].userId}`
     }
-    let param = {
-      msgContent: this.msgContent,
-      sender: this.userInfo_global.id,
-      list,
-    }
+    // let param = {
+    //   msgContent: this.msgContent,
+    //   sender: this.userInfo_global.id,
+    //   list,
+    // }
     let res = await messageDispatchClient.getmsgSend(param)
     if (res) {
       Vue.prototype['$message']({

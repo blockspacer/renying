@@ -11,7 +11,8 @@
   <main>
     <ul>
       <li class="cf"
-          v-show="!preOperateType">
+          v-show="!preOperateType"
+          v-if="!publishToAll">
         <span>作业类型</span>
         <div class="right-btn-wrapper">
           <div @click="operateType = '#rk'"
@@ -27,7 +28,8 @@
         </div>
       </li>
       <li class="cf"
-          v-show="operateType === '#rk'">
+          v-show="operateType === '#rk'"
+          v-if="!publishToAll">
         <span>选择作业点</span>
         <section>
           <div class="search-wrapper">
@@ -45,7 +47,8 @@
           </menu>
         </section>
       </li>
-      <li class="cf">
+      <li class="cf"
+          v-if="!publishToAll">
         <span>选择分组</span>
         <section>
           <div class="search-wrapper">

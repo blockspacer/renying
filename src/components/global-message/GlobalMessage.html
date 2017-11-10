@@ -5,7 +5,8 @@
       <span :class="[socketCurrentMessage_global.color]"
             class="message-type">{{socketCurrentMessage_global.type ? `[ ${socketCurrentMessage_global.type} ]` : ''}}</span>
       <span class="message-target">{{socketCurrentMessage_global.target}}</span>
-      <span class="message-content">{{socketCurrentMessage_global.content}}</span>
+      <span :title="socketCurrentMessage_global.content"
+            class="message-content">{{socketCurrentMessage_global.content}}</span>
       <span class="message-datetime">{{socketCurrentMessage_global.datetime}}</span>
     </div>
     <a class="toggleHistoryWrapper"
@@ -21,7 +22,8 @@
       <span :class="[socketCurrentMessage_global.color]"
             class="message-type">{{item.type ? `[ ${item.type} ]` : ''}}</span>
       <span class="message-target">{{item.target}}</span>
-      <span class="message-content">{{item.content}}</span>
+      <span :title="item.content"
+            class="message-content">{{item.content}}</span>
       <span class="message-datetime">{{item.datetime}}</span>
     </div>
   </section>

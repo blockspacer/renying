@@ -7,7 +7,7 @@ import * as CONFIG from '../../config/productId'
 import OperateDemandAnalysisPublish from '../Product/operate-demand-analysis-publish/OperateDemandAnalysisPublish'
 import OperateDemandAnalysisHistory from '../Product/operate-demand-analysis-history/OperateDemandAnalysisHistory'
 import OperateDemandSurveyPublish from '../Product/operate-demand-survey-publish/OperateDemandSurveyPublish'
-import OperateDemandSurveyHistory from '../Product/operate-demand-Survey-history/OperateDemandSurveyHistory'
+import OperateDemandSurveyHistory from '../Product/operate-demand-survey-history/OperateDemandSurveyHistory'
 import OperateAirPlanPublish from '../Product/operate-air-plan-publish/OperateAirPlanPublish'
 import OperateAirPlanHistory from '../Product/operate-air-plan-history/OperateAirPlanHistory'
 import OperateEffectEvaluatingPublish from '../Product/operate-effect-evaluating-publish/OperateEffectEvaluatingPublish'
@@ -39,6 +39,7 @@ import SunflowerInfrared from '../Product/sunflower-infrared/SunflowerInfrared'
 import reservoirLevel from '../Product/reservoir-level/ReservoirLevel'
 import riverLevel from '../Product/river-level/RiverLevel'
 import forestFire from '../Product/forest-fire/ForestFire'
+import PhoneLive from '../Product/phone-live/PhoneLive'
 import dryCondition from '../Product/dry-condition/DryCondition' 
 import grapes1km from '../Product/grapes-1km/Grapes1km'
 import grapes3km from '../Product/grapes-3km/Grapes3km'
@@ -59,9 +60,10 @@ import MountainFlood from '../Product/MountainFlood/MountainFlood'
 import AbilityEstimate from '../Product/ability-estimate/AbilityEstimate'
 import DisasterManage from '../Product/disaster-manage/DisasterManage'
 import DisasterManageImg from '../Product/disaster-manage-img/DisasterManageImg'
-import AmmunitionInternet from '../Product/Ammunition-Internet/AmmunitionInternet'
-
-
+import AmmunitionInternet from '../Product/ammunition-internet/AmmunitionInternet'
+import ConditionAudit from '../Product/condition-audit/ConditionAudit'
+import FileManagement from '../Product/file-management/FileManagement'
+import AirspaceMonitoring from '../Product/airspace-monitoring/AirspaceMonitoring'
 @WithRender
 @Component
 export default class ProductEntry extends Vue {
@@ -81,7 +83,6 @@ export default class ProductEntry extends Vue {
   actualproductView = null
   ecwmfInterView = null
   sunflowerView = null
-  windradarView = null
   reservoirLevelView = null
   riverLevelView = null
   forestFireView = null
@@ -108,7 +109,11 @@ export default class ProductEntry extends Vue {
   disasterManageView = null
   disasterImgView = null
   ammunitionInternetView = null
-
+  phoneLiveView = null
+  
+  conditionAuditView = null           //
+  fileManagementView = null
+  airspaceMonitoringView = AirspaceMonitoring
   operateDemandAnalysisPublishView = null
   operateDemandAnalysisHistoryView = null
   operateDemandSurveyPublishView = null
@@ -134,10 +139,12 @@ export default class ProductEntry extends Vue {
       (val.type === 'create' ? OperateDemandAnalysisPublish : null) : null
     this.operateDemandAnalysisHistoryView = val.id === CONFIG.operateDemandAnalysis ?
       (val.type === 'history' ? OperateDemandAnalysisHistory : null) : null
+
     this.operateDemandSurveyPublishView = val.id === CONFIG.operateDemandSurvey ?
       (val.type === 'create' ? OperateDemandSurveyPublish : null) : null
     this.operateDemandSurveyHistoryView = val.id === CONFIG.operateDemandSurvey ?
       (val.type === 'history' ? OperateDemandSurveyHistory : null) : null
+
     this.operateAirPlanPublishView = val.id === CONFIG.operateAirPlan ?
       (val.type === 'create' ? OperateAirPlanPublish : null) : null
     this.operateAirPlanHistoryView = val.id === CONFIG.operateAirPlan ?
@@ -176,12 +183,12 @@ export default class ProductEntry extends Vue {
     this.actualproductView = val[CONFIG.actualproduct] ? ActualproductPopup : null
     this.ecwmfInterView = val[CONFIG.ecwmfInter] ? EcwmfInter : null
     this.sunflowerView = val[CONFIG.sunflower] ? SunflowerInfrared : null
-    this.windradarView = val[CONFIG.windradar] ? WindRadar : null
     this.reservoirLevelView = val[CONFIG.reservoirLevel] ? reservoirLevel : null
     this.riverLevelView = val[CONFIG.riverLevel] ? riverLevel : null
     this.forestFireView = val[CONFIG.forestFire] ? forestFire : null
     this.dryConditionView = val[CONFIG.dryCondition] ? dryCondition : null
     this.grapes1kmView = val[CONFIG.grapes1km] ? grapes1km : null
+    this.windRadarView = val[CONFIG.windRadar] ? WindRadar : null
     this.grapes3kmView = val[CONFIG.grapes3km] ? grapes3km : null
     this.weatherForecastView = val[CONFIG.weatherForecast] ? weatherForecast : null
     this.agricultureAnalysisView = val[CONFIG.agricultureAnalysis] ? agricultureAnalysis : null
@@ -205,6 +212,10 @@ export default class ProductEntry extends Vue {
     this.sunstrokeIndexView = val[CONFIG.SunstrokeIndex] ? SunstrokeIndex : null
     this.disasterManageView = val[CONFIG.disasterManage] ? DisasterManage : null
     this.ammunitionInternetView = val[CONFIG.ammunitionInternet] ? AmmunitionInternet : null
+    this.phoneLiveView = val[CONFIG.phoneLive] ? PhoneLive : null
+    this.conditionAuditView = val[CONFIG.conditionAudit] ? ConditionAudit : null
+    this.fileManagementView = val[CONFIG.fileManagement] ? FileManagement : null
+    this.airspaceMonitoringView = val[CONFIG.airspaceMonitoring] ? AirspaceMonitoring : null
   }
   @Watch('isDisasterManageImg_global')
   onisDisasterManageImg_globalChanged(val: any, oldVal: any) {

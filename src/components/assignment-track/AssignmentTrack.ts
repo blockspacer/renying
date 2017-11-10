@@ -43,6 +43,7 @@ export default class AssignmentTrack extends Vue {
       for (let subItem of this.operatorData) {
         if (subItem.fpId === item.fpId) {
           arr.push(Object.assign(item, { type: 'rk', state: getState(subItem.state, item.stage) }))
+          break
         }
       }
     }
@@ -58,10 +59,12 @@ export default class AssignmentTrack extends Vue {
       for (let subItem of this.operatorData) {
         if (subItem.fpId === item.fpId) {
           arr.push(Object.assign(item, { type: 'pl', state: getState(subItem.state, item.stage) }))
+          break
         }
       }
     }
-    this.operateData = this.operateData.concat(arr)
+    this.operatorData = this.operateData.concat(arr)
+    console.info(this.operateData)
 
     function getState(text, stage) {
       switch (text) {

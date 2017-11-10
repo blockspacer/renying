@@ -4,7 +4,7 @@ import { Action, Getter } from 'vuex-class'
 import WithRender from './AmmunitionInternet.html?style=./AmmunitionInternet.scss'
 import * as CONFIG from '../../../config/productId'
 import { AmmunitionInternetClient, geoClient } from '../../../util/clientHelper'
-import moment from 'moment'
+import * as moment from 'moment'
 
 @WithRender
 @Component

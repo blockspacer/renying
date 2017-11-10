@@ -5,12 +5,18 @@ import * as Config from '../../../config/productId'
 import WithRender from './OperateWarningGroundReportPublish.html?style=./OperateWarningGroundReportPublish.scss'
 import PublishDocument from '../../commons/publish-document/PublishDocument'
 import { Message } from 'element-ui'
+import * as moment from 'moment'
+import SelectToggle from '../../commons/select-toggle/SelectToggle'
 
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
 
 @WithRender
-@Component
+@Component({
+  components: {
+    SelectToggle
+  }
+})
 export default class OperateWarningGroundReportPublish extends Vue {
   @Getter('systemStore/articleViewHolder_global') articleViewHolder_global
   @Action('systemStore/changeArticleViewHolder_global') changeArticleViewHolder_global
@@ -24,6 +30,22 @@ export default class OperateWarningGroundReportPublish extends Vue {
   docToHtml = 'http://10.148.16.217:11160/renyin5/fp/files/doc/converter'
   operateReqUrl = 'http://10.148.16.217:11160/renyin5/fp/exists'
   rkOperateData: any[] = []
+  stationOptionData = [
+    '清远', '河源', '汕头', '阳江'
+  ]
+  obtidData = [
+    { id: 59280, name: '清远' },
+    { id: 59293, name: '河源' },
+    { id: 59316, name: '汕头' },
+    { id: 59663, name: '阳江' }
+  ]
+  airLineSelected = '清远'
+  datetime = moment().format('YYYY-MM-DD HH:mm:ss')
+  htmlString = ''
+  htmlStringHolder = ''
+  docData
+  docDataReqUrl = 'http://10.148.16.217:9020/doc/5?&data='
+  imgPrefix = 'http://10.148.16.217:9020/dao/png?&path='
 
   created() {
     this.getOperateData()
@@ -36,11 +58,50 @@ export default class OperateWarningGroundReportPublish extends Vue {
 
     axios({
       url: '/static/technical_papers/OperateWarningGroundReport.html',
-    }).then(res => {
-      this.editor.txt.html(res.data)
+    }).then(async res => {
+      this.htmlStringHolder = res.data
+      await this.getDocData()
+      this.replaceHTMLString()
     })
   }
+  
+  @Watch('datetime')
+  async onDatetimeSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  @Watch('stationOptionSelected')
+  async onstationOptionSelectedSelectedChange(val) {
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
 
+  replaceHTMLString() {
+    this.htmlString = this.htmlStringHolder.replace(/datetime/, this.docData.time)
+      .replace(/year/g, this.docData.year)
+      .replace(/gdCity/g, this.docData.gdCity)
+      .replace(/imgSrc1/, this.imgPrefix + this.docData.png1Ttop)
+      .replace(/imgSrc2/, this.imgPrefix + this.docData.png2Optn)
+      .replace(/imgSrc3/, this.imgPrefix + this.docData.png3Ice)
+      .replace(/imgSrc4/, this.imgPrefix + this.docData.png4Tlog)
+      .replace(/imgSrc5/, this.imgPrefix + this.docData.png5Vil)
+      .replace(/imgSrc6/, this.imgPrefix + this.docData.png6Mtop)
+      .replace(/imgSrc7/, this.imgPrefix + this.docData.png7RadarProfile)
+      .replace(/imgSrc8/, this.imgPrefix + this.docData.png8Ztop)
+    this.editor.txt.html(this.htmlString)
+  }
+
+  async getDocData() {
+    let res = await axios({
+      url: this.docDataReqUrl + `{"datetime": "${moment(this.datetime).format('YYYY-MM-DD HH:mm:ss')}"}`,
+      adapter: jsonp
+    })
+    this.docData = res.data
+  }
+
+  airLineDesignChange(val) {
+    this.airLineSelected = val
+  }
 
   close() {
     this.publishDocumentView = null
@@ -62,10 +123,14 @@ export default class OperateWarningGroundReportPublish extends Vue {
       mark: operateType,
       osId: workStation,
       stage: 0,
-      // message: this.editor.txt.html(),
+      message: `<html><head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        </head><body>` +
+      this.editor.txt.html() + `</body></html>`,
       note: extraInfoText,
       // userIds: [],
-      groupIds: appGroup
+      groupIds: appGroup,
+      word: '30'
     }))
     Message({
       type: 'success',

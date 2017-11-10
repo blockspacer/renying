@@ -19,7 +19,8 @@
     </header>
     <section class="assignment_contentIn cf">
       <div class="assignment_left">
-        <ul class="work_msg">
+        <ul class="work_msg"
+            style="overflow-y: scroll; height: 100%;">
           <li v-for="item in operateData"
               :class="{'on': operateSelected === item}"
               @click="operateSelected = item">

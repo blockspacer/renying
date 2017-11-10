@@ -23,6 +23,22 @@
         </div>
     </div>
     <div class="create_right">
+        <section class="date-time-forsee-wrapper">
+            <ul style="top: 15px; left: 0">
+                <li>
+                    <aside class="left-label-wrapper"
+                           style="font-size: 14px">日期</aside>
+                    <aside style="margin-bottom: 10px"
+                           class="right-btn-wrapper">
+                        <el-date-picker v-model="datetime"
+                                        type="datetime"
+                                        :clearable="false"
+                                        placeholder="选择日期">
+                        </el-date-picker>
+                    </aside>
+                </li>
+            </ul>
+        </section>
         <ul>
             <li class="create_downLoad"
                 @click="getHtmlString"
