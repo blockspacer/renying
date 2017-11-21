@@ -1,0 +1,146 @@
+<main id="DownloadImg"
+      v-drag="" 
+      class="weather-product-window">
+  <header>
+  <span>批量下载业务图</span>
+  <aside>
+    <button class="close" @click="closeFn"></button>
+  </aside>
+  </header>
+  <!-- <section class="actually_product cf">
+    <p class="actually_product_title">
+      <span>实况产品</span>
+      <span class="actually_product_modify">修改</span></p>
+    <div class="actually_product_con">
+      <dl class="cf">
+        <dt>时间</dt>
+        <dd>2017-11-10 8:08-2017-11-10 8:10</dd>
+      </dl>
+      <dl class="cf">
+        <dt>站点类型</dt>
+        <dd>
+          <span>广东自动站</span>
+          <span>广东区域站</span>
+          <span>GPS水汽站</span>
+        </dd>
+      </dl>
+      <dl class="cf">
+        <dt>实况监测</dt>
+        <dd>
+          <span>温度</span>
+          <span>气压</span>
+        </dd>
+      </dl>
+    </div>
+  </section> -->
+  <section class="forecast_product cf">
+    <p class="forecast_product_title ">
+      <span class="forecast_product_titleIn ">预报产品</span>
+      <el-date-picker
+        v-model="forecastDate"
+        type="daterange"
+        :clearable="false"
+        range-separator=" - "
+        start-placeholder="开始日期"
+        end-placeholder="结束日期">
+      </el-date-picker>
+      <!-- <el-date-picker v-model="forecastDate"
+            type="date"
+            :clearable="false"
+            placeholder="选择日期">
+      </el-date-picker> -->
+    </p>
+    <ul class="forecast_product_ul scrollbar">
+      <li class="forecast_product_con" v-for="el of products">
+        <p class="actually_product_title">{{ el.name }}
+          <span class="actually_product_modify" @click="toggleModify(el)">修改</span>
+        </p>
+        <dl class="cf">
+          <dt>日期</dt>
+          <dd>
+            {{ moment(el.startDate).format('YYYY-MM-DD') + ' ' + el.startHour }}
+            {{ el.startMinute ? ': ' + el.startMinute : '时' }} - 
+            {{ moment(el.endDate).format('YYYY-MM-DD') + ' ' + el.endHour }}
+            {{ el.endMinute ? ': ' + el.endMinute : '时' }}
+          </dd>
+        </dl>
+        <dl class="cf" v-if="'areas' in el">
+          <dt>范围</dt>
+          <dd>{{ scopeList[el.areasSelected] }}</dd>
+        </dl>
+        <dl class="cf" v-if="'forecasts' in el">
+          <dt>时效</dt>
+          <dd>{{ el.startForecast + ' - ' + el.endForecast }}</dd>
+        </dl>
+      </li>
+    </ul>
+  </section>
+  <button class="download" @click="downloadServiceGraph">批量下载</button>
+
+  <div class="downloadImg_modify" 
+       v-drag=""
+       v-if="modifyPop"
+       :style="{width: 'minutes' in modifyInfo ? '500px' : '400px'}" >
+    <header>
+      <span>修改</span>
+      <aside>
+        <button class="close" @click="modifyPop = false;"></button>
+      </aside>
+    </header>
+    <section class="date-time-forsee-wrapper">
+        <ul>
+            <li>
+                <aside class="left-label-wrapper">起始日期</aside>
+                <aside class="right-btn-wrapper" style="width:153px;">
+                    <el-date-picker v-model="modifyInfo.startDate"
+                                    type="date"
+                                    :clearable="false"
+                                    placeholder="选择日期">
+                    </el-date-picker>
+                </aside>
+                <select-toggle :optionData="modifyInfo.hours" :preSelectedOption="modifyInfo.startHour"
+                                :selectionChange="startHourChange" :width="80" style="float:left"></select-toggle>
+                <select-toggle :optionData="modifyInfo.minutes" :preSelectedOption="modifyInfo.startMinute" v-if="'minutes' in modifyInfo"
+                                :selectionChange="startMinuteChange" :width="80" style="float:left;margin-left:3px!important;"></select-toggle>                
+            </li>
+            <li>
+                <aside class="left-label-wrapper">终止日期</aside>
+                <aside class="right-btn-wrapper" style="width:153px;">
+                    <el-date-picker v-model="modifyInfo.endDate"
+                                    type="date"
+                                    :clearable="false"
+                                    placeholder="选择日期">
+                    </el-date-picker>
+                </aside>
+                <select-toggle :optionData="modifyInfo.hours"  :preSelectedOption="modifyInfo.endHour"
+                                :selectionChange="endHourChange" :width="80" style="float:left"></select-toggle>
+                <select-toggle :optionData="modifyInfo.minutes" :preSelectedOption="modifyInfo.endMinute" v-if="'minutes' in modifyInfo"
+                                :selectionChange="endMinuteChange" :width="80" style="float:left;margin-left:3px!important;"></select-toggle>  
+            </li>
+            <li :style="{height: modifyInfo.areas.length > 2 ? '60px' : '30px' }" v-if="'areas' in modifyInfo">
+                <aside class="left-label-wrapper">范围</aside>
+                <aside class="right-btn-wrapper">
+                  <span class="ecwmf_check"
+                        style="margin-right: 20px"
+                        @click="modifyInfo.areasSelected = el"
+                        v-for="el of modifyInfo.areas"
+                        :class="{'on' : el === modifyInfo.areasSelected}">
+                      <i></i>
+                      <span>{{ scopeList[el] }}</span>
+                  </span>
+                </aside>
+              </li>
+              <li class="effectiveness" v-if="'forecasts' in modifyInfo">
+                <aside class="left-label-wrapper">时效</aside>
+                <aside class="right-btn-wrapper" style="width:180px;">
+                    <select-toggle :optionData="modifyInfo.forecasts" :preSelectedOption="modifyInfo.startForecast"
+                                    :selectionChange="startForecastChange" :width="80" style="float:left"></select-toggle>
+                    <span class="icon">-</span>
+                    <select-toggle :optionData="modifyInfo.forecasts" :preSelectedOption="modifyInfo.endForecast"
+                                    :selectionChange="endForecastChanges"  :width="80"  style="float:left"></select-toggle>
+                </aside>
+              </li>
+        </ul>
+    </section>
+  </div>
+</main>

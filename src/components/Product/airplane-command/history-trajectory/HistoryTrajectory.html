@@ -3,7 +3,9 @@
     <dt>历史设计航迹</dt>
     <dd>
       <ul class="scrollbar">
-        <li @click="selectOldTrajectory(item.data)" v-for="(item, index) in data">{{item.name}}<i @click.stop="deleteData(item.id)"></i></i></li>
+        <li @click="selectOldTrajectory(item)" 
+            v-for="(item, index) in data">{{item.name}}<i @click.stop="deleteData(item.id)"></i>
+       </li>
       </ul>
     </dd>
   </dl>

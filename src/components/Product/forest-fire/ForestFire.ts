@@ -19,7 +19,7 @@ export default class ForestFire extends Vue {
   @Action('systemStore/toggleProductView_global') toggleProductView_global
 
   datetime = moment().subtract(10, 'minute').format('YYYY-MM-DD HH:mm')
-  url = 'http://10.148.16.217:11160/renyin5/warn/tf?&addrType=province&name=广东&warnType=temp'
+  url = 'http://10.148.16.217:11160/renyin5/warn/tf?&addrType=province&name=广东&warnType=forest'
   data = null
   iconImgUrl_normal = '/static/img/home_fire.png'
   iconImgUrl_warning = '/static/img/home_fire.png'

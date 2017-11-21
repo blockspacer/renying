@@ -4,6 +4,7 @@ import { Action, Getter } from 'vuex-class'
 import * as Config from '../../../config/productId'
 import WithRender from './OperatePotentialPublish.html?style=./OperatePotentialPublish.scss'
 import PublishDocument from '../../commons/publish-document/PublishDocument'
+import { OperateClient } from '../../../util/operateClient'
 import SelectToggle from '../../commons/select-toggle/SelectToggle'
 import { Message } from 'element-ui'
 import * as moment from 'moment'
@@ -107,9 +108,9 @@ export default class OperatePotentialPublish extends Vue {
 
   async getDocData() {
     let res = await axios({
-      url: this.docDataReqUrl + 
-        `{"datetime": "${moment(this.datetime).format('YYYY-MM-DD HH:mm:ss')}";` + 
-      `"lat": "${this.latOptionSelected}"}`,
+      url: this.docDataReqUrl +
+        `{"datetime": "${moment(this.datetime).format('YYYY-MM-DD HH:mm:ss')}";` +
+        `"lat": "${this.latOptionSelected}"}`,
       adapter: jsonp
     })
     this.docData = res.data
@@ -150,8 +151,8 @@ export default class OperatePotentialPublish extends Vue {
       stage: 2,
       message: `<html><head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        </head><body>` +  
-      this.editor.txt.html() + `</body></html>`,
+        </head><body>` +
+        this.editor.txt.html() + `</body></html>`,
       note: extraInfoText,
       // userIds: [],
       groupIds: appGroup,
@@ -168,21 +169,7 @@ export default class OperatePotentialPublish extends Vue {
   }
 
   async getHtmlString() {
-    console.info(this.editor.txt.html())
-    /*     let res = await axios({
-          url: this.htmlToDocUrl,
-          method: 'post',
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-          },
-          data: {
-            message: this.editor.txt.html()
-          }
-        }) */
-    let downloadEle = <HTMLAnchorElement>document.createElement('a')
-    // downloadEle.download = res.data
-    downloadEle.click()
+    OperateClient.downloadFile(this.editor.txt.html())
   }
 
   pickFile() {
@@ -191,13 +178,10 @@ export default class OperatePotentialPublish extends Vue {
   }
 
   async uploadFileChange(e) {
-    let res = await axios({
-      method: 'post',
-      url: this.docToHtml,
-      data: {
-        message: e.srcElement.files[0]
-      }
-    })
-    this.editor.txt.html(res.data.data)
+    OperateClient.uploadFile(e.srcElement.files[0])
+      .then(html => {
+        this.editor.txt.html(html)
+      })
+
   }
 }

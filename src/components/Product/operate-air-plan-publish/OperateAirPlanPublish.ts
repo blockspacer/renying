@@ -154,7 +154,7 @@ export default class OperateAirPlanPublish extends Vue {
       note: extraInfoText,
       // userIds: [],
       groupIds: appGroup,
-      word: '32'
+      word: '33'
     }))
     Message({
       type: 'success',
@@ -167,20 +167,7 @@ export default class OperateAirPlanPublish extends Vue {
   }
 
   async getHtmlString() {
-    /*     let res = await axios({
-          url: this.htmlToDocUrl,
-          method: 'post',
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-          },
-          data: {
-            message: this.editor.txt.html()
-          }
-        }) */
-    let downloadEle = <HTMLAnchorElement>document.createElement('a')
-    // downloadEle.download = res.data
-    downloadEle.click()
+    OperateClient.downloadFile(this.editor.txt.html())
   }
 
   pickFile() {
@@ -189,13 +176,9 @@ export default class OperateAirPlanPublish extends Vue {
   }
 
   async uploadFileChange(e) {
-    let res = await axios({
-      method: 'post',
-      url: this.docToHtml,
-      data: {
-        message: e.srcElement.files[0]
-      }
-    })
-    this.editor.txt.html(res.data.data)
+    OperateClient.uploadFile(e.srcElement.files[0])
+      .then(html => {
+        this.editor.txt.html(html)
+      })
   }
 }

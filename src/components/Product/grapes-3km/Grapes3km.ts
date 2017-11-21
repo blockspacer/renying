@@ -223,7 +223,7 @@ const productData = {
         { isSelected: false, value: 'dbzr', name: '雷达回波(3km)', times: forseeTimeData['1-24'] },
       ]
     }, {
-      name: '高空要素',
+      name: '高空要素', 
       isSelected: false,
       sub: [
         { isSelected: false, value: 'wind925hght925', name: '925hPa风+高度', times: forseeTimeData['1-24'] },
@@ -257,7 +257,7 @@ const productData = {
   ],
   'guangdong': [
     {
-      name: '地面要素',
+      name: '地面要素',  
       isSelected: false,
       sub: [
         { isSelected: false, value: 'mslp', name: '海平面气压', times: forseeTimeData['1-24'] },

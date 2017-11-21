@@ -114,7 +114,6 @@ export default class OperateDemandAnalysisPublish extends Vue {
   async uploadFileChange(e) {
     OperateClient.uploadFile(e.srcElement.files[0])
       .then(html => {
-        console.error('html', html)
         this.editor.txt.html(html)
       })
   }

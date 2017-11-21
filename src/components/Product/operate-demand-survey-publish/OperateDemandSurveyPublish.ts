@@ -75,6 +75,9 @@ export default class OperateDemandSurveyPublish extends Vue {
   }
 
   async uploadFileChange(e) {
-    this.editor.txt.html(OperateClient.uploadFile(e.srcElement.files[0]))
+    OperateClient.uploadFile(e.srcElement.files[0])
+      .then(html => {
+        this.editor.txt.html(html)
+      })
   }
 }

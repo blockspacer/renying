@@ -15,7 +15,10 @@
       <li :class="[{'on': designSelected === 'history'},'history_design']" @click="toggleDesign('history')">历史设计航迹</li>
     </ul>
   </section>
+
+ 
   <section class="airplane_con">
-    <component :selectOldTrajectory="selectOldTrajectory" :clearHistoryData="clearHistoryData" :historyData="oldTrajectoryData" :is="currentView"></component>
+    <component :selectOldTrajectory="selectOldTrajectory" :clearHistoryData="clearHistoryData"
+        :historyData="oldTrajectoryData" :is="currentView" :radarDatetime="radarDatetime" :layer="radarProductSelected"></component>
   </section>
 </main>

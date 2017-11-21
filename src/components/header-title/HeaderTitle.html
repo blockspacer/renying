@@ -3,7 +3,10 @@
     <p>人工影响天气系统</p>
   </div>
   <div class="header_right">
-    <span class="header_right_council">
+    <span :class="[{'on': downLoadView},'header_right_download']"  @click="toggleDownloaImg">
+      <i></i>
+    </span>
+    <span :class="['header_right_council',{'on':accountManagementView}]" @click="toggleAccountManagement">
     </span>
     <span class="header_right_one">
       <i></i>
@@ -35,10 +38,14 @@
           v-if="cityListPop && userInfo_global.power">
         <li v-for="item in cityList"
             :class="{'on': citySelected === item.city }"
-            @click="toggleCity(item.city)">{{ item.city }}</li>
+            @click="toggleCity(item.city)">{{ item.city.replace('市', '') }}</li>
       </ul>
     </span>
   </div>
+  <component :is="downLoadView"
+  :closeFn="toggleDownloaImg"></component>
   <component :is="managementView"
              :closeFn="toggleManagement"></component>
+  <component :is="accountManagementView"
+             :closeFn="toggleAccountManagement"></component>
 </main>

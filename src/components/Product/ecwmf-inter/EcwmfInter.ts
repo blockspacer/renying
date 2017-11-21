@@ -326,7 +326,7 @@ const productData = {
         name: '2m最高气温',
         times: forseeTimeData['0-216~*12']
       }, {
-        value: 't2mm-min', isSelected: false, name: '2m最低气温',
+        value: 't2mm-min', isSelected: false, name: '2m最低气温',  
         times: forseeTimeData['0-216~*12']
       }, {
         value: 't2mm-ave', isSelected: false, name: '2m平均气温',
@@ -390,7 +390,7 @@ const productData = {
       }, {
         value: 'temp850-500', isSelected: false, name: '850-500温度',
         times: forseeTimeData['0-240']
-      }, {
+      }, {  
         value: 'temp700-500', isSelected: false, name: '700-500温度',
         times: forseeTimeData['0-240']
       }, {
@@ -422,7 +422,7 @@ const productData = {
         times: forseeTimeData['0-240']
       }],
     },
-    {
+    {  
       name: '水汽条件',
       isSected: false,
       sub: [{

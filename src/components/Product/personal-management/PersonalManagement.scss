@@ -1,4 +1,8 @@
 #PersonalManagement{
+  .highlight {
+    color: #4787E1;
+  }
+
   position: absolute!important;
   top: 130px;
   left: 324px;
@@ -15,6 +19,33 @@
     color: #1c1c1c;
     font-size: 15px;
     .groups_top{
+      #grade{
+        border: 1px solid #4787E1;
+        width: 130px;
+        float: right;
+        height: 30px;
+        box-sizing: border-box;
+        #upxls {
+          text-align: center;
+          line-height: 28px;
+          height: 28px;
+          width: 90px;
+          vertical-align: top;
+          color: #4787E1;
+          background-color: white;
+          display: inline-block;
+        }
+        #downxls {
+          display: inline-block;
+          width: 28px;
+          height: 20px;
+          margin: 4px 0px;
+          border-left: 1px solid #4787E1;
+          box-sizing: border-box;
+          background: url(~Img/home_download03.png) no-repeat center;
+        }
+      }
+
       p{
         display: inline-block;
         &.groups_top_add{
@@ -35,8 +66,7 @@
             &:after{background-position-x: -8px;}
           }
         }
-          
-        
+
         &.groups_top_new{
           position: relative;
           color: #1c1c1c;
@@ -44,8 +74,16 @@
           width: 100px;
           height: 30px;
           line-height: 30px;
-          text-align: center;
           margin-left: 10px;
+          vertical-align: middle;
+          #cur_group{
+            text-overflow:ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: center;
+            width: 72px;
+            display: inline-block;
+          }
           i{
             position: absolute;
             top: 12px;
@@ -62,12 +100,13 @@
             i{background-position-x: -8px;}
           }
           .groups_list{
+            text-align: center;
             position: absolute;
             z-index: 1003;
             left: -1px;
             top: 30px;
             width: 100px;
-            height: 100px;
+            max-height: 500px;
             overflow: auto;
             color: #A4A4A4;
             background-color: #fff;
@@ -78,6 +117,9 @@
             li{
               list-style: none;
               cursor: pointer;
+              text-overflow:ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
               &.on,&:hover{
                 background-color: #4787E1;
                 color: #fff;
@@ -85,7 +127,7 @@
             }
           }
         }
-        
+
         &.groups_top_search{
           position: relative;
           margin-left: 20px;
@@ -119,6 +161,21 @@
       ul.head_list{
         width: 100%;
         height: 45px;
+        position: relative;
+        i.name_check{
+          position: absolute;
+          top: 12px;
+          left: 32px;
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          margin-left: -6px;
+          background: url(~Img/home_chb.png)no-repeat 0 0/300% 100%;
+          cursor: pointer;
+          &.on{
+            background-position-x: -36px;
+          }
+        }
         li{
           float: left;
           width: calc(100%/7);
@@ -126,6 +183,12 @@
           line-height: 45px;
           text-align: center;
           background-color: #F0F1F4;
+          &:first-child{
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding-left: 52px;
+          }
         }
       }
       ul.person_list{
@@ -165,19 +228,19 @@
               }
 
             }
-            
+
           }
           &.on{
             background-color: #F0F1F4;
             span.name{
               i.name_check{
                 background-position-x: -36px;
-                
+
               }
-              
-              
+
+
             }
-          } 
+          }
         }
         .name{
           position: relative;
@@ -220,7 +283,7 @@
                 background-position-x: -28px;
               }
             }
-            
+
             &.delete{
               left: 79.5px;
               margin-left: 10px;
@@ -233,7 +296,7 @@
         }
         .verification{
           &.on{
-            color: #f00;
+            color: #f04045;
           }
         }
       }
@@ -246,7 +309,7 @@
     .check_number{
       width: 250px;
       height: 150px;
-      border: 1px solid #E2E3E8; 
+      border: 1px solid #E2E3E8;
       text-align: center;
       p:nth-child(1){
         margin-top: 30px;
@@ -257,13 +320,23 @@
         font-size: 18px;
         color: #1c1c1c;
       }
-      
+
     }
     .check_list{
       width: 250px;
       height: 412px;
       margin-top: 15px;
-      border: 1px solid #E2E3E8; 
+      border: 1px solid #E2E3E8;
+      .update {
+        color: #4787e1;
+        cursor: pointer;
+        float:right;
+        font-size: 15px;
+        height: 61px;
+        line-height: 61px;
+        vertical-align: middle;
+        margin-right:20px;
+      }
       p.check_list_title{
         height: 61px;
         width: 230px;
@@ -271,15 +344,35 @@
         color: #575757;
         padding-left: 20px;
         font-size: 18px;
-        border-bottom: 1px solid #E2E3E8; 
-       
+        border-bottom: 1px solid #E2E3E8;
+
       }
       ul.check_list_ul{
         width: 100%;
         height: 325px;
         padding: 10px 0;
         overflow: auto;
+
+        .detail_info {
+          display: none;
+          dl{
+            dd{
+              display: inline-block;
+              width:45%;
+            }
+            dt{
+              display: inline-block;
+              width:55%;
+            }
+          }
+        }
+
         li{
+          &:hover {
+            &>.detail_info{
+              display: block;
+            }
+          }
           width: 210px;
           padding-left: 20px;
           p.check_areaTop{
@@ -323,7 +416,7 @@
               &:nth-child(2){ width: 65px;padding-right: 5px; }
               &:nth-child(3){ width: 90px; }
             }
-           
+
           }
         }
       }
@@ -337,8 +430,8 @@
       float: right;
     }
   }
-  
-  
- 
-  
+
+
+
+
 }

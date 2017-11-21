@@ -35,11 +35,13 @@ export default class NewMessage extends Vue {
   computeStationData() {
     this.stationOptionDataHolder = []
     for (let item of this.operateStationData_global) {
-      let temp = Object.assign({}, item)
-      this.stationOptionDataHolder.push({
-        name: `编号:${item.opId} 指挥员:${item.appUser ? item.appUser.name : ''}`,
-        isToggle: false
-      })
+      if (item.appUser) {
+        let temp = Object.assign({}, item)
+        this.stationOptionDataHolder.push({
+          name: `编号:${item.opId} 指挥员:${item.appUser ? item.appUser.name : ''}`,
+          isToggle: false
+        })
+      }
     }
     this.stationOptionData = Object.assign(this.stationOptionDataHolder, {})
   }

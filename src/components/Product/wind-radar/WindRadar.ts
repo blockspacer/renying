@@ -12,7 +12,8 @@ import { getVelLevel } from '../../../util/windHelper'
 import WindRadarDrawer from '../../../util/windRadarUtil'
 
 let markerCollection = [],
-  L = window['L']
+  L = window['L'],
+  destroyed = false;
 
 @WithRender
 @Component
@@ -43,10 +44,13 @@ export default class WindRadar extends Vue {
   radarHeightData: { centerLat: number, centerLon: number, wd: number, ws: number } = null
 
   async created() {
+    destroyed = false
     let res = await axios({
       url: this.reqUrl.radar,
       adapter: jsonp
     })
+
+    if (destroyed) return
 
     if (res.data.stateCode !== 0) {
       Message({
@@ -63,6 +67,7 @@ export default class WindRadar extends Vue {
 
   destroyed() {
     this.removeMarkerCollection()
+    destroyed = true
   }
 
   async getRadarByHeight() {

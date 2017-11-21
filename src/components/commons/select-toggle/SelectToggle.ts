@@ -68,6 +68,16 @@ export default class SelectToggle extends Vue {
     if (this.optionData.indexOf(this.optionSelected) < this.optionData.length - 1)
       this.optionSelected = this.optionData[this.optionData.indexOf(this.optionSelected) + 1]
   }
+
+  openPopup() {
+    this.isOptionPopupShow = !this.isOptionPopupShow
+    let index = this.optionData.indexOf(this.optionSelected)
+    let height = this.height * index
+    this.$nextTick(() => {
+      let el = <HTMLDivElement>this.$refs.popup
+      el.scrollTop = height - 2 * this.height
+    })
+  }
 }
 
 

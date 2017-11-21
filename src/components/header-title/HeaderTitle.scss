@@ -67,6 +67,7 @@
                 background: url(~Img/nav_login.png) no-repeat -40px 0 / 400% 100%;
             }
         }
+       
         .header_right_set {
             margin-right: 20px;
             cursor: pointer;
@@ -164,8 +165,6 @@
                     text-align: center;
                     font-size: 12px;
                     color: #fff;
-                    
-                    
                     &.on{
                         background-color: #2D68B7;
                     }
@@ -173,6 +172,28 @@
                         background-color: #2D68B7;
                     }
                 }
+            }
+        }
+        .header_right_download{
+            position: relative;
+            margin-right: 20px;
+            cursor: pointer;
+            background-color: #3A77CA;
+            &:after{
+                position: absolute;
+                top: 5px;
+                left: 28px;
+                content: '';
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                background: url(~Img/nav_batch.png)no-repeat 0 0/100% 100%;
+            }
+            &.on {
+                background-color: #2D68B7;
+            }
+            &:hover {
+                background-color: #2D68B7;
             }
         }
         .header_right_council{
@@ -189,6 +210,9 @@
                 height: 15px;
                 background: url(~Img/nav_account.png)no-repeat 0 0/100% 100%;
 
+            }
+            &.on {
+                background-color: #2D68B7;
             }
             &:hover {
                 background-color: #2D68B7;

@@ -54,7 +54,7 @@ export default class ToolBar extends Vue {
       this.startPoint = window['L'].marker([lat, lng], {
         icon: window['L'].icon({
           className: 'point',
-          iconUrl: '../../../static/img/cappi.png',
+          iconUrl: '/static/img/cappi.png',
           iconSize: [10, 10],
           iconAnchor: [5, 5],
         })
@@ -107,11 +107,11 @@ export default class ToolBar extends Vue {
     this.topography = !this.topography
     let map: any = window['map']
     if (this.topography) {
-      window['satLayer'].addTo(map)
+      window['business'].addTo(map)
       map.removeLayer(window['terLayer'])
     } else {
       window['terLayer'].addTo(map)
-      map.removeLayer(window['satLayer'])
+      map.removeLayer(window['business'])
     }
   }
   toggleLatlon() {    //经纬
@@ -141,7 +141,7 @@ export default class ToolBar extends Vue {
         let L = window['L']
         const icon = L.icon({
           className: 'airdromePonit',
-          iconUrl: './static/img/toolbar_aircraft.png', 
+          iconUrl: '/static/img/toolbar_aircraft_icon.png', 
           iconSize: [15, 15],
           iconAnchor: [7.5, 7.5],
         })
@@ -212,7 +212,7 @@ export default class ToolBar extends Vue {
         let L = window['L']
         const icon = L.icon({
           className: 'shotpointPoint',
-          iconUrl: './static/img/toolbar_shell.png', 
+          iconUrl: '/static/img/toolbar_shell_icon.png', 
           iconSize: [15, 15],
           iconAnchor: [7.5, 7.5],
       })
@@ -238,7 +238,7 @@ export default class ToolBar extends Vue {
         let L = window['L']
         const icon = L.icon({
           className: 'radiosPoint',
-          iconUrl: './static/img/toolbar_radio.png',
+          iconUrl: '/static/img/toolbar_radio.png',
           iconSize: [15, 15],
           iconAnchor: [7.5, 7.5],
         })

@@ -1,17 +1,18 @@
 import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import {Component, Watch} from 'vue-property-decorator'
+import {Action, Getter} from 'vuex-class'
 import WithRender from './ActualproductPopup.html?style=./ActualproductPopup.scss'
 
 import SelectToggle from '../../commons/select-toggle/SelectToggle'
 
-import { productsClient } from '../../../util/clientHelper'
+import {productsClient} from '../../../util/clientHelper'
 import * as CONFIG from '../../../config/productId'
-import { getVelLevel } from '../../../util/windHelper'
-import { Message } from 'element-ui'
+import {getVelLevel} from '../../../util/windHelper'
+import {Message} from 'element-ui'
 import * as moment from 'moment'
+import Vacuate from './Vacuate'
 
-let L, map
+let L, map, tmp, vacuate
 let realInfo: any = {         // 存储站点数据
   gdAuto: null,
   gdArea: null,
@@ -19,7 +20,7 @@ let realInfo: any = {         // 存储站点数据
 }
 const stationIcon = window['L'].icon({
   className: 'airdromePonit',
-  iconUrl: './static/img/station.png',
+  iconUrl: '/static/img/station.png',
   iconSize: [8, 8],
   iconAnchor: [4, 4],
 })
@@ -27,14 +28,14 @@ const clusterOpt = {
   animate: false,
   disableClusteringAtZoom: 10,
   maxClusterRadius: 120,
-  chunkedLoading: true
+  chunkedLoading: true,
 }
 
 @WithRender
 @Component({
   components: {
-    SelectToggle
-  }
+    SelectToggle,
+  },
 })
 export default class ActualproductPopup extends Vue {
   @Action('systemStore/closeProductView_global') closeProductView_global
@@ -42,19 +43,21 @@ export default class ActualproductPopup extends Vue {
 
   productId: string = CONFIG.actualproduct
   stationType: any = {
-    gdAuto: { show: false, param: 'A' },    // param对应 链接中的字段
-    gdArea: { show: false, param: 'B' },
-    gpsSteam: { show: false, param: 'g' }
+    gdAuto: {show: false, param: 'A'},    // param对应 链接中的字段
+    gdArea: {show: false, param: 'B'},
+    gpsSteam: {show: false, param: 'g'},
   }
   realType: any = {
-    temp: { show: false, cname: '温度', unit: '℃', classname: 'temp' },
-    ps: { show: false, cname: '气压', unit: 'pa', classname: 'ps' },
-    hourrf: { show: false, cname: '降水', unit: 'mm', classname: 'hourrf' },
-    dp: { show: false, cname: '露点温度', unit: '℃', classname: 'dp' },
-    wind: { show: false, cname: '风力风向', unit: 'm/s', classname: 'wind' },
-    rh: { show: false, cname: '相对湿度', unit: '%', classname: 'rh' },
-    mean31_pwv: { show: false, cname: 'GPS水汽', unit: '', classname: 'water' },
+    temp: {show: false, cname: '温度', unit: '℃', classname: 'temp'},
+    ps: {show: false, cname: '气压', unit: 'pa', classname: 'ps'},
+    rfhour: {show: false, cname: '降水', unit: 'mm', classname: 'rfhour'},
+    dp: {show: false, cname: '露点温度', unit: '℃', classname: 'dp'},
+    wind: {show: false, cname: '风力风向', unit: 'm/s', classname: 'wind'},
+    rh: {show: false, cname: '相对湿度', unit: '%', classname: 'rh'},
+    mean31_pwv: {show: false, cname: 'GPS水汽', unit: '%', classname: 'mean31_pwv'},
   }
+  flag: boolean
+  listener: any = {}
   date: Date = null
   hour: number = null
   minute: number = null
@@ -103,14 +106,17 @@ export default class ActualproductPopup extends Vue {
   onDateChanged(val, oldVal) {
     this.onTimeChanged()
   }
+
   @Watch('hour')
   onHourChanged(val, oldVal) {
     this.onTimeChanged()
   }
+
   @Watch('minute')
   onMinuteChanged(val, oldVal) {
     this.onTimeChanged()
   }
+
   onTimeChanged() {
     for (let i in this.stationType) {
       if (this.stationType[i].show) {
@@ -123,21 +129,28 @@ export default class ActualproductPopup extends Vue {
   async toggleStation(key) {
     this.stationType[key].show = !this.stationType[key].show
 
-    // 没有选中站点时 清空实况元素选中状态
     if (!this.stationType.gdAuto.show && !this.stationType.gdArea.show && !this.stationType.gpsSteam.show) {
       for (let i in this.realType) {
         this.realType[i].show = false
+        this.removeLayer(i)
       }
     }
 
     if (this.stationType[key].show) {
-      // 获取站点信息
+      for(let i in this.stationType){
+        if(i==key)continue
+        this.stationType[i].show=false
+      }
+      if(key=='gpsSteam'){
+        this.realType['mean31_pwv'].show=true
+      }
+
       if (!realInfo[key]) {
         let data = await productsClient.getStation(this.stationType[key].param)
         if (!data) {
           Message({
             type: 'warning',
-            message: '站点数据获取失败'
+            message: '站点数据获取失败',
           })
           return
         }
@@ -165,14 +178,14 @@ export default class ActualproductPopup extends Vue {
     if (!msg) {
       Message({
         type: 'warning',
-        message: '实况数据获取失败'
+        message: '实况数据获取失败',
       })
       return
     }
     if (!msg.length) {
       Message({
         type: 'warning',
-        message: '实况数据获取失败'
+        message: '实况数据获取失败',
       })
     }
     for (let opt of msg) {
@@ -186,10 +199,7 @@ export default class ActualproductPopup extends Vue {
     // 添加已选中实况元素数据
     for (let i in this.realType) {
       if (this.realType[i].show) {
-        if (i === 'wind')
-          this.addWind(key, realInfo[key])
-        else
-          this.addReal(key, i, realInfo[key])
+        this.addReal(key, i, realInfo[key])
       }
     }
   }
@@ -198,12 +208,15 @@ export default class ActualproductPopup extends Vue {
   toggleReal(key) {
     this.realType[key].show = !this.realType[key].show
     if (this.realType[key].show) {
+      for (let i in this.realType) {
+        if (i != key) {
+          this.realType[i].show = false
+          this.removeLayer(i)
+        }
+      }
       for (let type in realInfo) {
         if (!this.stationType[type].show) continue
-        if (key === 'wind')
-          this.addWind(type, realInfo[type])
-        else
-          this.addReal(type, key, realInfo[type])
+        this.addReal(type, key, realInfo[type])
       }
     } else {
       this.removeLayer(key)
@@ -216,7 +229,7 @@ export default class ActualproductPopup extends Vue {
       let markers = new L.layerGroup()
       for (let i in data) {
         let item = data[i]
-        let marker = L.marker([item.loc.lat, item.loc.lon], { icon: stationIcon })
+        let marker = L.marker([item.loc.lat, item.loc.lon], {icon: stationIcon})
         markers.addLayer(marker)
       }
       markers.id = key
@@ -224,7 +237,7 @@ export default class ActualproductPopup extends Vue {
     } else {
       for (let i in data) {
         let item = data[i]
-        let marker = L.marker([item.loc.lat, item.loc.lon], { icon: stationIcon })
+        let marker = L.marker([item.loc.lat, item.loc.lon], {icon: stationIcon})
         marker.id = key
         marker.addTo(map)
       }
@@ -233,76 +246,66 @@ export default class ActualproductPopup extends Vue {
 
   // 添加站点实况数据
   addReal(type, key, data) {
-    this.removeLayer(type + '_' + key)
-    let markers = new L.layerGroup()
+    let tmp = []
+    let className = `divIcon-${key}`
     for (let i in data) {
       let opt = data[i]
-      if (!opt.elems || opt.elems[key] === undefined || opt.elems[key] > 8888 ||
-        opt.elems[key] < -8888) continue
-      const opts = L.divIcon({
-        className: `divIcon-${key}`,
-        html: `<span class="${this.realType[key].classname}">${Math.floor(opt.elems[key] * 100) / 100} ${this.realType[key].unit}</span>`
-      })
-      let marker = L.marker([opt.loc.lat, opt.loc.lon], { icon: opts })
-      if (type === 'gdArea') {
-        markers.addLayer(marker)
-      } else {
-        marker.id = type + '_' + key
-        marker.addTo(map)
-      }
-    }
-    if (type === 'gdArea') {
-      markers.id = type + '_' + key         // 站点类型_元素类型
-      map.addLayer(markers)
-    }
-  }
-
-  // 添加站点风力风向数据
-  addWind(type, data) {
-    this.removeLayer(type + '_wind')
-    let markers = new L.layerGroup(), angleMarkers = new L.layerGroup()
-    for (let i in data) {
-      let opt = data[i]
-      if (!opt.elems) continue
-      let angleMarker = L.angleMarker([opt.loc.lat, opt.loc.lon], {
+      if (!opt.elems || key != 'wind' && (opt.elems[key] === undefined || opt.elems[key] > 8888 ||
+          opt.elems[key] < -8888)) continue
+      let marker = key != 'wind' ? L.marker([opt.loc.lat, opt.loc.lon], {
+        icon: L.divIcon({
+          className: className,
+          html: `<span>${Math.floor(opt.elems[key] * 100) / 100} ${this.realType[key].unit}</span>`,
+        }),
+      }) : L.angleMarker([opt.loc.lat, opt.loc.lon], {
         icon: new L.Icon({
           iconUrl: `static/wind/${getVelLevel(opt.elems.wd2df)}.png`,
           iconSize: [18, 32],
-          iconAnchor: [0, 32]
+          iconAnchor: [0, 32],
         }),
         iconAngle: opt.elems.wd2dd,
         iconOrigin: '0% 100%',
-        zIndexOffset: -1
+        zIndexOffset: -1,
       })
-
-
-      let opts = L.divIcon({
-        className: 'divIcon-wind',
-        html: `<span class='wind'>${Math.floor(opt.elems.wd2df * 100) / 100} ${this.realType.wind.unit}</span>`
-      })
-      let marker = L.marker([opt.loc.lat, opt.loc.lon], { icon: opts })           // 风速
-
-      if (type === 'gdArea') {
-        angleMarkers.addLayer(angleMarker)
-        markers.addLayer(marker)
-      } else {
-        angleMarker.id = type + '_wind'
-        angleMarker.addTo(map)
-        // marker.id = type + '_wind'
-        // marker.addTo(map)
-      }
+      tmp.push({marker: marker, x: opt.loc.lat, y: opt.loc.lon})
     }
-    if (type === 'gdArea') {
-      angleMarkers.id = type + '_wind'
-      map.addLayer(angleMarkers)
-      // markers.id = type + '_wind'
-      // map.addLayer(markers)
+
+    vacuate = new Vacuate(tmp,key=='wind'?'distance2':'manhattan')
+
+    let cb = () => {
+      if (this.flag) return
+      this.flag = true
+      this.render2(type, key)
+      setTimeout(() => this.flag = false, 50)
     }
+    for (let i in this.listener) {
+      if (i[i.length - 1] == 'z')
+        map.off('zoomend', this.listener[i])
+      else
+        map.off('moveend', this.listener[i])
+    }
+    this.listener = {}
+    this.listener[type + key + 'z'] = cb
+    this.listener[type + key + 'm'] = cb
+    map.on('zoomend', cb)
+    map.on('moveend ', cb)
+    this.render2(type, key)
+  }
+
+  render2(type, key) {
+    //console.time('time')
+    this.removeLayer(key)
+    let markers = vacuate.render(map, L)
+    markers.id = key
+    map.addLayer(markers)
+    //console.info('zoom level: ', map.getZoom(), ' total: ', markers.getLayers().length)
+    //console.timeEnd('time')
   }
 
   hourChange(val) {
     this.hour = val
   }
+
   minuteChange(val) {
     this.minute = val
   }

@@ -66,7 +66,7 @@ export default class DemandWarning extends Vue {
   }
 
   async getReservoirData() {
-    let date = moment().format('YYYY-MM-DD HH:mm:00')
+    let date = moment().subtract(20, 'minute').format('YYYY-MM-DD HH:mm:00')
     let params = {
       time: date,
       addrType: 'province',

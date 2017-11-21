@@ -29,10 +29,14 @@
       color: #1c1c1c;
       span{
         display: inline-block;
+        padding-right: 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         &.list_title{
           float: left;
           position: relative;
-          width: 30%;
+          width: calc(29% - 20px);
           padding-left: 10%;
           &:before{
             position: absolute;
@@ -51,13 +55,14 @@
         }
         &.list_url{
           float: left;
-          width: 40%;
+          width:  calc(40% - 20px);
 
         }
         &.list_editor{
           float: left;
-          width: 20%;
+          width: calc(20% - 15px);
           margin-top:6px;
+          padding-left: 10px;
           i{
             display: inline-block;
             width: 28px;
@@ -70,7 +75,7 @@
               }
             }
             &.delete_icon{
-              margin-left: 20px;
+              margin-left: 10px;
               background: url(~Img/home_link.png)no-repeat 0 -56px /200% 300%;
               &:hover{
                 background: url(~Img/home_link.png)no-repeat -28px -56px /200% 300%;

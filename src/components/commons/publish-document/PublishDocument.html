@@ -40,9 +40,10 @@
           </div>
           <menu class="radio-wrapper scrollbar cf">
             <div v-for="item in workStationDataHolder"
+                 v-if="item.appUser"
                  @click="workStationSelected = item.id">
               <em :state="workStationSelected === item.id ? 'true' : 'false'"></em>
-              <span>{{item.city}} {{item.county}}</span>
+              <span style="width: 200px">{{item.city}} {{item.county}} 指挥员:{{item.appUser.name}}</span>
             </div>
           </menu>
         </section>
@@ -59,9 +60,9 @@
           </div>
           <menu class="checkbox-wrapper scrollbar cf">
             <div v-for="item in appGroupDataHolder"
-                 @click="selectAppGroup(item.groupId)">
-              <em :state="appGroupSelected.indexOf(item.groupId) === -1 ? 'false' : 'true'"></em>
-              <span>{{item.groupName}}</span>
+                 @click="selectAppGroup(item.id)">
+              <em :state="appGroupSelected.indexOf(item.id) === -1 ? 'false' : 'true'"></em>
+              <span>{{item.groupname}}</span>
             </div>
           </menu>
         </section>

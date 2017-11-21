@@ -110,6 +110,10 @@ export function airRequestData_global (state: State): any {
   return state.airRequestData
 }
 
+export function aqiDetailInfo_global (state: State):any {
+  return state.aqiDetailInfo
+}
+
 export default <GetterTree<State, any>>{
   userInfo_global,
   subMenu_global,
@@ -138,5 +142,6 @@ export default <GetterTree<State, any>>{
   isShowAirLineLayer_global,
   isShowPhoneLiveLayer_global,
   airRequestData_global,
-  phoneLiveData_global
+  phoneLiveData_global,
+  aqiDetailInfo_global,
 }

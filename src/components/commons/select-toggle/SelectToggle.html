@@ -2,7 +2,7 @@
       :style="{backgroundColor: backgroundColor, width: width + 'px', height: height + 'px'}"
       class="cf">
   <div class="text-wrapper"
-       @click="isOptionPopupShow = !isOptionPopupShow">{{optionSelected}}</div>
+       @click="openPopup">{{optionSelected}}</div>
   <aside class="btn-wrapper">
     <span @click="upward">
       <i></i>
@@ -13,8 +13,9 @@
   </aside>
   <ul v-show="isOptionPopupShow"
       class="scrollbar"
-      :class="[classBinding]">
+      :class="[classBinding]"
+      ref="popup">
     <li v-for="item in optionData"
-        @click="selectOption(item)">{{item}}</li>
+        @click="selectOption(item)" :class="{on: optionSelected === item}">{{item}}</li>
   </ul>
 </main>

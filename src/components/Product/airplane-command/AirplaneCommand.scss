@@ -1,7 +1,6 @@
 #AirplaneCommand{
   position: absolute;
   width: 368px;
-  height: 572px;
   z-index: 1001;
   top: 130px;
   left: 330px;
@@ -13,7 +12,7 @@
     margin: 0 auto;
     border-bottom:1px solid #4787E1;
     font-size: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   ul.nav_design{
     position: absolute;
@@ -42,5 +41,28 @@
         background-color:#4786E1;
       }
     }
+  }
+  .nowActual_con_topright {
+    margin-bottom: 10px;
+    margin-left: 30px;
+    ul.radar_products {
+      margin-top: 10px;
+      li.iconProductO {
+        margin: 8px 0;
+        i {
+          background: url(~Img/home_chb.png)no-repeat 0 0/300% 100%;
+        }
+        &.on i {
+          background: url(~Img/home_chb.png)no-repeat -36px 0/300% 100%;
+        }
+      }
+    }
+  }
+  .el-date-editor.el-input {
+    width: 130px !important;
+  }
+  .select-toggle{
+    border-radius: 5px;
+    top: 10px;
   }
 }

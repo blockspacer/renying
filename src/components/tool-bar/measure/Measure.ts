@@ -8,7 +8,7 @@ let points: any[] = [], polylines: any[] = [], distances: any[] = [], divIcons: 
 let movePolyline: any = null
 const icon = window['L'].icon({
   className: 'point',
-  iconUrl: '../../../static/img/measure_circle.png', 
+  iconUrl: '/static/img/measure_circle.png', 
   iconSize: [10, 10],
   iconAnchor: [5, 5],
 })

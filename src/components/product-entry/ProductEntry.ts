@@ -23,6 +23,7 @@ import OperateWarningAirReportHistory from '../Product/operate-Warning-air-repor
 import OperateWarningGroundReportPublish from '../Product/operate-Warning-ground-report-publish/OperateWarningGroundReportPublish'
 import OperateWarningGroundReportHistory from '../Product/operate-Warning-ground-report-history/OperateWarningGroundReportHistory'
 
+import RepoMonitor from '../Product/repo-monitor/RepoMonitor'
 import SunstrokeIndex from '../Product/sunstroke-index/SunstrokeIndex'
 import HumanComfort from '../Product/human-comfort/HumanComfort'
 import AirDetect from '../Product/air-detect/AirDetect'
@@ -64,6 +65,11 @@ import AmmunitionInternet from '../Product/ammunition-internet/AmmunitionInterne
 import ConditionAudit from '../Product/condition-audit/ConditionAudit'
 import FileManagement from '../Product/file-management/FileManagement'
 import AirspaceMonitoring from '../Product/airspace-monitoring/AirspaceMonitoring'
+import AircraftCommand from '../Product/aircraft-command/AircraftCommand'
+import GroundControl from '../Product/ground-control/GroundControl'
+import PhoneLiveMonitor from '../Product/phoneLive-monitor/PhoneLiveMonitor'
+import GroundMsgCollection from '../Product/groundMsg-collection/GroundMsgCollection'
+import AirQuality from '../Product/air-quality/AirQuality'
 @WithRender
 @Component
 export default class ProductEntry extends Vue {
@@ -110,10 +116,17 @@ export default class ProductEntry extends Vue {
   disasterImgView = null
   ammunitionInternetView = null
   phoneLiveView = null
+  repoMonitorView = null
   
   conditionAuditView = null           //
   fileManagementView = null
-  airspaceMonitoringView = AirspaceMonitoring
+  airspaceMonitoringView = null
+  aircraftCommandView = null
+  groundControlView = null
+  phoneLiveMonitorView = null
+  groundMsgCollectionView = null
+  airQualityView = null
+
   operateDemandAnalysisPublishView = null
   operateDemandAnalysisHistoryView = null
   operateDemandSurveyPublishView = null
@@ -212,10 +225,16 @@ export default class ProductEntry extends Vue {
     this.sunstrokeIndexView = val[CONFIG.SunstrokeIndex] ? SunstrokeIndex : null
     this.disasterManageView = val[CONFIG.disasterManage] ? DisasterManage : null
     this.ammunitionInternetView = val[CONFIG.ammunitionInternet] ? AmmunitionInternet : null
-    this.phoneLiveView = val[CONFIG.phoneLive] ? PhoneLive : null
+    this.phoneLiveView = val[CONFIG.phoneLivePanel] ? PhoneLive : null
     this.conditionAuditView = val[CONFIG.conditionAudit] ? ConditionAudit : null
     this.fileManagementView = val[CONFIG.fileManagement] ? FileManagement : null
     this.airspaceMonitoringView = val[CONFIG.airspaceMonitoring] ? AirspaceMonitoring : null
+    this.aircraftCommandView = val[CONFIG.aircraftCommand] ? AircraftCommand : null
+    this.groundControlView = val[CONFIG.groundControl] ? GroundControl : null
+    this.phoneLiveMonitorView = val[CONFIG.phoneLiveMonitor] ? PhoneLiveMonitor : null
+    this.groundMsgCollectionView = val[CONFIG.groundMsgCollection] ? GroundMsgCollection : null
+    this.repoMonitorView = val[CONFIG.repoMonitor] ? RepoMonitor : null
+    this.airQualityView = val[CONFIG.airQuality] ? AirQuality : null
   }
   @Watch('isDisasterManageImg_global')
   onisDisasterManageImg_globalChanged(val: any, oldVal: any) {

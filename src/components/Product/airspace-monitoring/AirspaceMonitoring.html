@@ -24,9 +24,9 @@
         <ul class="person_list scrollbar">
           <li  v-for="(item, index) in airspaceList" 
                 :class="['person_list_list',{on: airspaceSelected === item.id}]">
-            <span>{{ item.city }}</span>
-            <span>{{ item.area }}</span>
-            <span>{{ item.phone }}</span>
+            <span :title="item.city">{{ item.city }}</span>
+            <span :title="item.area">{{ item.area }}</span>
+            <span :title="item.phone">{{ item.phone }}</span>
             <span class="icon">
                 <i class="editor" @click="toggleModifyAirspace(item)"></i>
                 <i class="delete" @click="deleteAirspace(item)"></i>

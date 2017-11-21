@@ -68,7 +68,7 @@
         <div class="nowActual_con_bottomright">
           <ul class="nowActual_bottom_products">
             <li :class="['iconProductF',{'on': realType[key].show}]"
-                v-for="(item, key) in realType">
+                v-for="(item, key) in realType" v-if="!stationType['gpsSteam'].show^key=='mean31_pwv'">
               <i v-on:click="toggleReal(key)"></i>{{item.cname}}</li>
           </ul>
         </div>

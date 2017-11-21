@@ -56,6 +56,7 @@ export class State {
   isShowAirLineLayer: boolean = true
   // 是否显示直播图标
   isShowPhoneLiveLayer: boolean = true
+  // 
 
   // 直播数据
   phoneLiveData: any[] = []
@@ -131,4 +132,5 @@ export class State {
   appGroupRequestUrl = 'http://10.148.16.217:11160/renyin5/webuser/group'
   // 获取运输所有数据
   getTransportDataUrl = 'http://10.148.16.217:11160/renying/event/'
+  aqiDetailInfo: any = {}
 }

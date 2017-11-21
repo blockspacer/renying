@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import * as Config from '../../../config/productId'
+import { OperateClient } from '../../../util/operateClient'
 import WithRender from './OperateWarningAirReportPublish.html?style=./OperateWarningAirReportPublish.scss'
 import PublishDocument from '../../commons/publish-document/PublishDocument'
 import { Message } from 'element-ui'
@@ -117,21 +118,7 @@ export default class OperateWarningAirReportPublish extends Vue {
   }
 
   async getHtmlString() {
-    console.info(this.editor.txt.html())
-    /*     let res = await axios({
-          url: this.htmlToDocUrl,
-          method: 'post',
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-          },
-          data: {
-            message: this.editor.txt.html()
-          }
-        }) */
-    let downloadEle = <HTMLAnchorElement>document.createElement('a')
-    // downloadEle.download = res.data
-    downloadEle.click()
+    OperateClient.downloadFile(this.editor.txt.html())
   }
 
   pickFile() {
@@ -140,13 +127,9 @@ export default class OperateWarningAirReportPublish extends Vue {
   }
 
   async uploadFileChange(e) {
-    let res = await axios({
-      method: 'post',
-      url: this.docToHtml,
-      data: {
-        message: e.srcElement.files[0]
-      }
-    })
-    this.editor.txt.html(res.data.data)
+    OperateClient.uploadFile(e.srcElement.files[0])
+      .then(html => {
+        this.editor.txt.html(html)
+      })
   }
 }

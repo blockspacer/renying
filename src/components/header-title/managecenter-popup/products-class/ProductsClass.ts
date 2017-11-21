@@ -118,7 +118,7 @@ export default class ProductsClass extends Vue {
         arr.push(el.id)
       let idIndex = arr.indexOf(id)
       arr.splice(idIndex, 1)
-      let subMenuIds = arr.join('$')
+      let subMenuIds = arr.length ? arr.join('$') : '""'
       let data
       if (type === 'second')
         data = await menusClient.modifyFirstMenu(parent.id, parent.name, '', subMenuIds)

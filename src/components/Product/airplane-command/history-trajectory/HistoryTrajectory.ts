@@ -23,7 +23,7 @@ export default class HistoryTrajectory extends Vue {
 
   async getHistoryData() {
     let res = await axios({
-      url: this.selectReqUrl,
+      url: this.selectReqUrl + `?_=${Date.now()}`,
       adapter: jsonp
     })
     this.data = res.data.listSql[0]

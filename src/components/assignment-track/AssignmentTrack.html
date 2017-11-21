@@ -30,14 +30,15 @@
             <div class="assignment_left_con">
               <p class="work">{{item.type === 'pl' ? '飞机作业' : '火箭作业'}}</p>
               <p class="message"
-                 v-if="item.wos.appUser">
+                 v-if="item.wos.appUser && item.type === 'rk'">
                 <span>{{item.wos.appUser.name}}</span>
                 <span>{{item.wos.appUser.phone}}</span>
-                <span>{{item.wos.address}}</span>
+                <span style="text-align: left;">
+                  {{item.wos.county}}
+                </span>
                 <span>{{item.state}}</span>
               </p>
-              <p class="title"
-                 v-if="item.wos.appUser">
+              <p class="title">
                 <span>指挥员</span>
                 <span>电话</span>
                 <span>区域</span>

@@ -40,12 +40,14 @@ export default class AssignmentTrack extends Vue {
     })
     let arr = []
     for (let item of res.data.data) {
+      let state = '未回复'
       for (let subItem of this.operatorData) {
         if (subItem.fpId === item.fpId) {
-          arr.push(Object.assign(item, { type: 'rk', state: getState(subItem.state, item.stage) }))
+          state = subItem.state
           break
         }
       }
+      arr.push(Object.assign(item, { type: 'rk', state: getState(state, item.stage) }))
     }
     this.operateData = this.operateData.concat(arr)
     res = await axios({
@@ -56,15 +58,15 @@ export default class AssignmentTrack extends Vue {
     })
     arr = []
     for (let item of res.data.data) {
-      for (let subItem of this.operatorData) {
-        if (subItem.fpId === item.fpId) {
-          arr.push(Object.assign(item, { type: 'pl', state: getState(subItem.state, item.stage) }))
-          break
-        }
-      }
+      // for (let subItem of this.operatorData) {
+      //   if (subItem.fpId === item.fpId) {
+      arr.push(Object.assign(item,
+        { type: 'pl'/* , state: getState(subItem.state, item.stage)  */ }))
+      // break
+      //   }
+      // }
     }
-    this.operatorData = this.operateData.concat(arr)
-    console.info(this.operateData)
+    this.operateData = this.operateData.concat(arr)
 
     function getState(text, stage) {
       switch (text) {

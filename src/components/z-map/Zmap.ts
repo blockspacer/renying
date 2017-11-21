@@ -22,6 +22,7 @@ export default class Zmap extends Vue {
     window['terLayer'] = terLayer
     terLayer.addTo(map)
     window['satLayer'] = new L.tileLayer("http://119.29.102.103:8097/vt/lyrs=y&x={x}&y={y}&z={z}", this.mapOptions)
+    window['business'] = new L.tileLayer("http://119.29.102.103:8097/vt/lyrs=m&x={x}&y={y}&z={z}", this.mapOptions)
     window["windRenderer"] = L.svg()
     window["windRenderer"].addTo(map)
   }

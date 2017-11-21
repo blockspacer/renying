@@ -50,7 +50,7 @@
   color: #10C469;
   white-space: nowrap;
 }
-.divIcon-hourrf{
+.divIcon-mean31_pwv{
   color: #58CDC7;
   white-space: nowrap;
 }
@@ -66,7 +66,7 @@
   color: #ED5589;
   white-space: nowrap;
 }
-.divIcon-water{
+.divIcon-mean31_pwv{
   color: #5B69BC;
   white-space: nowrap;
 }
@@ -115,7 +115,52 @@
 }
 .el-transfer__buttons .el-button:first-child{
   margin-bottom: 15px!important;
-} 
+}
 .el-transfer__buttons .el-button{
   width: 80px!important;
+}
+
+
+.status_detail {
+  position: relative;
+  width: 110px;
+  color: #fff;
+  background-color: #4787E1!important;
+  box-shadow: rgba(31, 43, 61, 0.4) 0 0 5px 1px;
+  z-index: 1020;
+  .info {
+    float: left;
+    width: 55px;
+    .val, .name {
+      width: 100%;
+      text-align: center;
+      height: 24px;
+    }
+    .val {
+      line-height: 28px;
+    }
+    .name {
+      line-height: 20px;
+    }
+  }
+
+}
+.status_border{
+  margin-left: 55px;
+  width: 2px;
+  height: 10px;
+  background-color: #4787E1!important;
+}
+.airplane_icon {
+  .airplane_icon_marker {
+    margin: -4px 0 0 -4px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    color: #fff;
+    border-radius: 10px;
+    text-align: center;
+    background: rgb(29, 171, 191);
+  }
 }

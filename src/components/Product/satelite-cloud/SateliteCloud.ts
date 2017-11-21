@@ -23,6 +23,7 @@ export default class SateliteCloud extends Vue {
     IR1: `红外线`,            
     IR3: `水汽`                 
   }
+  loading: boolean = false
 
   mounted() {
     map = window['map']
@@ -31,15 +32,17 @@ export default class SateliteCloud extends Vue {
 
   destroyed() {
     this.isComponetAlive = false
-    map.removeLayer(imgLayer)
+    if (imgLayer) map.removeLayer(imgLayer)
   }
 
   changeUrl(datetime, dataType) {
+    this.loading = true
     datetime = moment(datetime).format('YYYY-MM-DD HH:mm:00')
     let url = `http://119.29.102.103:8111/Satelite/renderCloud?datetime=${datetime}&dataType=${dataType}&top=53.55&bottom=3.86&left=73.66&right=150&width=600&height=600`
     console.log(url)
     let img = new Image()
     img.onload = () => {
+      this.loading = false
       if (this.isComponetAlive) {
         if (!imgLayer) {
           imgLayer = L.imageOverlay(url, this.cloudBounds)
@@ -48,15 +51,24 @@ export default class SateliteCloud extends Vue {
           imgLayer.setUrl(url)
         }
       } else {
-        if (imgLayer) map.removeLayer(imgLayer)
+        if (imgLayer) {
+          map.removeLayer(imgLayer)
+          imgLayer = null
+        }
       }
     }
     img.onerror = () => {
-      if (this.isComponetAlive)
+      this.loading = false
+      if (this.isComponetAlive) {
         Vue.prototype['$message']({
           type: 'warning',
           message: '该时暂无数据'
         })
+        if (imgLayer) {
+          map.removeLayer(imgLayer)
+          imgLayer = null
+        }
+      }
     }
     img.src = url
   }

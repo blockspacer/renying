@@ -15,8 +15,9 @@
             float: left;
             color: #1c1c1c;
             ul {
-                width: 168px;
-                height: 442px;
+                width: 168px;    
+                max-height: 350px;
+                min-height: 100px;
                 border: 1px solid #D8DAE0;
                 overflow: auto;
                 li {

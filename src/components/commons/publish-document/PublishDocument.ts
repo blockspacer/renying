@@ -5,7 +5,7 @@ import WithRender from './PublishDocument.html?style=./PublishDocument.scss'
 
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
-const Message = Vue.prototype['$message']
+import { Message } from 'element-ui';
 
 @WithRender
 @Component
@@ -124,8 +124,11 @@ export default class PublishDocument extends Vue {
       this.textInputDelayHolder = setTimeout(() => {
         this.workStationDataHolder = []
         this.workStationData.map((item, index) => {
-          if (item.address.includes(val) || item.airport.includes(val) ||
-            item.city.includes(val) || item.county.includes(val) || item.id.includes(val)) {
+          if ((typeof item.address === 'string' && item.address.includes(val))
+            || (typeof item.airport === 'string' && item.airport.includes(val))
+            || (typeof item.city === 'string' && item.city.includes(val))
+            || (typeof item.county === 'string' && item.county.includes(val))
+            || (typeof item.id === 'string' && item.id.includes(val))) {
             this.workStationDataHolder.push(item)
           }
         })

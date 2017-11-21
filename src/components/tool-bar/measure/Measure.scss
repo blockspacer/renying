@@ -13,7 +13,7 @@ li {
     height: 36px;
   }
   &.measure{
-    i { background: url(../../../../static/img/toolbar_tool.png)no-repeat -72px 0/900% 200%; }
+    i { background: url(/static/img/toolbar_tool.png)no-repeat -72px 0/900% 200%; }
     &.on{ i{ background-position:  -72px -36px; } }
   }
   &.clears {

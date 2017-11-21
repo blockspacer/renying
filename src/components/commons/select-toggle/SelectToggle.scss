@@ -39,6 +39,7 @@ ul {
     overflow-y: scroll;
     border-top: solid 1px #d0d3da;
     border-bottom: solid 1px #d0d3da;
+    border-right: solid 1px #d0d3da;
     z-index: 1020;
     li {
         font-size: 12px;
@@ -51,7 +52,7 @@ ul {
         width: 100%;
         cursor: pointer;
         background-color: white;
-        &:hover {
+        &:hover, &.on {
             background-color: #f0f1f4;
             color: #1c1c1c;
         }

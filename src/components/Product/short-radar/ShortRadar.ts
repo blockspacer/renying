@@ -5,31 +5,54 @@ import WithRender from './ShortRadar.html?style=./ShortRadar.scss'
 import * as CONFIG from '../../../config/productId'
 import { Message } from 'element-ui'
 import * as moment from 'moment'
+import SelectToggle from '../../commons/select-toggle/SelectToggle'
 
 let map, L
 
 @WithRender
-@Component
+@Component({
+  components: {
+    SelectToggle
+  }
+})
 export default class ShortRadar extends Vue {
   @Action('systemStore/toggleProductView_global') toggleProductView_global
   productId: string = CONFIG.shortRadar
   isComponetAlive: boolean = true
-  radarDate: Date = null
-  radarHour: number = null
-  radarMinute: number = null
+  radarDate: string = null
+  radarHour: string = null
+  radarMinute: string = null
 
-  qpeqpfDate: Date = null
-  qpeqpfHour: number = null
-  qpeqpfMinute: number = null
+  qpeqpfDate: string = null
+  qpeqpfHour: string = null
+  qpeqpfMinute: string = null
 
-  minutesArr: number[] = []
   bounds: any = []
+
+  hourData: any = []
+  minuteData: string[] = []
+  mounted() {
+    for(let i=0; i<=23; i++){
+      if(i<10){
+        this.hourData.push('0' + i)
+      } else{
+        this.hourData.push('' + i)
+      }
+    }
+
+    for (let i = 0; i < 60; i += 6) {
+      if (i === 0) {
+        this.minuteData.push('00')
+      } else if (i < 10) {
+        this.minuteData.push('0' + i)
+      } else {
+        this.minuteData.push(String(i))
+      }
+    }
+  }
   created() {
     map = window['map']
     L = window['L']
-    for (let i = 0; i < 10; i++) {
-      this.minutesArr.push(6 * i)
-    }
     this.getProdTime()
     map.on('moveend', this.radarLayerChanged)
   }
@@ -53,15 +76,18 @@ export default class ShortRadar extends Vue {
     return `http://10.148.83.228:8922/dataunit/temporary/renderTemporaryData?type=swan&datetime={datetime}&element=${element}&time=${time ? time : 0}&level=${level ? level : 0}&top={top}&bottom={bottom}&left={left}&right={right}&width=2000&height=2000`
   }
   getProdTime() {
-    let date = Date.now() - Date.now() % (6 * 60 * 1000)
-    let momentHolder = moment(date)
-    momentHolder.subtract(18, 'minute')
-    this.radarDate = new Date(momentHolder.format('YYYY/MM/DD 00:00:00'))
-    this.radarHour = Number(momentHolder.format('HH'))
-    this.radarMinute = Number(momentHolder.format('mm'))
-    this.qpeqpfDate = new Date(momentHolder.format('YYYY/MM/DD 00:00:00'))
-    this.qpeqpfHour = Number(momentHolder.format('HH'))
-    this.qpeqpfMinute = Number(momentHolder.format('mm'))
+    let momentHolder = moment().subtract(18, 'minute')
+    const minute = Math.floor(momentHolder.get('minute') / 6) * 6
+    let date = momentHolder.set('minute', minute)
+    console.log(moment(date).format('YYYY-MM-DD hh:mm:ss'))
+    // this.radarDate = new Date(momentHolder.get('millisecond'))
+    this.radarDate = momentHolder.format('YYYY-MM-DD')
+    this.radarHour = momentHolder.format('HH')
+    this.radarMinute = momentHolder.format('mm')
+    // this.qpeqpfDate = new Date(momentHolder.get('millisecond'))
+    this.qpeqpfDate = momentHolder.format('YYYY-MM-DD')
+    this.qpeqpfHour = momentHolder.format('HH')
+    this.qpeqpfMinute = momentHolder.format('mm')
   }
 
   radarProduct: any = {
@@ -71,19 +97,20 @@ export default class ShortRadar extends Vue {
     reflex: { text: '组合反射率', show: false, url: this.getRadarUrl('mcr'), layer: null },
     cappi5: { text: 'CAPPI5 公里', show: false, url: this.getRadarUrl('cappi', 5), layer: null },
     vil: { text: 'VI:液态降水', show: false, url: this.getRadarUrl('mvil'), layer: null },
-    titan: { text: '雷暴跟踪（TITAN）', show: false, url: '', layer: null },
-    hail: { text: '冰雹', show: false, url: '', layer: null },
+    titan: { text: '雷暴跟踪（TITAN）', show: false, url: 'http://10.148.83.228:8922/dataunit/titan/renderTitan/?datetime={datetime}&top=27&bottom=18.2&left=108.5&right=119&width=2000&height=2000', layer: null },
+    // hail: { text: '冰雹', show: false, url: '', layer: null },
   }
   qpeqpfProduct: any = {
-    qpe: { text: 'QPE', show: false, url: this.getQpfQpeUrl('qpe'), layer: null },
-    // qpeAdd: { text: 'QPE逐小时累计', show: false, url: this.getQ, layer: null },
-    // qpeSix: { text: 'QPE逐6分钟', show: false, url: '', layer: null },
+    // qpe: { text: 'QPE', show: false, url: this.getQpfQpeUrl('qpe'), layer: null },
+    // qpeAdd: { text: 'QPE逐小时累计', show: false, url: this.getQpfQpeUrl('qpe', 3, 60), layer: null }, //
+    qpeSix: { text: 'QPE逐6分钟', show: false, url: this.getQpfQpeUrl('qpe',0,0), layer: null },
     // qpeSixAdd: { text: 'QPE逐6分钟累计', show: false, url: '', layer: null },
     qpf: { text: 'QPF半小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 30), layer: null },
     qpfAdd: { text: 'QPF一小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 60), layer: null },
+    qpfTwo: { text: 'QPF两小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 120), layer: null },
     qpfSix: { text: 'QPF三小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 180), layer: null },
     // qpfSixAdd: { text: 'QPF逐6分钟累计', show: false, url: '', layer: null },
-    // mixRain:{ text:'融合降水逐小时', show: false, url: '', layer: null },
+    mixRain:{ text:'融合降水逐小时', show: false, url: this.getQpfQpeUrl('mvil', 0, 0), layer: null },
     // mixRainAdd:{ text:'融合降水逐小时累计', show: false, url: '', layer: null },
   }
   toggleRadarProduct(key) {
@@ -131,7 +158,8 @@ export default class ShortRadar extends Vue {
           this.radarProduct[key].layer.addTo(map)
         } else {
           this.radarProduct[key].layer.setUrl(url)
-          this.radarProduct[key].layer.setBounds(L.latLngBounds(L.latLng(this.bounds[0][0], this.bounds[0][1]), L.latLng(this.bounds[1][0], this.bounds[1][1])))
+          this.radarProduct[key].layer
+            .setBounds(L.latLngBounds(L.latLng(this.bounds[0][0], this.bounds[0][1]), L.latLng(this.bounds[1][0], this.bounds[1][1])))
         }
       } else {
         if (this.radarProduct[key].layer) map.removeLayer(this.radarProduct[key].layer)
@@ -200,18 +228,41 @@ export default class ShortRadar extends Vue {
   @Watch('radarDate')
   onradarDateChanged(val: any, oldVal: any) {
     this.radarLayerChanged()
-    // this.qpeqpfLayerChanged()
+  }
+  radarHourSelectedChange(val){
+    this.radarHour = val
   }
   @Watch('radarHour')
   onradarHourChanged(val: any, oldVal: any) {
     this.radarLayerChanged()
-    // this.qpeqpfLayerChanged()
+  }
+  radarMinuteSelectedChange(val){
+    this.radarMinute = val
   }
   @Watch('radarMinute')
   onradarMinuteChanged(val: any, oldVal: any) {
     this.radarLayerChanged()
-    // this.qpeqpfLayerChanged()
   }
+
+  @Watch('qpeqpfDate')
+  onqpeqpfDateChanged (val: any, oldVal: any) {
+    this.qpeqpfLayerChanged()
+  }
+  qpeqpfHourSelectedChange(val){
+    this.qpeqpfHour = val
+  }
+  @Watch('qpeqpfHour')
+  onqpeqpfHourChanged (val: any, oldVal: any) {
+    this.qpeqpfLayerChanged()
+  }
+  qpeqpfMinuteSelectedChange(val) {
+    this.qpeqpfMinute = val
+  }
+  @Watch('qpeqpfMinute')
+  onqpeqpfMinuteChanged (val: any, oldVal: any) {
+    this.qpeqpfLayerChanged()
+  }
+
   radarLayerChanged() {
     for (let item in this.radarProduct) {
       if (this.radarProduct[item].show) {
@@ -222,7 +273,7 @@ export default class ShortRadar extends Vue {
   }
   qpeqpfLayerChanged() {
     for (let item in this.qpeqpfProduct) {
-      if (this.radarProduct[item].show) {
+      if (this.qpeqpfProduct[item].show) {
         let url = this.getQpeqpfImageUrl(item)
         this.addQpeqpfImageLayer(item, url)
       }

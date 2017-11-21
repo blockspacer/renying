@@ -60,6 +60,7 @@ export default class GrapesMode extends Vue {
     '揭阳': { '59315': '揭阳', '59306': '揭西', '59314': '普宁', '59317': '惠来', },
     '云浮': { '59471': '云浮', '59268': '郁南', '59462': '罗定', '59470': '新兴', },
   }
+  
   countryRain: any = {
     '茂名': { 'mm01jd': '金垌', 'mm02bj': '北界', 'mm03mg': '马贵', 'mm04xd': '新垌', 'mm05cp': '长坡', },
     '阳江': { 'yj01hk': '河口', 'yj02pg': '平冈', },
@@ -69,6 +70,7 @@ export default class GrapesMode extends Vue {
     '揭阳': { 'jy01hc': '惠城', },
     '清远': { 'qy01st': '水头', 'qy02tp': '太平', 'qy03qg': '七拱', },
   }
+  
   created() {
     this.getLatestHour()
     this.citySelected = Object.keys(this.country)[0]
@@ -494,7 +496,7 @@ const productData = {
     }
   ],
   GuangDong: [{
-    name: '地面要素',
+    name: '地面要素',  
     isSelected: false,
     sub: [
       {

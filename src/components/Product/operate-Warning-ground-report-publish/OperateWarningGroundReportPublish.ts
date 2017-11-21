@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { OperateClient } from '../../../util/operateClient'
 import * as Config from '../../../config/productId'
 import WithRender from './OperateWarningGroundReportPublish.html?style=./OperateWarningGroundReportPublish.scss'
 import PublishDocument from '../../commons/publish-document/PublishDocument'
@@ -64,7 +65,7 @@ export default class OperateWarningGroundReportPublish extends Vue {
       this.replaceHTMLString()
     })
   }
-  
+
   @Watch('datetime')
   async onDatetimeSelectedChange(val) {
     await this.getDocData()
@@ -126,7 +127,7 @@ export default class OperateWarningGroundReportPublish extends Vue {
       message: `<html><head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         </head><body>` +
-      this.editor.txt.html() + `</body></html>`,
+        this.editor.txt.html() + `</body></html>`,
       note: extraInfoText,
       // userIds: [],
       groupIds: appGroup,
@@ -143,8 +144,7 @@ export default class OperateWarningGroundReportPublish extends Vue {
   }
 
   async getHtmlString() {
-    let downloadEle = <HTMLAnchorElement>document.createElement('a')
-    downloadEle.click()
+    OperateClient.downloadFile(this.editor.txt.html())
   }
 
   pickFile() {
@@ -153,13 +153,9 @@ export default class OperateWarningGroundReportPublish extends Vue {
   }
 
   async uploadFileChange(e) {
-    let res = await axios({
-      method: 'post',
-      url: this.docToHtml,
-      data: {
-        message: e.srcElement.files[0]
-      }
-    })
-    this.editor.txt.html(res.data.data)
+    OperateClient.uploadFile(e.srcElement.files[0])
+      .then(html => {
+        this.editor.txt.html(html)
+      })
   }
 }

@@ -6,6 +6,7 @@ import { agricultureAnalysis } from '../../../config/productId'
 import SelectToggle from '../../commons/select-toggle/SelectToggle'
 import DatePickerToggle from '../../commons/date-picker-toggle/DatePickerToggle'
 import * as moment from 'moment'
+import * as CONFIG from '../../../config/productId';
 import axios from 'axios'
 import jsonp from 'axios-jsonp'
 import { Message } from 'element-ui'
@@ -20,6 +21,7 @@ import { Message } from 'element-ui'
 export default class EnvironmentPublic extends Vue {
   @Action('systemStore/toggleProductView_global') toggleProductView_global
 
+  productId = CONFIG.environmentPublic
   fileName = ''
   proxyUrl = 'http://10.148.16.217:11160/renyin5/conn/business/bulletin'
   loading = false

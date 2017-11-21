@@ -1,10 +1,10 @@
 #ShortRadar {
     position: absolute;
-    height: 610px;
     width: 440px;
     z-index: 1200;
     left: 330px;
     top: 130px;
+    padding-bottom: 20px;
     background-color: #fff;
     .nowActual_con {
         .nowActual_con_top {
@@ -99,5 +99,10 @@
             outline: none;
             cursor: pointer;
         }
+    }
+    .select-toggle{
+        width:55px!important;
+        border-radius: 5px;
+        top:10px;
     }
 }

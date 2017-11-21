@@ -55,6 +55,10 @@ export function storeisCappiProfileOn_global (store:ActionContext<State, any>,ac
   store.commit('storeisCappiProfileOn',action)
 }
 
+export function storeaqiDetailInfo_global (store:ActionContext<State, any>, data) {
+  store.commit('storeaqiDetailInfo', data)
+}
+
 
 export default <ActionTree<State, any>>{
   changeUserInfo_global,
@@ -71,4 +75,5 @@ export default <ActionTree<State, any>>{
   toggleSearchOperateStationWindow_global,
   storeCappiProfile_global,
   storeisCappiProfileOn_global,
+  storeaqiDetailInfo_global,
 }

@@ -1,17 +1,123 @@
 #NewTrajectory{
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   .new_msg{
     margin: 20px 0;
+  }
+  p.coordinate_title{
+    color: #575757;
+    font-size: 14px;
+    height: 50px;
+    line-height: 50px;
   }
   dl{
     margin:6px 0 0 30px;
     font-size: 14px;
     height: 50px;
     line-height: 50px;
+    &.coordinate{
+      dt{
+        width:100%;
+      }
+      dd{
+        padding-bottom: 10px;
+        width: 90%;
+        background-color: #f0f1f4;
+        ul.coordinate_head{
+          li{
+            float: left;
+            width: 25%;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+          }
+        }
+        ul.coordinate_con{
+          max-height: 150px;
+          overflow: auto;
+          font-size: 14px;
+        }
+        ul.coordinate_con>li{
+          width: 100%;
+          span{
+            display: inline-block;
+            float: left;
+            width: 25%;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            &.editor_icon{
+              position: relative;
+              i{
+                display: inline-block;
+                height: 18px;
+                width: 18px;
+                margin-top: 6px;
+                background: url(~Img/home_Popup.png)no-repeat 0 0 /200% 100%;
+                cursor: pointer;
+                
+              }
+            }
+          }
+          &.on{
+            span.editor_icon i{
+              background-position-x: -18px;
+            }
+          }
+          &.coordinate_add{
+            span{
+              input{
+                width:78%;
+                padding: 0 6%;
+                margin-top: 2.5px;
+                height: 20px;
+                line-height: 20px;
+                background-color:#f0f1f4; 
+                border: 1px solid #D8DAE0; 
+                font-size: 14px;
+              }
+              button{
+                height: 20px;
+                width: 70%;
+                margin-top: 2.5px;
+                line-height: 20px;
+                text-align: center;
+                font-size: 12px;
+                color: #fff;
+                background-color: #4787E1;
+                &:hover{
+                  background-color: #3679D6;
+                }
+              }
+            }
+          }
+        }
+        ul.coordinate_con{
+          ul.move_ul{
+            z-index: 10;
+            position: absolute;
+            right: 30px;
+            top: 22px;
+            width: 60px;
+            background-color: #fff;
+            color: #575757;
+            box-shadow: rgba(31, 43, 61, 0.4) 0 0 7px 1px;
+            li{
+              height: 25px;
+              line-height: 25px;
+              &:hover{
+                background-color:#f0f1f4; 
+              }
+              
+            }
+          }
+        }
+      }
+    }
     dt{
       float: left;
       color: #575757;
       width: 90px;
+      
     }
     dd{
 
@@ -43,6 +149,9 @@
               cursor: pointer;
               color: #fff;
               background-color: #4787E1;
+              &:hover{
+                background-color: #3679D6;
+              }
             }
           }
         }
@@ -58,19 +167,53 @@
   .design_btn{
     margin: 15px 0 0 140px;
   }
-  button.design_btn_in{
+  button{
     cursor: pointer;
     height: 30px;
     line-height: 30px;
-    width: 120px;
+    width: 100px;
     font-size: 14px;
-    color: #fff;
-    background-color: #3E7CD7;
-    margin-right: 10px;
     text-align: center;
-   
+    color: #fff;
+    margin-top: 15px;
+    &.design_btn_in{
+      margin-left: 84px;
+      color: #fff;
+      background-color: #4787e1;
+      &:hover{
+        background-color: #3679D6;
+      }
+    }
+    &.design_btn_excel{
+      color: #4787e1;
+      background-color: #fff;
+    }
   }
+  
   .design_btn_des{
     margin: 15px 0 10px 144px;
+  }
+  .nowActual_con_topright {
+    margin-bottom: 10px;
+    margin-left: 30px;
+    ul.radar_products {
+      margin-top: 10px;
+      li.iconProductO {
+        margin: 8px 0;
+        i {
+          background: url(~Img/home_chb.png)no-repeat 0 0/300% 100%;
+        }
+        &.on i {
+          background: url(~Img/home_chb.png)no-repeat -36px 0/300% 100%;
+        }
+      }
+    }
+  }
+  .el-date-editor.el-input {
+    width: 130px !important;
+  }
+  .select-toggle{
+    border-radius: 5px;
+    top: 10px;
   }
 }

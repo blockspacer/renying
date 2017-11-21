@@ -3,6 +3,8 @@ import { Component, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import WithRender from './HeaderTitle.html?style=./HeaderTitle.scss'
 import ManagecenterPopup from './managecenter-popup/ManagecenterPopup'
+import AccountManagement from './account-management/AccountManagement'
+import DownloadImg from './download-img/DownloadImg'
 import { geoClient, mapboundaryClient } from '../../util/clientHelper'
 
 let boundaryLine = []
@@ -15,6 +17,8 @@ export default class HeaderTitle extends Vue {
   @Prop() viewLoginPage  
 
   managementView: any = null
+  accountManagementView: any = null
+  downLoadView: any = null
   cityList:any = []
   citySelected: string = ''
   cityListPop: boolean = false
@@ -37,8 +41,14 @@ export default class HeaderTitle extends Vue {
     this.cityList = data
     this.citySelected = data[0].city
   }
-  toggleManagement() {
+  toggleManagement() {   //打开管理中心窗口
     this.managementView = this.managementView ? null : ManagecenterPopup
+  }
+  toggleAccountManagement() {           //打开省局账号窗口
+    this.accountManagementView = this.accountManagementView ? null : AccountManagement
+  }
+  toggleDownloaImg() {  //打开批量下载业务图窗口
+    this.downLoadView = this.downLoadView ? null : DownloadImg
   }
   toggleCity(key) {         //点击城市
     this.cityListPop = false
@@ -71,7 +81,7 @@ export default class HeaderTitle extends Vue {
     for (let el of data) {
       this.citiesBoundry[el.city.slice(0, 2)] = el
     }
-    let boundary = JSON.parse(this.citiesBoundry[this.citySelected].boundary)
+    let boundary = JSON.parse(this.citiesBoundry[this.citySelected.replace('市', '')].boundary)
     let boundaryArr = []
     for (let el of boundary) {
       let arr = []
@@ -83,6 +93,7 @@ export default class HeaderTitle extends Vue {
     for (let el of boundaryArr) {
       let line = window['L'].polyline(el, { color: 'red', weight: 2 })
       line.addTo(window['map'])
+      window['map'].fitBounds(line.getBounds())
       boundaryLine.push(line)
     }
   }

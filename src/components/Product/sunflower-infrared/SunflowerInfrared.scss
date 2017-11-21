@@ -38,11 +38,11 @@
               display: inline-block;
               width: 8px;
               height: 6px;
-              background: url('../../../../static/img/home_dropdown.png')no-repeat 0 0/ 200% 100%;
+              background: url('/static/img/home_dropdown.png')no-repeat 0 0/ 200% 100%;
               }
             &.on{
               i{
-                background: url('../../../../static/img/home_dropdown.png')no-repeat -8px 0/ 200% 100%;
+                background: url('/static/img/home_dropdown.png')no-repeat -8px 0/ 200% 100%;
               }
             }
          

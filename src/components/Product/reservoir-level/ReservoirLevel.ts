@@ -18,7 +18,7 @@ let layerGroup = null,
 export default class ReservoirLevel extends Vue {
   @Action('systemStore/toggleProductView_global') toggleProductView_global
 
-  datetime = moment().subtract(10, 'minute').format('YYYY-MM-DD HH:mm')
+  datetime = moment().subtract(20, 'minute').format('YYYY-MM-DD HH:mm')
   url = 'http://10.148.16.217:11160/renyin5/waterline/reservoir?&addrType=province&name=广东'
   data = null
   iconImgUrl_normal = '/static/img/home_WaL.png'

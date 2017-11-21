@@ -20,6 +20,9 @@ import ManagecenterPopup from "./components/managecenter-popup/ManagecenterPopup
 import DemandWarning from './components/GlobalPopup/demand-warning/DemandWarning'
 import AssignmentTrack from './components/assignment-track/AssignmentTrack'
 import CappiProfile from './components/GlobalPopup/cappi-profile/CappiProfile'
+import AirQualityDetail from './components/GlobalPopup/air-quality-detail/AirQualityDetail'
+import { CookieHelper } from 'util/cookie';
+import ZmapTool from './components/zmap-tool/ZmapTool'
 
 
 @WithRender
@@ -35,17 +38,20 @@ import CappiProfile from './components/GlobalPopup/cappi-profile/CappiProfile'
     DemandWarning,
     ManagecenterPopup,
     AssignmentTrack,
+    ZmapTool,
   }
 })
 
 export default class App extends Vue {
   @Getter('systemStore/userInfo_global') userInfo_global
   @Getter('systemStore/isCappiProfileOn_global') isCappiProfileOn_global
+  @Getter('systemStore/aqiDetailInfo_global') aqiDetailInfo_global
   @Action('systemStore/changeUserInfo_global') changeUserInfo_global
 
   loginPageView = null
   leftNavView: any = null
   CappiProfileView: any = null
+  AQIDetailView: any = null
 
   closeLoginPage() {
     this.loginPageView = null
@@ -57,14 +63,17 @@ export default class App extends Vue {
   }
 
   async created() {
-    // let cookie = CookieHelper.getCookie('login')
-    let cookie = Cookies.get('login')
-    
-    if (cookie.length === 0) {
+    let loginString = localStorage.getItem('login')
+    if (!loginString) {
+      this.loginPageView = LoginPage
+      return
+    }
+    let loginData = JSON.parse(loginString);
+    if (loginData.date < Date.now() - (1000 * 60 * 60 * 24 * 7)) {
       this.loginPageView = LoginPage
     } else {
-      let loginData = cookie.split('%')
-      let data = await userClient.login(loginData[0], loginData[1])
+      let loginInfo = loginData.data.split('%')
+      let data = await userClient.login(loginInfo[0], loginInfo[1])
       this.changeUserInfo_global(data)
       this.$store.dispatch('systemStore/connectSocket_global')
     }
@@ -73,5 +82,10 @@ export default class App extends Vue {
   @Watch('isCappiProfileOn_global')
   onisCappiProfileOn_globalChanged(val: any, oldVal: any) {
     this.CappiProfileView = val ? CappiProfile : null
+  }
+
+  @Watch('aqiDetailInfo_global')
+  onaqiDetailInfo_globalChanged(val: any, oldVal: any) {
+    this.AQIDetailView = Object.keys(val).length ? AirQualityDetail : null
   }
 }

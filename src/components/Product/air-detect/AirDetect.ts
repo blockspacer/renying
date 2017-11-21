@@ -49,7 +49,7 @@ export default class AirDetect extends Vue {
     }
     await this.getStationData()
     await this.getAirDetectData()
-    this.drawer = new AirDetectDrawer('#airDetect1', this.airDetectData[2])
+    this.drawer = new AirDetectDrawer('#airDetect1', this.airDetectData[0])
     this.drawer.draw()
   }
 
@@ -100,7 +100,7 @@ export default class AirDetect extends Vue {
     this.stationData = []
     for (let i in res.data.data) {
       this.stationData.push(
-        Object.assign(res.data.data[i], { index: i })
+        Object.assign(res.data.data[i], { index: Number(i) })
       )
     }
     return

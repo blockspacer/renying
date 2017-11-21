@@ -204,7 +204,7 @@ const optionData = [
       }, {
         name: '雷达反射率',
         isSelected: false,
-        value: 'dbz'
+        value: 'dbz'                
       }, /* {
         name: '雷达组合反射率',
         isSelected: false,
@@ -274,7 +274,7 @@ const optionData = [
         isSelected: false,
         value: 'Qvtr'
       },
-    ]
+    ]       
   }, {
     name: '降水场',
     isSelected: false,

@@ -73,9 +73,10 @@ export function connectSocket(state: State, wsUrl: string = 'ws://10.148.16.217:
         color: 'operate',
         target: username,
         datetime: moment(event.time).format('YYYY/MM/DD HH:mm'),
-        content: username + `${event.status === 'started' ? '开始' : '结束'}了直播`,
+        content: username + `${event.status === 'started' ? '开始申请空域' :
+          event.status === 'success' ? '申请空域成功' : '申请空域失败'}`,
         tooltipText: '',
-        pos: [event.info.lat, event.info.lon]
+        pos: event.info ? [event.info.lat, event.info.lon] : []
       }
       state.socketMessage.push(message)
       state.socketCurrentMessage = message
@@ -98,7 +99,7 @@ export function connectSocket(state: State, wsUrl: string = 'ws://10.148.16.217:
         datetime: moment(event.time).format('YYYY/MM/DD HH:mm'),
         content: `${event.status === 'started' ? '开始' : '结束'}了直播`,
         tooltipText: '',
-        pos: [event.info.lat, event.info.lon]
+        pos: event.info ? [event.info.lat, event.info.lon] : []
       }
       state.socketMessage.push(message)
       state.socketCurrentMessage = message
@@ -368,6 +369,10 @@ export function changePhoneLiveId(state: State, id: string) {
   state.phoneLiveId = id
 }
 
+export function storeaqiDetailInfo(state: State, data) {
+  state.aqiDetailInfo = { ...data }
+}
+
 export default <MutationTree<State>>{
   changeUserInfo,
   changeSubMenu,
@@ -391,5 +396,6 @@ export default <MutationTree<State>>{
   toggleIsShowAirRequestLayer,
   toggleIsShowTransportLayer,
   toggleIsShowPhoneLiveLayer,
-  changePhoneLiveId
+  changePhoneLiveId,
+  storeaqiDetailInfo,
 }
