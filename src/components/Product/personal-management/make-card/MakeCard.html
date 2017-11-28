@@ -4,8 +4,7 @@
   <header>
     <span>制作工作证</span>
     <aside>
-      <button class="close"
-              @click="closeFn"></button>
+      <button class="close" @click="closeFn"></button>
     </aside>
   </header>
 
@@ -19,8 +18,7 @@
     <dl class="cf">
       <dt>发证时间</dt>
       <dd class="name">
-        <input v-model="userInfo.date"
-               placeholder="年/月/日">
+        <input v-model="userInfo.date" placeholder="年/月/日">
       </dd>
     </dl>
     <dl class="cf">
@@ -63,27 +61,17 @@
     <dl class="cf">
       <dt>上传照片</dt>
       <dd class="upload">
-        <input id="file"
-               type="file"
-               @change="changePhoto" />
-        <span id="path">{{path}}</span>
-        <button id="upload"
-                @click="upload">浏览...</button>
+        <input id="file" type="file" @change="changePhoto"/><span id="path" :title="path">{{path}}</span><button id="upload" @click="upload">浏览...</button>
       </dd>
     </dl>
   </section>
 
   <section class="card_right cf">
-    <img id="card"
-         :src="userInfo.idCard?'http://10.148.16.217:11160/renyin5/appuser/'+userInfo.idCard:''" />
+    <img id="card" @load="imgLoad"/>
   </section>
 
   <section class="card_btn cf">
-    <button class="btn_one"
-            @click="makeCard()">制作</button>
-    <!-- <a id="download"
-       class="btn_two"
-       @click="download()"
-       v-show="userInfo.idCard">下载</a> -->
+    <button class="btn_one" @click="makeCard()" src="">制作</button>
+    <a id="download" class="btn_two" v-show="showdownload">下载</a>
   </section>
 </main>

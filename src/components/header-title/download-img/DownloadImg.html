@@ -51,7 +51,7 @@
       </el-date-picker> -->
     </p>
     <ul class="forecast_product_ul scrollbar">
-      <li class="forecast_product_con" v-for="el of products">
+      <li :class="['forecast_product_con',{'on': el.productSelected}]" v-for="el of products" @click="toggleProduct(el)">
         <p class="actually_product_title">{{ el.name }}
           <span class="actually_product_modify" @click="toggleModify(el)">修改</span>
         </p>
@@ -82,7 +82,7 @@
        v-if="modifyPop"
        :style="{width: 'minutes' in modifyInfo ? '500px' : '400px'}" >
     <header>
-      <span>修改</span>
+      <span>{{ modifyInfo.name }}修改</span>
       <aside>
         <button class="close" @click="modifyPop = false;"></button>
       </aside>

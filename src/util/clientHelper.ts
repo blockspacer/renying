@@ -503,7 +503,7 @@ export class examinationClient {
 
   static async creatExam(param) {   //生成试卷
     let res: any = await axios({
-      url: baseUrl + `exam/creatExam`,
+      url: baseUrl + `exam/creatExamRandomly`,
       method: 'post',
       data: param,
       transformRequest: [function (data) {
@@ -612,6 +612,20 @@ export class AmmunitionInternetClient {
   static async getAmmunitionMsg(id) {   //获取仓库的全部弹药信息
     let res: any = await axios({
       url: `http://10.148.16.217:11160/renying/repository/${id}/res`
+    })
+    if (res.status === 200) return res.data
+    else return false
+  }
+  static async getAmmunitionEvent(id) {   //获取指定弹药的事件历史
+    let res: any = await axios({
+      url: `http://10.148.16.217:11160/renying/ammunition/${id}/event`
+    })
+    if (res.status === 200) return res.data
+    else return false
+  }
+  static async getAmmunitionBoxEvent(id) {   //获取指定弹药箱的事件历史
+    let res: any = await axios({
+      url: `http://10.148.16.217:11160/renying/ammunitionBox/${id}/event`
     })
     if (res.status === 200) return res.data
     else return false

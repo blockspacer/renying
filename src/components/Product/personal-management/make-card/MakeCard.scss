@@ -64,8 +64,12 @@
           background-color: #D8DAE0;
         }
         #path{
-          padding-left: 15px;
+          padding: 0 15px;
           width: 148px;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          white-space: nowrap;
+          line-height: 100%;
           display: inline-block;
           box-sizing: border-box;
         }

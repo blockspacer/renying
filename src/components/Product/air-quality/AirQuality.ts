@@ -14,14 +14,32 @@ export default class AirQuality extends Vue {
   @Action('systemStore/storeaqiDetailInfo_global') storeaqiDetailInfo_global
   productId = CONFIG.airQuality
   typeList: any = ['AQI','PM2.5','PM10','O3','NO2','SO2','CO']
+  colorLevel: any = {
+    'AQI': [0, 25, 50, 75, 100, 125, 150, 175, 200, 250, 300],
+    'PM2.5': [0, 25, 35, 50, 75, 95, 115, 130, 150, 200, 250],
+    'PM10': [0, 25, 50, 100, 150, 200, 250, 300, 350, 380, 420],
+    'O3': [0, 80, 160, 180, 200, 250, 300, 350, 400, 600, 800],
+    'NO2':[0, 50, 100, 150, 200, 450, 700, 950, 1200, 1800, 2340],
+    'SO2':[0, 75, 150, 300, 500, 580, 650, 720, 800, 1200, 1600],
+    'CO':[0, 2, 5, 7, 10, 20, 35, 45, 60, 75, 90],
+  }
+  colorNumber: any = this.colorLevel['AQI']
   typeSelected: string = 'val_AQI'
+  timeSelected: number = 1
   newAirList: any = {}
   reqUrl = 'http://10.148.16.217:11160/renyin5'
 
   async mounted() {
     await this.airQualityData()
     this.getLonLat()
+   
   }
+
+  @Watch('timeSelected')
+  async ontimeSelectedChanged (val: any, oldVal: any) {
+    await this.airQualityData()
+    this.getLonLat()
+  } 
 
   destroyed() {
     this.clearLayer()
@@ -35,7 +53,7 @@ export default class AirQuality extends Vue {
   }
 
   async  airQualityData() {
-    let res = await axios({ url: this.reqUrl +  `/conn/business/weather/3days` })
+    let res = await axios({ url: this.reqUrl +  `/conn/business/weather/3days?hour=${this.timeSelected*24}` })
     let data = JSON.parse(res.data.data)
     console.log(data)
     for (let el of data) {
@@ -105,6 +123,7 @@ export default class AirQuality extends Vue {
   @Watch('typeSelected')
   ontypeSelectedChanged (val: any, oldVal: any) {
     this.drawArea()
+    this.colorNumber = this.colorLevel[val.slice(4)]
   }
 
   getColor(val) {

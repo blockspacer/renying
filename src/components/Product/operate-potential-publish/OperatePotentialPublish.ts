@@ -42,15 +42,23 @@ export default class OperatePotentialPublish extends Vue {
     return arr
   })()
   forecastOptionSelected = '01'
-  prescriptionOptionData = ['08', '20']
-  prescriptionSelected = '08'
   latOptionData = [19, 22, 24, 26, 28, 30]
   latOptionSelected = 22
+  hourSelected = 8
+  hourOptionData = [8, 20]
   htmlString = ''
   htmlStringHolder = ''
   docData
   docDataReqUrl = 'http://10.148.16.217:9020/doc/4?&data='
   imgPrefix = 'http://10.148.16.217:9020/dao/png?&path='
+  png1CBand = '000'
+  png2Visl = '000'
+  png3Qvtc = '000'
+  png4Qvtr = '000'
+  png5Rain3_6 = '000'
+  png6Rain3_12 = '000'
+  png7Rain3_24 = '000'
+  png8Rain3_48 = '000'
 
   created() {
     this.getOperateData()
@@ -59,6 +67,7 @@ export default class OperatePotentialPublish extends Vue {
   mounted() {
     this.Editor = window['wangEditor']
     this.editor = new this.Editor('#editor')
+    this.editor.customConfig.uploadImgShowBase64 = true
     this.editor.create()
 
     axios({
@@ -68,6 +77,53 @@ export default class OperatePotentialPublish extends Vue {
       await this.getDocData()
       this.replaceHTMLString()
     })
+  }
+
+
+  async hourChange(val) {
+    this.hourSelected = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png1CBandChange(val) {
+    this.png1CBand = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async pn2VislChange(val) {
+    this.png2Visl = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png3QvtcChange(val) {
+    this.png3Qvtc = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png4QvtrChange(val) {
+    this.png4Qvtr = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png5Rain3_6Change(val) {
+    this.png5Rain3_6 = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png6Rain3_12Change(val) {
+    this.png6Rain3_12 = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png7Rain3_24Change(val) {
+    this.png7Rain3_24 = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png8Rain3_48Change(val) {
+    this.png8Rain3_48 = val
+    await this.getDocData()
+    this.replaceHTMLString()
   }
 
   @Watch('prescriptionSelected')
@@ -107,10 +163,18 @@ export default class OperatePotentialPublish extends Vue {
   }
 
   async getDocData() {
+    const holder = moment(this.datetime)
+    holder.set('hours', this.hourSelected)
+    const Datetime = holder.format('YYYY-MM-DD HH:00:00');
     let res = await axios({
       url: this.docDataReqUrl +
-        `{"datetime": "${moment(this.datetime).format('YYYY-MM-DD HH:mm:ss')}";` +
-        `"lat": "${this.latOptionSelected}"}`,
+        `{"png1Cband":"${Datetime},${this.png1CBand}";"png2Visl":"${Datetime},${this.png2Visl}";` +
+        `"png3Qvtc":"${Datetime},${this.png3Qvtc},${this.latOptionSelected}";` +
+        `"png4Qvtr":"${Datetime},${this.png2Visl},${this.latOptionSelected}";` +
+        `"png5Rain3_6":"${Datetime},${this.png5Rain3_6}";` +
+        `"png6Rain3_12":"${Datetime},${this.png6Rain3_12}";` +
+        `"png7Rain3_24":"${Datetime},${this.png7Rain3_24}";` +
+        `"png8Rain3_48":"${Datetime},${this.png8Rain3_48}"}`,
       adapter: jsonp
     })
     this.docData = res.data
@@ -183,5 +247,20 @@ export default class OperatePotentialPublish extends Vue {
         this.editor.txt.html(html)
       })
 
+  }
+
+  getPrescription(start: number = 1) {
+    const arr = []
+    let factor = 1
+    if (typeof start === 'undefined') {
+      
+      factor = 3
+    }
+    for (let i = start; i <= 48; i += factor) {
+      arr.push(
+        i < 10 ? '0' + i : i
+      );
+    }
+    return arr;
   }
 }

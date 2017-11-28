@@ -10,9 +10,9 @@ import * as CONFIG from '../../../config/productId'
 import {getVelLevel} from '../../../util/windHelper'
 import {Message} from 'element-ui'
 import * as moment from 'moment'
-import Vacuate from './Vacuate'
+import Vacuate from './vacuate'
 
-let L, map, tmp, vacuate
+let L, map, vacuate
 let realInfo: any = {         // 存储站点数据
   gdAuto: null,
   gdArea: null,
@@ -89,8 +89,12 @@ export default class ActualproductPopup extends Vue {
   // 获取数据时间
   async getProdTime() {
     let res = await productsClient.getProdTime()
+    console.log(res)
     if (!res) return
     let date = res[0].datetime
+    // let date: any = Date.now()
+    // date = date - date % (6*60*1000) - 30*60*1000
+    
     this.date = new Date(date)
     this.hour = Number(moment(date).format('HH'))
     this.minute = Number(moment(date).format('mm'))
@@ -100,6 +104,17 @@ export default class ActualproductPopup extends Vue {
     let time = moment(this.date).format('YYYY/MM/DD') + ' ' + (this.hour < 10 ? '0' + this.hour : String(this.hour)) + ':' + (this.minute < 10 ? '0' + this.minute : String(this.minute)) + ':00'
     time = moment(time).subtract(8, 'hours').format('YYYY-MM-DD HH:mm:00')
     return time
+  }
+
+  close() {
+    if (this.realType) {
+      for (let i in this.realType) {
+        if (this.realType[i].show) {
+          this.removeLayer(i)
+        }
+      }
+    }
+    this.toggleProductView_global({id: this.productId, action: false})
   }
 
   @Watch('date')
@@ -137,12 +152,15 @@ export default class ActualproductPopup extends Vue {
     }
 
     if (this.stationType[key].show) {
-      for(let i in this.stationType){
-        if(i==key)continue
-        this.stationType[i].show=false
+      for (let i in this.stationType) {
+        if (i == key) continue
+        this.stationType[i].show = false
       }
-      if(key=='gpsSteam'){
-        this.realType['mean31_pwv'].show=true
+      if (key == 'gpsSteam') {
+        for(let i in this.realType){
+          this.realType[i].show=false
+        }
+        this.realType['mean31_pwv'].show = true
       }
 
       if (!realInfo[key]) {
@@ -162,8 +180,6 @@ export default class ActualproductPopup extends Vue {
       }
       // this.addStation(key, realInfo[key])
       this.getProduct(key)
-    } else {
-      this.removeLayer(key)
     }
   }
 
@@ -218,34 +234,36 @@ export default class ActualproductPopup extends Vue {
         if (!this.stationType[type].show) continue
         this.addReal(type, key, realInfo[type])
       }
-    } else {
+    }
+    else {
       this.removeLayer(key)
     }
   }
 
   // 添加站点图标
-  addStation(key, data) {
-    if (key === 'gdArea') {
-      let markers = new L.layerGroup()
-      for (let i in data) {
-        let item = data[i]
-        let marker = L.marker([item.loc.lat, item.loc.lon], {icon: stationIcon})
-        markers.addLayer(marker)
-      }
-      markers.id = key
-      map.addLayer(markers)
-    } else {
-      for (let i in data) {
-        let item = data[i]
-        let marker = L.marker([item.loc.lat, item.loc.lon], {icon: stationIcon})
-        marker.id = key
-        marker.addTo(map)
-      }
-    }
-  }
+  // addStation(key, data) {
+  //   if (key === 'gdArea') {
+  //     let markers = new L.layerGroup()
+  //     for (let i in data) {
+  //       let item = data[i]
+  //       let marker = L.marker([item.loc.lat, item.loc.lon], {icon: stationIcon})
+  //       markers.addLayer(marker)
+  //     }
+  //     markers.id = key
+  //     map.addLayer(markers)
+  //   } else {
+  //     for (let i in data) {
+  //       let item = data[i]
+  //       let marker = L.marker([item.loc.lat, item.loc.lon], {icon: stationIcon})
+  //       marker.id = key
+  //       marker.addTo(map)
+  //     }
+  //   }
+  // }
 
   // 添加站点实况数据
   addReal(type, key, data) {
+    this.removeLayer(key)
     let tmp = []
     let className = `divIcon-${key}`
     for (let i in data) {
@@ -270,7 +288,7 @@ export default class ActualproductPopup extends Vue {
       tmp.push({marker: marker, x: opt.loc.lat, y: opt.loc.lon})
     }
 
-    vacuate = new Vacuate(tmp,key=='wind'?'distance2':'manhattan')
+    vacuate = new Vacuate(tmp, key == 'wind' ? 'distance2' : 'manhattan')
 
     let cb = () => {
       if (this.flag) return
@@ -278,23 +296,20 @@ export default class ActualproductPopup extends Vue {
       this.render2(type, key)
       setTimeout(() => this.flag = false, 50)
     }
-    for (let i in this.listener) {
-      if (i[i.length - 1] == 'z')
-        map.off('zoomend', this.listener[i])
-      else
-        map.off('moveend', this.listener[i])
-    }
-    this.listener = {}
-    this.listener[type + key + 'z'] = cb
-    this.listener[type + key + 'm'] = cb
+    this.listener[key + 'z'] = cb
+    this.listener[key + 'm'] = cb
     map.on('zoomend', cb)
-    map.on('moveend ', cb)
+    map.on('moveend', cb)
     this.render2(type, key)
   }
 
   render2(type, key) {
     //console.time('time')
-    this.removeLayer(key)
+    map.eachLayer(e => {
+      if (e.id == key) {
+        map.removeLayer(e)
+      }
+    })
     let markers = vacuate.render(map, L)
     markers.id = key
     map.addLayer(markers)
@@ -312,9 +327,13 @@ export default class ActualproductPopup extends Vue {
 
   // 删除图层数据
   removeLayer(key) {
-    let reg = new RegExp(key)
     map.eachLayer(e => {
-      if (reg.test(e.id)) map.removeLayer(e)
+      if (e.id == key) {
+        map.removeLayer(e)
+        map.off('zoomend', this.listener[key + 'z'])
+        map.off('moveend', this.listener[key + 'm'])
+        this.listener = {}
+      }
     })
   }
 }

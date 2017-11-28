@@ -98,4 +98,9 @@ export default class HeaderTitle extends Vue {
     }
   }
 
+  @Watch('userInfo_global')
+  onuserInfo_globalChanged (val: any, oldVal: any) {
+    this.toggleCity(val.cityname)
+  }
+
 }

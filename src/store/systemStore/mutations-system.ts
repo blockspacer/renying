@@ -26,6 +26,7 @@ export function closeProductView(state: State) {
 }
 
 export function changeArticleViewHolder(state: State, action: any) {
+  console.dir(action);
   state.articleViewHolder.id = action.id
   state.articleViewHolder.type = action.type
   state.articleViewHolder = { ...state.articleViewHolder }
@@ -373,6 +374,20 @@ export function storeaqiDetailInfo(state: State, data) {
   state.aqiDetailInfo = { ...data }
 }
 
+export function storecolorbarElements (state: State, data: { key: string, type: 'add' | 'remove' }) {
+  if (data.type === 'add') {
+    if (state.colorbarElements[data.key])
+      state.colorbarElements[data.key]++
+    else
+      state.colorbarElements[data.key] = 1
+  } else if (data.type === 'remove') {
+    state.colorbarElements[data.key]--
+    if (!state.colorbarElements[data.key])
+      delete state.colorbarElements[data.key]
+  }
+  state.colorbarElements = { ...state.colorbarElements }
+}
+
 export default <MutationTree<State>>{
   changeUserInfo,
   changeSubMenu,
@@ -398,4 +413,5 @@ export default <MutationTree<State>>{
   toggleIsShowPhoneLiveLayer,
   changePhoneLiveId,
   storeaqiDetailInfo,
+  storecolorbarElements,
 }

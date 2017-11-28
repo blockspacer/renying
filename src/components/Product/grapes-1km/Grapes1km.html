@@ -9,7 +9,8 @@
     </aside>
   </header>
   <main class="cf content-wrapper">
-    <figure v-loading="loading" element-loading-text="正在加载图片">
+    <figure v-loading="loading"
+            element-loading-text="正在加载图片">
       <img :src="imgUrl"
            height="100%"
            width="100%"
@@ -31,14 +32,18 @@
           <li class="date-time-select-wrapper">
             <aside class="left-label-wrapper">选择时分</aside>
             <aside class="right-btn-wrapper">
-              <select-toggle :optionData="hourData" :selectionChange="hourSelectedChange" style="width:68px;float:left"></select-toggle>
+              <select-toggle :optionData="hourData"
+                             :selectionChange="hourSelectedChange"
+                             style="width:68px;float:left"></select-toggle>
               <!-- <select id="forsee-time"
                       v-model="hourSelected">
                 <option v-for="item in hourData"
                         :value="item">{{item}}</option>
               </select> -->
               <span class="hour_min">时</span>
-              <select-toggle :optionData="minuteData" :selectionChange="minuteSelectedChange" style="width:68px;float:left"></select-toggle>
+              <select-toggle :optionData="minuteData"
+                             :selectionChange="minuteSelectedChange"
+                             style="width:68px;float:left"></select-toggle>
               <!-- <select id="forsee-time"
                       v-model="minuteSelected">
                 <option v-for="item in minuteData"
@@ -61,8 +66,9 @@
           <li>
             <aside class="left-label-wrapper">选择预报分钟</aside>
             <aside class="right-btn-wrapper">
-            <select-toggle :optionData="forecastHourData" :selectionChange="forecastHourChange"></select-toggle>
-                
+              <select-toggle :optionData="forecastHourData"
+                             :selectionChange="forecastHourChange"></select-toggle>
+
               <!-- <select id="forsee-time"
                       v-model="forecastHour">
                 <option v-for="item in forecastHourData"

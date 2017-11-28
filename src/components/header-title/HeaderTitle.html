@@ -6,11 +6,11 @@
     <span :class="[{'on': downLoadView},'header_right_download']"  @click="toggleDownloaImg">
       <i></i>
     </span>
-    <span :class="['header_right_council',{'on':accountManagementView}]" @click="toggleAccountManagement">
+    <span :class="['header_right_council',{'on':accountManagementView}]" @click="toggleAccountManagement" v-if="userInfo_global.power == 1">
     </span>
-    <span class="header_right_one">
+    <!-- <span class="header_right_one">
       <i></i>
-    </span>
+    </span> -->
     <span :class="[{'on': managementView},'header_right_set']"
           @click="toggleManagement">
       <i></i>
@@ -30,16 +30,19 @@
     </span>
     <span class="header_right_area"
           :class="{'on': cityListPop }">
-      <p @click="toggleCityList">
-        <a>{{ citySelected }}</a>
-        <em v-if="userInfo_global.power"></em>
-      </p>
-      <ul style="z-index: 3000"
-          v-if="cityListPop && userInfo_global.power">
-        <li v-for="item in cityList"
-            :class="{'on': citySelected === item.city }"
-            @click="toggleCity(item.city)">{{ item.city.replace('市', '') }}</li>
-      </ul>
+      <template v-if="userInfo_global.power == 1">
+        <p @click="toggleCityList">
+          <a>{{ citySelected }}</a>
+          <em v-if="userInfo_global.power"></em>
+        </p>
+        <ul style="z-index: 3000"
+            v-if="cityListPop && userInfo_global.power">
+          <li v-for="item in cityList"
+              :class="{'on': citySelected === item.city }"
+              @click="toggleCity(item.city)">{{ item.city ? item.city.replace('市', '') : '' }}</li>
+        </ul>
+      </template>
+      <p v-else><a>{{ citySelected }}</a></p>
     </span>
   </div>
   <component :is="downLoadView"

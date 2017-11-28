@@ -114,6 +114,10 @@ export function aqiDetailInfo_global (state: State):any {
   return state.aqiDetailInfo
 }
 
+export function colorbarElements_global (state: State):any {
+  return state.colorbarElements
+}
+
 export default <GetterTree<State, any>>{
   userInfo_global,
   subMenu_global,
@@ -144,4 +148,5 @@ export default <GetterTree<State, any>>{
   airRequestData_global,
   phoneLiveData_global,
   aqiDetailInfo_global,
+  colorbarElements_global,
 }

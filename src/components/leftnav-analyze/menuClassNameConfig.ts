@@ -53,7 +53,8 @@ export const secondMenuClassName = {
   nsm60:'s-sixty',
   nsm64:'s-sixtyfour',
   nsm65: 's-sixtyfive',
-  nsm121:'s-onehundredtwentyone'
+  nsm121:'s-onehundredtwentyone',
+  nsm222:'s-twohundredtwentytwo'
 }
 export const thridMenuClassName = {
   ntm1: 't-one',

@@ -11,8 +11,8 @@ export default class Card {
 
   constructor(
     public info:any,
-    public photoSrc: any,
-    public stampSrc: any,
+    public photoSrc: String,
+    public stampSrc: String,
     public font: String='30px jy3',
     public w: number = 780,
     public h: number = 1205,

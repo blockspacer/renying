@@ -17,6 +17,7 @@ let map, L
 })
 export default class ShortRadar extends Vue {
   @Action('systemStore/toggleProductView_global') toggleProductView_global
+  @Action('systemStore/storecolorbarElements_global') storecolorbarElements_global
   productId: string = CONFIG.shortRadar
   isComponetAlive: boolean = true
   radarDate: string = null
@@ -26,7 +27,7 @@ export default class ShortRadar extends Vue {
   qpeqpfDate: string = null
   qpeqpfHour: string = null
   qpeqpfMinute: string = null
-
+  minify: boolean = false
   bounds: any = []
 
   hourData: any = []
@@ -64,7 +65,10 @@ export default class ShortRadar extends Vue {
       if (this.radarProduct[item].layer) map.removeLayer(this.radarProduct[item].layer)
     }
     for (let item in this.qpeqpfProduct) {
-      if (this.qpeqpfProduct[item].layer) map.removeLayer(this.qpeqpfProduct[item].layer)
+      if (this.qpeqpfProduct[item].layer) {
+        map.removeLayer(this.qpeqpfProduct[item].layer)
+        this.storecolorbarElements_global({ key: this.qpeqpfProduct[item].colorParmar, type: 'remove' })
+      }
     }
   }
 
@@ -103,12 +107,12 @@ export default class ShortRadar extends Vue {
   qpeqpfProduct: any = {
     // qpe: { text: 'QPE', show: false, url: this.getQpfQpeUrl('qpe'), layer: null },
     // qpeAdd: { text: 'QPE逐小时累计', show: false, url: this.getQpfQpeUrl('qpe', 3, 60), layer: null }, //
-    qpeSix: { text: 'QPE逐6分钟', show: false, url: this.getQpfQpeUrl('qpe',0,0), layer: null },
+    qpeSix: { text: 'QPE逐6分钟', show: false, url: this.getQpfQpeUrl('qpe',0,0), colorParmar: 'qpe', layer: null },
     // qpeSixAdd: { text: 'QPE逐6分钟累计', show: false, url: '', layer: null },
-    qpf: { text: 'QPF半小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 30), layer: null },
-    qpfAdd: { text: 'QPF一小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 60), layer: null },
-    qpfTwo: { text: 'QPF两小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 120), layer: null },
-    qpfSix: { text: 'QPF三小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 180), layer: null },
+    qpf: { text: 'QPF半小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 30), colorParmar: 'qpf', layer: null },
+    qpfAdd: { text: 'QPF一小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 60), colorParmar: 'qpf', layer: null },
+    qpfTwo: { text: 'QPF两小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 120), colorParmar: 'qpf', layer: null },
+    qpfSix: { text: 'QPF三小时', show: false, url: this.getQpfQpeUrl('qpf', 3, 180), colorParmar: 'qpf', layer: null },
     // qpfSixAdd: { text: 'QPF逐6分钟累计', show: false, url: '', layer: null },
     mixRain:{ text:'融合降水逐小时', show: false, url: this.getQpfQpeUrl('mvil', 0, 0), layer: null },
     // mixRainAdd:{ text:'融合降水逐小时累计', show: false, url: '', layer: null },
@@ -206,8 +210,12 @@ export default class ShortRadar extends Vue {
           this.qpeqpfProduct[key].layer.setUrl(url)
           this.qpeqpfProduct[key].layer.setBounds(L.latLngBounds(L.latLng(this.bounds[0][0], this.bounds[0][1]), L.latLng(this.bounds[1][0], this.bounds[1][1])))
         }
+        if (this.qpeqpfProduct[key].colorParmar)
+          this.storecolorbarElements_global({ key: this.qpeqpfProduct[key].colorParmar, type: 'add' })
       } else {
         if (this.qpeqpfProduct[key].layer) map.removeLayer(this.qpeqpfProduct[key].layer)
+        if (this.qpeqpfProduct[key].colorParmar)
+          this.storecolorbarElements_global({ key: this.qpeqpfProduct[key].colorParmar, type: 'remove' })
       }
     }
     img.onerror = () => {
@@ -216,10 +224,14 @@ export default class ShortRadar extends Vue {
           type: 'warning',
           message: '该时暂无数据'
         })
+      if (this.qpeqpfProduct[key].colorParmar)
+        this.storecolorbarElements_global({ key: this.qpeqpfProduct[key].colorParmar, type: 'remove' })
     }
     img.src = url
   }
   removeQpeqpfImageLayer(key) {
+    if (this.qpeqpfProduct[key].colorParmar)
+      this.storecolorbarElements_global({ key: this.qpeqpfProduct[key].colorParmar, type: 'remove' })
     if (!this.qpeqpfProduct[key].layer) return
     map.removeLayer(this.qpeqpfProduct[key].layer)
     this.qpeqpfProduct[key].layer = null
@@ -278,6 +290,9 @@ export default class ShortRadar extends Vue {
         this.addQpeqpfImageLayer(item, url)
       }
     }
+  }
+  toggleDate() {
+    this.minify = !this.minify
   }
 
 }

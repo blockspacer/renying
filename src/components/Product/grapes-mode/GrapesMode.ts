@@ -157,8 +157,17 @@ export default class GrapesMode extends Vue {
 
   @Watch('scopeSelected')
   onscopeSelectedChanged(val: any, oldVal: any) {
+    for (let i in productData) {
+      for (let el of productData[i]) {
+        for (let opt of el.sub) {
+          opt.isSelected = false
+        }
+      }
+    }
     let ele = Object.keys(this.products[val])[0]
-    this.productSelected = Object.keys(this.products[val][ele].sub)[0]
+    this.productSelected = this.products[val][ele].sub[0].value
+    this.optionData[0]["isSelected"] = true
+    this.optionData[0].sub[0].isSelected = true
     this.productKind = ele
     this.forecast = '000'
     this.changeUrl()

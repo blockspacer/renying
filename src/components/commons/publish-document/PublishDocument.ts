@@ -159,25 +159,25 @@ export default class PublishDocument extends Vue {
       url: this.workStationRequestUrl,
       adapter: jsonp
     })
-    let filterData = [],
-      filteredHolder = []
-    if (this.rkOperateData) {
-      filterData = this.rkOperateData
-    } else if (this.plOperateData) {
-      filterData = this.plOperateData
-    }
-    if (filterData.length > 0)
-      for (let item of res.data.data) {
-        for (let subItem of filterData) {
-          if (subItem.wos.id === item.id &&
-            (typeof this.stage !== undefined ? this.stage == subItem.stage : true)) {
-            filteredHolder.push(item)
-            break
-          }
-        }
-      }
-    else if (this.stage == 0)
-      filteredHolder = res.data.data
+    // let filterData = [],
+    //   filteredHolder = []
+    // if (this.rkOperateData) {
+    //   filterData = this.rkOperateData
+    // } else if (this.plOperateData) {
+    //   filterData = this.plOperateData
+    // }
+    // if (filterData.length > 0)
+    //   for (let item of res.data.data) {
+    //     for (let subItem of filterData) {
+    //       if (subItem.wos.id === item.id &&
+    //         (typeof this.stage !== undefined ? this.stage == subItem.stage : true)) {
+    //         filteredHolder.push(item)
+    //         break
+    //       }
+    //     }
+    //   }
+    // else if (this.stage == 0)
+    let filteredHolder = res.data.data
     this.workStationData = filteredHolder
     this.workStationDataHolder = this.workStationData
   }

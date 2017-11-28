@@ -39,6 +39,7 @@ export default class OperateDemandAnalysisPublish extends Vue {
   async mounted() {
     this.Editor = window['wangEditor']
     this.editor = new this.Editor('#editor')
+    this.editor.customConfig.uploadImgShowBase64 = true
     this.editor.create()
     await this.getDocData()
 

@@ -9,40 +9,11 @@
               v-on:click="minify = !minify"
               :style="{backgroundPositionX: minify ? '-44px' : '0'}"></button> -->
       <button class="close"
-              v-on:click="changeArticleViewHolder_global({id: productId, action: 'history'})"></button>
+              @click="changeArticleViewHolder_global({id: productId, action: 'history'})"></button>
     </aside>
   </header>
 
-  <div class="popup_con">
-    <div class="history_left">
-      <div class="history_article cf">
-        <ul>
-          <li class="history_article_list"
-              v-for="item in optionData"
-              @click="selectedOption = item.id"
-              :class="[selectedOption === item.id ? 'on' : '']">
-            <div class="history_article_left">
-              <div class="history_article_leftIn">
-                <p class="history_article_day">{{year(item)}}年</p>
-                <p class="history_article_month">{{month(item)}}月</p>
-              </div>
-            </div>
-            <div class="history_article_right">
-              <p class="history_article_title">火箭作业预警与发布-{{item.operateType}}</p>
-              <p class="history_article_introduction ">{{item.datetime}}</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <!-- <div class="history_center">
-          <i></i>
-        </div> -->
-    <div class="history_right">
-      <div class="popup_aricle">
-        <div class="history_conIn popup_aricleIn"
-             v-html="htmlString"></div>
-      </div>
-    </div>
+  <div>
+    <components :is="OperateHistory" :word="word"></components>
   </div>
 </main>

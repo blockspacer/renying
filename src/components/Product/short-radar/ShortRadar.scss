@@ -100,6 +100,19 @@
             cursor: pointer;
         }
     }
+    .datetime{
+        margin-top: -10px!important;
+    }
+    .short_radar{
+        margin: 10px 30px;
+        .short_radar_title{
+            height: 30px;
+            line-height: 30px;
+            font-size: 14px;
+            color: #1c1c1c;
+            margin-top: 10px;
+        }
+    }
     .select-toggle{
         width:55px!important;
         border-radius: 5px;

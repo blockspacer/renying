@@ -111,13 +111,6 @@
       margin: 20px 0;
       li{
         height: 81px;
-        &.on{
-          span.question_types{
-            &:before{
-             background-position-x: -36px;
-            }
-          }
-        }
         span{
           display: inline-block;
           float: left;
@@ -126,22 +119,12 @@
           &.question_types{
             position: relative;
             width: calc(10% - 52px);
-            padding-left: 52px;
+            padding-left: 20px;
             color: #989898;
             font-size: 12px;
-            &:before{
-              position: absolute;
-              left: 27px;
-              content: '';
-              width: 18px;
-              height: 18px;
-              background: url(~Img/home_chb.png)no-repeat 0 0/300% 100%;
-              cursor: pointer;
-            }
-            
           }
           &.question_con{
-              width:  calc(55% - 30px);
+              width: 62%;
               line-height: 22px;
               text-align: left;
               padding: 0 15px;
@@ -204,6 +187,14 @@
     }
    
     
+  }
+  .all_score{
+    margin-left: 30px;
+    margin-top: 20px;
+    span.number{
+      color: #eb414f;
+      padding: 0 5px;
+    }
   }
   .ability_bot{
     margin: 15px 0 0 30px;
@@ -502,6 +493,10 @@
       dd{
         float: left;
         color: #1c1c1c;
+        span.score_unit{
+          margin-right: 10px;
+        }
+
         input{
           height: 28px;
           line-height: 28px;
@@ -509,7 +504,10 @@
           border: 1px solid #D8DAE0;
           margin-bottom: 3px;
           padding: 0 15px;
-          margin-right: 10px;
+          margin-right: 5px;
+          &.score_border{
+            width: 25px;
+          }
         
         }
       }

@@ -26,6 +26,7 @@ export default class OperateDemandSurveyPublish extends Vue {
   mounted() {
     this.Editor = window['wangEditor']
     this.editor = new this.Editor('#editor')
+    this.editor.customConfig.uploadImgShowBase64 = true
     this.editor.create()
 
     axios({

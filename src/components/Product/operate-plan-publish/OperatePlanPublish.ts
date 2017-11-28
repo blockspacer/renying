@@ -32,7 +32,7 @@ export default class OperatePlanPublish extends Vue {
   operateReqUrl = 'http://10.148.16.217:11160/renyin5/fp/exists'
   rkOperateData: any[] = []
   plOperateData: any[] = []
-  datetime = moment().format('YYYY-MM-DD HH:mm:ss')
+  datetime = moment().format('YYYY-MM-DD')
   utcSelected = 0
   forecastOptionData = (() => {
     let arr = []
@@ -42,13 +42,18 @@ export default class OperatePlanPublish extends Vue {
     return arr
   })()
   forecastOptionSelected = '000'
-  prescriptionOptionData = ['00', '12', '06', '18']
-  prescriptionSelected = '00'
+  hourOptionData = [0, 12, 6, 18]
+  hourSelected = 0
+  prescriptionSelected = 0
   htmlString = ''
   htmlStringHolder = ''
   docData
   docDataReqUrl = 'http://10.148.16.217:9020/doc/3?&data='
   imgPrefix = 'http://10.148.16.217:9020/dao/png?&path='
+  png500hpa = '000'
+  png700hpa = '000'
+  pngSeaPressure = '000'
+  png24Rain = '000'
 
 
   async created() {
@@ -58,6 +63,7 @@ export default class OperatePlanPublish extends Vue {
   async mounted() {
     this.Editor = window['wangEditor']
     this.editor = new this.Editor('#editor')
+    this.editor.customConfig.uploadImgShowBase64 = true
     this.editor.create()
     axios({
       url: '/static/technical_papers/OperatePlan.html',
@@ -67,6 +73,32 @@ export default class OperatePlanPublish extends Vue {
       await this.getDocData()
       this.replaceHTMLString()
     })
+  }
+
+  async hourChange(val) {
+    this.hourSelected = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png500hpaChange(val) {
+    this.png500hpa = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png700hpaChange(val) {
+    this.png700hpa = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async pngSeaPressureChange(val) {
+    this.pngSeaPressure = val
+    await this.getDocData()
+    this.replaceHTMLString()
+  }
+  async png24RainChange(val) {
+    this.png24Rain = val
+    await this.getDocData()
+    this.replaceHTMLString()
   }
 
   @Watch('prescriptionSelected')
@@ -98,9 +130,15 @@ export default class OperatePlanPublish extends Vue {
   }
 
   async getDocData() {
+    const holder = moment(this.datetime)
+    holder.set('hours', this.hourSelected)
+    const Datetime = holder.format('YYYY-MM-DD HH:00:00');
     let res = await axios({
-      url: this.docDataReqUrl + 
-        `{"datetime": "${moment(this.datetime).format('YYYY-MM-DD DD:mm:ss')}"}`,
+      url: this.docDataReqUrl +
+        `{"png1Dry":"${Datetime}";"png2500Hpa":"${Datetime},${this.png500hpa}";` +
+        `"png3700Hpa":"${Datetime},${this.png700hpa}";` +
+        `"png4SeaPressure":"${Datetime},${this.pngSeaPressure}";` +
+        `"png5Rain24":"${Datetime},${this.png24Rain}"}`,
       adapter: jsonp
     })
     this.docData = res.data
@@ -147,7 +185,7 @@ export default class OperatePlanPublish extends Vue {
       message: `<html><head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         </head><body>` +
-      this.editor.txt.html() + `</body></html>`,
+        this.editor.txt.html() + `</body></html>`,
       note: extraInfoText,
       // userIds: [],
       groupIds: appGroup,
@@ -157,6 +195,20 @@ export default class OperatePlanPublish extends Vue {
       type: 'success',
       message: '发布成功'
     })
+  }
+
+  getPrescription(type: string) {
+    let start = 0
+    const arr = []
+    if (type === 'rain') {
+      start = 24;
+    }
+    for (let i = start; i <= 240; i += 6) {
+      arr.push(
+        i < 10 ? '00' + i : i < 100 ? '0' + i : i
+      );
+    }
+    return arr;
   }
 
   openPublishDocumentPopup() {

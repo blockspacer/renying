@@ -223,7 +223,7 @@
             .progress_btn {
                 position: absolute;
                 left: 230px;
-                top: 24px;
+                top: 4px;
                 width: 100px;
                 height: 70px;
                 button {
@@ -234,6 +234,10 @@
                     color: #fff;
                     font-size: 13px;
                     cursor: pointer;
+                    &.return{
+                        background-color: #4787E1;
+                        margin-bottom: 10px;
+                    }
                     &.enter {
                         background-color: #4787E1;
                         margin-bottom: 10px;

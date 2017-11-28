@@ -133,4 +133,7 @@ export class State {
   // 获取运输所有数据
   getTransportDataUrl = 'http://10.148.16.217:11160/renying/event/'
   aqiDetailInfo: any = {}
+
+  // 颜色条
+  colorbarElements: any = {}
 }

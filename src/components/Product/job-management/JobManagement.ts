@@ -403,4 +403,7 @@ export default class JobManagement extends Vue {
       })
     }
   }
+  downLoadJob() {   //下载excel
+    window.open(`http://10.148.16.217:11160/renyin5/fp/operation/excel/download`)
+  }
 }

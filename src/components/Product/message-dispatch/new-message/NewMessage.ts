@@ -25,6 +25,7 @@ export default class NewMessage extends Vue {
   stationOptionDataHolder = []
   sendTarget = []
   timeoutHolder = null
+  addressee: any = []
 
   created() {
     if (this.appGroupData_global.length > 0) {
@@ -39,7 +40,12 @@ export default class NewMessage extends Vue {
         let temp = Object.assign({}, item)
         this.stationOptionDataHolder.push({
           name: `编号:${item.opId} 指挥员:${item.appUser ? item.appUser.name : ''}`,
-          isToggle: false
+          isToggle: false,
+          data: {
+            userId: item.appUser.id,
+            phone: item.appUser.phone,
+            username: item.appUser.name
+          }
         })
       }
     }
@@ -49,6 +55,7 @@ export default class NewMessage extends Vue {
   computeGroupOptionData() {
     this.groupOptionDataHolder = []
     for (let item of this.appGroupData_global) {
+      if (!item) continue
       let temp = Object.assign(item, {})
       temp.isSelected = false
       temp.isToggle = false
@@ -88,13 +95,13 @@ export default class NewMessage extends Vue {
           this.groupOptionData = Object.assign({}, this.groupOptionDataHolder)
         else {
           for (let item of this.groupOptionDataHolder) {
-            if (item.groupname && item.groupname.includes(val)) {
+            if (typeof item.groupname === 'string' && item.groupname.includes(val)) {
               holder.push(item)
             } else {
               let temp = Object.assign({}, item)
               temp.appUsers = []
               for (let user of item.appUsers) {
-                if (user.name !== null && user.name.includes(val))
+                if (typeof user.name === 'string' && user.name.includes(val))
                   temp.appUsers.push(user)
               }
               if (temp.appUsers.length !== 0)
@@ -109,7 +116,7 @@ export default class NewMessage extends Vue {
         else {
           let holder = []
           for (let item of this.stationOptionDataHolder) {
-            if (item.name.includes(val))
+            if (typeof item.name === 'string' && item.name.includes(val))
               holder.push(item)
           }
           this.stationOptionData = holder
@@ -121,13 +128,29 @@ export default class NewMessage extends Vue {
   toggleItem(item) {
     item.isToggle = !item.isToggle
     this.$forceUpdate()
+    this.computeSendTarget();
   }
 
-  selectSendTarget(item) {
+  selectSendTarget(item, parentItem?) {
     item.isSelected = !item.isSelected
     if (item.appUsers) {
       for (let user of item.appUsers) {
         user.isSelected = item.isSelected
+      }
+    } else {
+      if (!item.isSelected) {
+        parentItem.isSelected = false
+      } else {
+        if (parentItem.appUsers) {
+          let flag = true
+          for (let el of parentItem.appUsers) {
+            if (!el.isSelected) {
+              flag = false
+              break
+            }
+          }
+          parentItem.isSelected = flag
+        }
       }
     }
     this.$forceUpdate()
@@ -135,9 +158,9 @@ export default class NewMessage extends Vue {
   }
 
   computeSendTarget() {
+    console.log('stationOptionData', this.stationOptionData);
     this.sendTarget = []
     if (this.listType === 'group') {
-      console.log(this.groupOptionData)
       for (let key in this.groupOptionData) {
         let item = this.groupOptionData[key]
         let isThisGroupSelected = false
@@ -146,7 +169,8 @@ export default class NewMessage extends Vue {
           if (isThisGroupSelected || user.isSelected)
             this.sendTarget.push({
               phone: user.phone,
-              userId: user.id
+              userId: user.id,
+              name: user.name
             })
         }
       }
@@ -155,8 +179,9 @@ export default class NewMessage extends Vue {
       for (let item of this.stationOptionData) {
         if (item.isToggle)
           this.sendTarget.push({
-            userId: item.id,
-            phone: item.phone
+            userId: item.data.userId,
+            phone: item.data.phone,
+            name: item.data.username
           })
       }
   }

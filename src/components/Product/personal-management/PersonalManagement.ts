@@ -1,12 +1,13 @@
 import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import {Component, Watch} from 'vue-property-decorator'
+import {Action, Getter} from 'vuex-class'
 import WithRender from './PersonalManagement.html?style=./PersonalManagement.scss'
 import * as CONFIG from '../../../config/productId'
 import CreateGroup from './create-group/CreateGroup'
 import EditorMessage from './editor-message/EditorMessage'
 import MakeCard from './make-card/MakeCard'
-import { groupsClient, appUserClient } from '../../../util/clientHelper'
+import {groupsClient, appUserClient} from '../../../util/clientHelper'
+import axios from 'axios'
 
 @WithRender
 @Component
@@ -28,10 +29,10 @@ export default class PersonalManagement extends Vue {
 
   userMsg: any = {}
 
-  allPsnList: any = []
-  personList: any = []
-  notPassedList: any = []
-  currentPageList: any = []
+  allPsnList: Array = []
+  personList: Array = []
+  notPassedList: Array = []
+  currentPageList: Array = []
 
   selectall: boolean = false
 
@@ -76,7 +77,7 @@ export default class PersonalManagement extends Vue {
   }
 
   async updateUser() {
-    let data: any = await groupsClient.getAllMember()
+    let data: Array = await groupsClient.getAllMember()
     if (data === false) {
       Vue.prototype['$message']({
         type: 'error',
@@ -84,18 +85,24 @@ export default class PersonalManagement extends Vue {
       })
       return
     }
-    this.allPsnList = data.map(x => ({ ...x, selected: false }))
+    this.allPsnList = data.map(x => ({...x, selected: false}))
   }
 
   async toggleAll(page = 1) {
+    //console.log(page)
+
     this.groupsListPopup = false
     this.groupSelected = null
     this.itemSelected = null
     await this.updateUser()
-    this.personList = this.allPsnList
-    this.currentPage = page
-    this.currentPageList = this.personList.slice(this.pageSize * (page - 1), this.pageSize * page)
-    this.onkeywordChanged()
+    if(this.keyword!=''){
+      this.onkeywordChanged(this.keyword,this.keyword)
+    }
+    else{
+      this.personList = this.allPsnList
+      this.currentPage = page
+      this.currentPageList = this.personList.slice(this.pageSize * (page - 1), this.pageSize * page)
+    }
   }
 
   async toggleGroup(index: number, page = 1) {
@@ -105,10 +112,14 @@ export default class PersonalManagement extends Vue {
     // if (this.groupSelected === item.id) return
     this.itemSelected = this.group[index]
     this.groupSelected = index
-    this.personList = this.itemSelected.appUsers
-    this.currentPage = page
-    this.currentPageList = this.personList.slice(this.pageSize * (page - 1), this.pageSize * page)
-    this.onkeywordChanged()
+    if(this.keyword!=''){
+      this.onkeywordChanged(this.keyword,this.keyword)
+    }
+    else {
+      this.personList = this.itemSelected.appUsers
+      this.currentPage = page
+      this.currentPageList = this.personList.slice(this.pageSize * (page - 1), this.pageSize * page)
+    }
   }
 
   selectAll() {
@@ -233,23 +244,59 @@ export default class PersonalManagement extends Vue {
     }
   }
 
-  @Watch('keyword')
-  onkeywordChanged(val: string = this.keyword) {
-    let arr = []
-      ; (this.groupSelected != null ? this.itemSelected.appUsers : this.allPsnList).forEach(x => {
-        let isMatch = false
-        let exp = new RegExp(val)
-        for (let i in x) {
-          if (i == 'id' || i == 'password' || i == 'username' || i == 'imageUrl' || i == 'selected') continue
-          if (exp.test(x[i])) {
-            isMatch = true
-            break
-          }
-        }
-        if (isMatch) arr.push(x)
+  selectFile() {
+    let file = document.getElementById("xlsfile")
+    file.click()
+  }
+
+  async upxls(e) {
+    let file = e.target.files[0]
+    if (!file) return
+    let formData = new FormData()
+    formData.append("file", file)
+    let res = await axios.post(
+      "http://10.148.16.217:11160/renyin5/exam/uploadScoreFile",
+      formData,
+      {
+        headers: {'Content-Type': 'multipart/form-data'},
+      }
+    )
+    if(res.status==200&&res.data.stateCode==0){
+      Vue.prototype['$message']({
+        type: 'success',
+        message: '成绩上传成功',
       })
+    }
+    else{
+      Vue.prototype['$message']({
+        type: 'error',
+        message: '成绩上传失败',
+      })
+    }
+  }
+
+  @Watch('keyword')
+  onkeywordChanged(val: String,old:String) {
+    if(old!=val){
+      this.currentPage = 1
+    }
+    let arr = []
+    ;(this.groupSelected != null ? this.itemSelected.appUsers : this.allPsnList).forEach(x => {
+      let isMatch = false
+      let exp = new RegExp(val)
+      for (let i in x) {
+        if (i == 'id' || i == 'password' || i == 'username' || i == 'imageUrl' || i == 'selected') continue
+        if (exp.test(x[i])) {
+          isMatch = true
+          break
+        }
+      }
+      if (isMatch) arr.push(x)
+    })
     this.personList = arr
-    this.currentPage = 1
-    this.currentPageList = this.personList.slice(0, this.pageSize)
+    this.currentPageList = this.personList.slice(this.pageSize * (this.currentPage - 1), this.pageSize * this.currentPage)
+  }
+  downLoadPerson() {
+    window.open(`http://10.148.16.217:11160/renyin5/appuser/excel/download`)
   }
 }

@@ -43,6 +43,7 @@ export const aircraftCommand = 'nsm29' //飞机作业跟踪指挥
 export const groundControl = 'nsm30' //地面作业跟踪指挥
 export const phoneLiveMonitor = 'nsm59' //手机直播监测
 export const groundMsgCollection = 'nsm39' //地面信息采集
+export const orderDispatch = 'nsm222'     //指令调度
 export const operateDemandAnalysis = 'nsm1'
 export const operateDemandSurvey = 'nsm2'
 export const operatePlan = 'nsm11'

@@ -17,12 +17,12 @@ import SelectToggle from '../../commons/select-toggle/SelectToggle'
 let markerCollection = [],
   L = window['L']
 
-  @WithRender
-  @Component({
-    components: {
-      SelectToggle
-    }
-  })
+@WithRender
+@Component({
+  components: {
+    SelectToggle
+  }
+})
 export default class Grapes1km extends Vue {
   @Action('systemStore/toggleProductView_global') toggleProductView_global
 
@@ -92,9 +92,10 @@ export default class Grapes1km extends Vue {
   }
   @Watch('minuteSelected')
   onminuteSelectedChanged (val: any, oldVal: any) {
-    
+    this.computeHouAndMinute()
+    this.draw()
   }
-  minuteSelectedChange(val){
+  minuteSelectedChange(val) {
     this.minuteSelected = val
   }
   @Watch('date')
@@ -114,7 +115,7 @@ export default class Grapes1km extends Vue {
     this.computeHouAndMinute()
     this.draw()
   }
-  hourSelectedChange(val){
+  hourSelectedChange(val) {
     this.hourSelected = val
   }
   @Watch('elementSelected')

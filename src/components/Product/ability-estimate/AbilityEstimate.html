@@ -27,13 +27,13 @@
     <ul class="scrollbar">
       <li :class="{'on': item.questionSelected}"
           v-for="(item, key) in questionList">
-        <span class="question_types" @click="toggleQuestion(item)">{{ questionType[item.questionType].text }}</span>
+        <span class="question_types">{{ questionType[item.questionType].text }}</span>
         <span class="question_con">{{ item.questionContent ? item.questionContent.replace(/\$/g, '____') : '' }}</span>
         <span class="answer_con">{{ item.questionKey ? item.questionKey.replace(/\$/g, ', ') : ''  }}</span>
-        <span class="operate">
+        <!-- <span class="operate">
           <i class="editor"></i>
           <i class="delete"></i>
-        </span>
+        </span> -->
       </li>
     </ul>
     <section class="product_page cf">
@@ -57,14 +57,16 @@
         <span class="number">{{ Object.keys(questionSelectedList[key]).length }}</span>
       </template>
      
-      <template v-if="allScores">总分值<span class="number">{{ allScores }}</span></template>
+      <!-- <template v-if="allScores">总分值<span class="number">{{ allScores }}</span></template> -->
     </span>
     <span class="btn">
 
-      <button class="create" @click="creatExams" v-if="!btnPoppup">生成试卷</button>
-      <button class="create download" @click="creatExam" v-if="btnPoppup">下载试卷</button>
-      <button class="upload" @click="uploadExam" v-if="!btnPoppup">上传试题</button>
-      <button class="upload cancel" @click="cancelBtn" v-if="btnPoppup">取消</button>
+      <button class="create" @click="creatExams">生成试卷</button>
+      <!-- <button class="create" @click="creatExams" v-if="!btnPoppup">生成试卷</button> -->
+      <!-- <button class="create download" @click="creatExam" v-if="btnPoppup">下载试卷</button> -->
+      <button class="upload" @click="uploadExam">上传试题</button>
+      <!-- <button class="upload" @click="uploadExam" v-if="!btnPoppup">上传试题</button>
+      <button class="upload cancel" @click="cancelBtn" v-if="btnPoppup">取消</button> -->
     </span>
     
   </section>
@@ -178,11 +180,14 @@
     <dl v-for="item in questionType" class="cf">
       <dt>{{ item.text }}</dt>
       <dd>
-        <input type="text" v-model="item.value"><span>分/题</span>
+        <input type="text" v-model="item.value" class="score_border"><span class="score_unit">分/题</span>
+        <input type="text" class="score_border" v-model="item.number">题
       </dd>
     </dl>
+    
   </section>
-  <button class="create_btn" @click="confirmScore">确定</button>
+  <p class="all_score">总分值 <span class="number">{{ allScores }}</span></p>
+  <button class="create_btn" @click="confirmScore">下载</button>
   </div>
 
   <!--下载试卷-->
@@ -216,7 +221,7 @@
             v-for="(item, key) in questionType">已选{{ item.text }}
           <span class="number">{{ Object.keys(questionSelectedList[key]).length }}</span>
         </template>
-        <template v-if="allScores">总分值<span class="number">{{ allScores }}</span></template>
+        <!-- <template v-if="allScores">总分值<span class="number">{{ allScores }}</span></template> -->
     </section>
       
   </div>

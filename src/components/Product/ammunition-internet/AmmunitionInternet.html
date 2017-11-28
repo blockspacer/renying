@@ -1,12 +1,10 @@
 <main id="AmmunitionInternet"
       class="weather-product-window" 
-      v-drag=''>
+      v-drag=''
+      :style="{width: ammunitionEventsPop ? '1210px' : '985px'} ">
   <header>
   <span>弹药装备物联网</span>
   <aside>
-  <button class="mini"
-          v-on:click="minify = !minify"
-          :style="{backgroundPositionX: minify ? '-44px' : '0'}"></button>
   <button class="close"
           v-on:click="toggleProductView_global({id: productId, action: false})"></button>
   </aside>
@@ -26,6 +24,11 @@
       </p>
     </div>
     <div class="internet_left_area">
+      <ul class="internet_left_title">
+        <li>名称</li>
+        <li>地点</li>
+        <li>库存</li>
+      </ul>
       <ul class="scrollbar internet_list">
         <li v-for="(item, index) in addStoreLists" 
             :class="{'on' : selectedRepository === item.id}"
@@ -50,37 +53,105 @@
             @click="addStoreHouse">新增仓库</button>
   </section>
   <section class="internet_right">
-    <ul class="title_list">
-      <li class="useway header_li">
-        <span>炮弹用途</span>
-        <i class="ammunition_useway" @click="toggleAppuserType" :class="{'on':appuserTypePop}"></i>
-        <div class="appuserPop appuserPop_out" v-if="appuserTypePop">
-          <ul class="scrollbar searchUseway">
-            <li @click="toggleUsage('全部')" 
-                :class="{'on': usageSelected === '全部'}"
-                :title="'全部'">全部</li>
-            <li v-for="item in usageList" 
-                @click="toggleUsage(item)" 
-                :class="{'on': usageSelected === item}"
-                :title="item">{{ item }}</li>
-          </ul> 
-        </div>
-      </li>
-      <li class="header_li">类型</li>
-      <li class="header_li">数量</li>
-      <li class="header_li">生产厂家</li>
-      <li class="createdate header_li">
-        <span>生产日期</span>
-        <!-- <i class="icon_top"></i><i class="icon_bottom"></i> -->
-      </li>
+    <p class="internet_right_msg">
+      <span>列表信息</span>
+      <span>正常</span>
+      <span>即将过期</span>
+      <span>已过期</span>
+      <span class="icon">
+        <i :class="['list',{'on': typeSelected === 'listPop'}]" @click="toggleListType('listPop')"></i>
+        <i :class="['histogram',{'on': typeSelected === 'histogramPop'}]" @click="toggleListType('histogramPop')"></i>
+        <i :class="['pie',{'on': typeSelected === 'piePop'}]" @click="toggleListType('piePop')"></i>
+      </span>
+    </p>
+    <div class="internet_right_list" v-if="typeSelected === 'listPop'">
+     <ul class="title_list">
+        <template v-for="item of titleList">
+          <li class="header_li useway" v-if="item === '弹药样式'" @click="appuserTypePop=!appuserTypePop" >
+              <span>{{ item }}</span>
+              <i :class="['ammunition_useway',{'on':appuserTypePop}]"></i>
+              <div class="appuserPop appuserPop_out" v-if="appuserTypePop">
+                <ul class="scrollbar searchUseway">
+                  <template>
+                      <li @click.stop="toggleStyle('全部')" 
+                      :class="{'on': styleSelected === '全部'}"
+                      :title="'全部'">全部</li>
+                      <li v-for="item in styleList" 
+                          @click.stop="toggleStyle(item)" 
+                          :class="{'on': styleSelected === item}"
+                          :title="item">{{ item }}</li>
+                  </template>
+                </ul> 
+              </div>
+          </li>
+          <li class="header_li date_time" v-else-if="item === '生成日期'" @click="datetimePop=!datetimePop">
+            <span>{{ item }}</span>
+            <i :class="['date_time_icon',{'on': datetimePop}]"></i>
+            <div class="appuserPop" v-if="datetimePop">
+              <ul class="scrollbar searchUseway">
+                <template>
+                    <li @click.stop="toggleDatetime('全部')" 
+                    :class="{'on': datetimeSelected === '全部'}"
+                    :title="'全部'">全部</li>
+                    <li v-for="item in datetimeList" 
+                        @click.stop="toggleDatetime(item)" 
+                        :class="{'on': datetimeSelected === item}"
+                        :title="item">{{ item }}</li>
+                </template>
+              </ul>
+            </div>
+          </li>
+          <li class="header_li" v-else>{{ item }}</li>
+        </template>
+      </ul>
+      <ul class="ammunition_list scrollbar">
+        <li v-for="(item, index) in currentPageList" @click="toggleAmmunitionEvent(item)" 
+            :class="[item.ammunitionStatus, {'on': ammunitionSelected === item.id }]">
+          <!-- <span>{{ item.usage || '---' }}</span>
+          <span>{{ item.code.slice(0,2) == '03' ?  '弹药箱' : '弹药' }}</span>
+          <span>{{ item.code.slice(0,2) == '03' ?  4 : 1 }}</span>
+          <span>{{ item.mfr || '---' }}</span>
+          <span>{{ item.year || '---' }}</span> -->
+          <span>{{ item.type || '---' }}</span>
+          <span>{{ item.mfr || '---' }}</span>
+          <span>{{ item.usage || '---' }}</span>
+          <span>{{ item.catalyzer|| '---' }}</span>
+          <span>{{ item.style || '---' }}</span>
+          <span>{{ item.modelNo || '---' }}</span>
+          <span>{{ item.year || '---' }}</span>
+          <span>{{ moment(item.lastTime).format('YYYYMMDD') || '---' }}</span>
+          <span>{{ item.code || '---'  }}</span>
+          <span>{{ status[item.status] || '---' }}</span>
+        </li>
+      </ul>
+      <div class="product_page">
+        <el-pagination small
+                       :page-size="pageSize"
+                       layout="prev, pager, next"
+                       @current-change="currentChange"
+                       :total="selAmmunitionList.length">
+        </el-pagination>
+      </div>
+    </div>
+    <div id="histogramPop" class="internet_right_histogram" v-if="typeSelected === 'histogramPop'">
+
+    </div>
+    <div id="piePop" class="internet_right_pie" v-if="typeSelected === 'piePop'">
+        
+    </div>
+    
+  </section>
+  <section class="internet_history" v-show="ammunitionEventsPop">
+    <ul class="internet_history_title">
+      <li>日期</li>
+      <li>操作人</li>
+      <li>类型</li>
     </ul>
-    <ul class="ammunition_list scrollbar">
-      <li v-for="(item, index) in selAmmunitionList">
-        <span>{{ item.usage || '---' }}</span>
-        <span>{{ item.code.slice(0,2) == '03' ?  '弹药箱' : '弹药' }}</span>
-        <span>{{ item.code.slice(0,2) == '03' ?  4 : 1 }}</span>
-        <span>{{ item.mfr || '---' }}</span>
-        <span>{{ item.year || '---' }}</span>
+    <ul class="internet_history_con scrollbar">
+      <li v-for="(item,index) in ammunitionEvents">
+        <span>{{ moment(item.startime).format('YYYYMMDD') }}</span>
+        <span>{{ appUserList[item.userId] ? appUserList[item.userId].name : '---' }}</span>
+        <span>{{ eventType[item.type] }}</span>
       </li>
     </ul>
   </section>

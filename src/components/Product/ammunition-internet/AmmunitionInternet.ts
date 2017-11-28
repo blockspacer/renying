@@ -3,8 +3,15 @@ import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import WithRender from './AmmunitionInternet.html?style=./AmmunitionInternet.scss'
 import * as CONFIG from '../../../config/productId'
-import { AmmunitionInternetClient, geoClient } from '../../../util/clientHelper'
+import { AmmunitionInternetClient, geoClient ,groupsClient} from '../../../util/clientHelper'
 import * as moment from 'moment'
+import echarts from 'echarts/lib/echarts'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/pie'
+import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/legend'
+
+let myChart: any = null
 
 @WithRender
 @Component
@@ -16,6 +23,7 @@ export default class AmmunitionInternet extends Vue {
   ammunitionCounty: string = ''
   addModifyStorePop: boolean = false
   appuserTypePop: boolean = false
+  datetimePop: boolean = false
   addStoreTitle: any = {
     id: { value: null },
     name: { name: '名称', value: null },
@@ -29,16 +37,36 @@ export default class AmmunitionInternet extends Vue {
   popupType: 'add' | 'modify' = null
   cityList: any = []
   allAmmunitionList: any = []         //仓库弹药弹药箱列表
-  selAmmunitionList: any = []         //筛选后仓库弹药弹药箱列表
+  selAmmunitionList: any = []         //筛选后 仓库弹药弹药箱列表
   selectedRepository: string = null         //选中仓库Id
-  usageList: any = []                  //炮弹用途
-  usageSelected: string = ''
-
-  mounted() {
+  styleList: any = []                  //炮弹样式
+  datetimeList: any = []               //生产日期
+  styleSelected: string = ''
+  datetimeSelected: string = ''
+  titleList: any = ['分类码','厂商代码','使用方式','催化种类','弹药样式','弹药型号','年号','生成日期','编码','状态']
+  status: any = { stored: '在库', out:'在外', inTransit: '在运', used: '已使用', destroyed: '已销毁', }
+  listPop: string = '' 
+  histogramPop: string = '' 
+  piePop: string = '' 
+  ammunitionSelected: string = ''
+  ammunitionEvents: any[] = []
+  eventType: any = {store: '入库',takeout: '出库',transport: '运输',destroy: '销毁', work:'作业',other: '自定义'}
+  appUserList: any = {}
+  ammunitionEventsPop: boolean = false
+  pageSize: number = 12
+  currentPage: number = 1       // 当前页数
+  currentPageList: any = []     // 当前页数 用户数据
+  typeSelected: string = '' 
+  async mounted() {
     this.getRepository()
     this.geoClient()
     this.ammunitionCounty = 'all'
-
+    this.typeSelected = 'listPop'
+    let data = await groupsClient.getAllMember()
+    for(let item of data){
+      this.appUserList[item.id] = item
+    }
+    
 
   }
   async geoClient() {       //获取地址信息
@@ -79,7 +107,8 @@ export default class AmmunitionInternet extends Vue {
     this.repositoryList = data
     this.addStoreLists = data
     this.toggleAmmunition(data[0].id)
-    this.usageSelected = '全部'
+    this.styleSelected = '全部'
+    this.datetimeSelected = '全部'
   }
 
   async updateRepository() {    //添加 修改仓库
@@ -172,16 +201,14 @@ export default class AmmunitionInternet extends Vue {
     }
   }
 
-  toggleAppuserType() {
-    this.appuserTypePop = !this.appuserTypePop
-  }
   matchList(key) {            //搜索过滤
     this.addStoreLists = []
     for (let el of this.repositoryList) {
       let isMatch: boolean = false
       for (let i in el as string[]) {
         if (i === 'lon' || i === 'id' || i === 'lat' || i === 'level' || i === 'manager') continue
-        if (el[i].includes(key)) {
+        let reg = new RegExp(key) 
+        if (reg.test(el[i])) {
           isMatch = true
           break
         }
@@ -228,32 +255,156 @@ export default class AmmunitionInternet extends Vue {
       return
     }
 
+    this.styleList = [] 
+    this.datetimeList = []      
+    // data[0].lastTime = 1511410367235   
+    // data[0].style = '枪'   
+    // data[1].style = '炮'
+    // data[1].status = 'stored'
+    // data.push(JSON.parse(JSON.stringify(data[0])), JSON.parse(JSON.stringify(data[0])))
+    // data[2].lastTime = 1412128800000
+    // data[2].status = 'stored'
+    // data[3].lastTime = 1443664800000
+    // data[3].status = 'used'
+    for (let item of data) {        
+      this.$set(item, 'time', moment(item.lastTime).format('YYYYMMDD'))
+      let ammunitionStatus
+      if (item.status ==='destroyed') ammunitionStatus = 'destroyed'
+      else {
+        if (Date.now() - item.lastTime > 3*365*24*60*60*1000) ammunitionStatus = 'overdue'
+        else if (Date.now() - item.lastTime > 2*365*24*60*60*1000) ammunitionStatus = 'expiring'
+        else ammunitionStatus = 'normal'
+      }
+      this.$set(item, 'ammunitionStatus', ammunitionStatus)       //添加炮弹状态颜色辨别字段
+      if (this.styleList.indexOf(item.style) === -1) this.styleList.push(item.style)    //炮弹用途列表
+      if (this.datetimeList.indexOf(item.time) === -1) this.datetimeList.push(item.time)    //生产日期列表
+    }
     this.allAmmunitionList = data
     this.selAmmunitionList = data
-    console.log(this.allAmmunitionList)
-    this.usageList = []
-    for (let item of this.allAmmunitionList) {        //炮弹用途列表
-      if (this.usageList.indexOf(item.usage) === -1)
-        this.usageList.push(item.usage)
-    }
+    this.currentPageList = this.selAmmunitionList.slice(0,this.pageSize)
   }
   toggleAmmunition(id) {
+    if (this.ammunitionSelected) {
+      this.ammunitionEvents = []
+      this.ammunitionEventsPop = false
+    } 
     this.getAmmunitionMsg(id)
     this.selectedRepository = id
-  }
-  toggleUsage(key) {       //炮弹用途筛选按钮
-    this.usageSelected = key
-    this.selAmmunitionList = []
-
-    for (let item of this.allAmmunitionList) {
-      if (key === '全部') {
-        this.selAmmunitionList = this.allAmmunitionList
-      } else {
-        if (item.usage === key) this.selAmmunitionList.push(item)
-      }
+    this.currentPage = 1
+    this.currentPageList = this.selAmmunitionList.slice(0, this.pageSize)
+    this.typeSelected = 'listPop'
+    if (myChart) {
+      echarts.dispose(myChart)
+      myChart = null
     }
-    console.log(this.selAmmunitionList)
+  }
+  toggleStyle(key) {       //炮弹用途筛选按钮
+    this.styleSelected = key
+    this.queryAmmunitionList()
     this.appuserTypePop = false
+  }
+  toggleDatetime(key) {  //生产日期筛选按钮
+    this.datetimeSelected = key
+    this.queryAmmunitionList()
+    this.datetimePop = false
+  }
+  queryAmmunitionList() {       // 筛选
+    this.selAmmunitionList = []
+    for (let item of this.allAmmunitionList) {
+      if (this.styleSelected !== '全部' && item.style !== this.styleSelected) continue
+      if (this.datetimeSelected !== '全部' && item.time !== this.datetimeSelected) continue
+      this.selAmmunitionList.push(item)
+    }
+    this.currentPage = 1
+    this.currentPageList = this.selAmmunitionList.slice(0, this.pageSize)
+  }
+ 
+  async toggleAmmunitionEvent(item) { //获取指定弹药/弹药箱的事件历史
+    this.ammunitionSelected = this.ammunitionSelected === item.id ? null : item.id
+    if (this.ammunitionSelected) {
+      this.ammunitionEventsPop = true
+      let data
+      if (item.code.slice(0,2) == '03')  // 弹药箱
+        data = await AmmunitionInternetClient.getAmmunitionBoxEvent(item.id)
+      else
+        data = await AmmunitionInternetClient.getAmmunitionEvent(item.id)
+      if(data) {
+        this.ammunitionEvents = data
+      }
+    } else {
+      this.ammunitionEvents = []
+      this.ammunitionEventsPop = false
+    }
+  }
+  currentChange(e) {
+    this.currentPage = e
+    this.currentPageList = this.selAmmunitionList.slice(this.pageSize*(e-1), this.pageSize*(e-1) + this.pageSize)
+  }
+  toggleListType(key) {  //展示方式选择
+    if (myChart) {
+      echarts.dispose(myChart)
+      myChart = null
+    }
+    this.typeSelected = key
+    if (key === 'listPop') return
+    let normaldNum = 0,
+        expiringNum = 0,
+        overdueNum = 0
+        for (let el of this.allAmmunitionList) {
+          let num = el.code.slice(0,2) == '03' ?  4 : 1
+          if (el.ammunitionStatus === 'normal') normaldNum += num
+          else if (el.ammunitionStatus === 'expiring') expiringNum += num
+          else if (el.ammunitionStatus === 'overdue') overdueNum += num
+        }
+        let seriesData = [
+          { name: '正常', value: normaldNum, itemStyle: { normal: { color: '#1c1c1c' } } },
+          { name: '即将过期', value: expiringNum, itemStyle: { normal: { color: '#f7931e' } } },
+          { name: '已过期', value: overdueNum, itemStyle: { normal: { color: '#eb414f' } } }
+        ]     
+    if (key === 'histogramPop') {
+      this.$nextTick(() => {
+        myChart = echarts.init(document.getElementById('histogramPop'))
+        myChart.setOption({
+          tooltip: {},
+          xAxis: { data: ['正常', '即将过期', '已过期'] },
+          yAxis: {},
+          series: [{
+            name: '数量',
+            type: 'bar',
+            data: seriesData
+          }]
+        })
+      })
+      
+    } else if (key === 'piePop') {
+      this.$nextTick(() => {
+        myChart = echarts.init(document.getElementById('piePop'))
+        myChart.setOption({
+          tooltip : {},
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['正常','即将过期','已过期']
+          },
+          series : [
+            {
+              name: '数量',
+              type: 'pie',
+              radius : '55%',
+              center: ['50%', '60%'],
+              data: seriesData,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        })
+      })
+    }
   }
 }
 

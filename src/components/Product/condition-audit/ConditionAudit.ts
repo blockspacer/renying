@@ -54,8 +54,14 @@ export default class ConditionAudit extends Vue {
   checkSelected: any = []
   mounted(){
     this.findsJobPoint()
+    this.geoClient()
   }
-  
+  async geoClient(){
+    let data = await geoClient.getCities()
+    for (let el of data) {
+      this.cityList[el.city] = 1
+    }
+  }
   async findsJobPoint() {   //查询作业点
 
     let data = await jobManagementClient.findsJobPoint()
@@ -130,6 +136,13 @@ export default class ConditionAudit extends Vue {
     window.open(`http://10.148.16.217:11160/renyin5/fp/operation/files/download/${this.operationSeleted}/${item}`)
   }
   batchDownload(item) {  //批量下载
+    if(!Object.keys(this.checkSelected).length){
+      Vue.prototype['$message']({
+        type: 'error',
+        message: '请选择需要下载的文件'
+      })
+      return
+    }
     for(let item of this.checkSelected){
       window.open(`http://10.148.16.217:11160/renyin5/fp/operation/files/download/${this.operationSeleted}/${item}`)
     }

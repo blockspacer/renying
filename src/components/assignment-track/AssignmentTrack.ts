@@ -77,17 +77,22 @@ export default class AssignmentTrack extends Vue {
       }
     }
   }
-  async changeStage(type: 'next' | 'stop') {
+
+  async changeStage(type: 'next' | 'stop' | 'previous') {
     let params = {
       osId: this.operateSelected.wos.id,
       type: this.operateSelected.type,
       stage: 0
     }
-    if (type === 'next') {
+    if (type === 'previous') {
+      params.stage = this.operateSelected.stage - 1
+    } else if (type === 'next') {
       params.stage = this.operateSelected.stage + 1
     } else {
       params.stage = 6
     }
+    
+
     let res = await axios({
       url: this.changeStageUrl,
       params

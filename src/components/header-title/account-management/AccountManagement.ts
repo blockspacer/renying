@@ -3,6 +3,8 @@ import { Component, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import WithRender from './AccountManagement.html?style=./AccountManagement.scss'
 import { webuserClient } from '../../../util/clientHelper'
+import { safetyClient } from '../../../util/clientHelper'
+import { geoClient } from '../../../util/clientHelper'
 @WithRender
 @Component
 export default class AccountManagement extends Vue {
@@ -20,17 +22,26 @@ export default class AccountManagement extends Vue {
     id: { value: null },
     username: { name: '用户名', value: null },
     password: { name: '密码', value: null },
-    power: { name: '所属', value: null },
+    cityname: { name: '所属', value: null }
   }
+  allCities: any = []
   mounted() {
     this.getWebuser()
+    this.getAllCity()
   }
+
   async getWebuser() {
     let data = await webuserClient.getWebuser()
     if(data){
       this.accountList = data
       this.newAccountList = data
       this.currentPageList = this.newAccountList.slice(this.pageSize*(this.currentPage-1), this.pageSize*(this.currentPage-1) + this.pageSize)
+    }
+  }
+  async getAllCity() {    // 获取所有城市
+    let data = await geoClient.getCities()
+    for (let el of data) {
+      this.allCities.push(el.city.slice(0, 2))
     }
   }
   toggleAddAccount() {  //新增账号
@@ -53,7 +64,7 @@ export default class AccountManagement extends Vue {
     this.popupInfo.username.value = item.username
     this.popupInfo.id.value = item.id
     this.popupInfo.password.value = item.password
-    this.popupInfo.power.value = item.power
+    this.popupInfo.cityname.value = item.cityname
     this.popupType = 'modify'
     this.isPopupOn = true
   }
@@ -84,7 +95,8 @@ export default class AccountManagement extends Vue {
       let param = {
         username: this.popupInfo.username.value,
         password: this.popupInfo.password.value,
-        power: this.popupInfo.power.value
+        cityname: this.popupInfo.cityname.value,
+        power: 2
       }
       data = await webuserClient.addWebuser(param)
       tip = '添加'
@@ -122,9 +134,7 @@ export default class AccountManagement extends Vue {
     for(let el of this.accountList) {
       let isMarch: boolean = false
       for(let i in el) {
-        let valString
-        if (i === 'power') valString = el.power === '1' ? '省' : (el.power === '2' ? '市'  : '县' )
-        else valString = el[i]
+        let valString = el[i]
         if(exp.test(valString)){
           isMarch = true
           break

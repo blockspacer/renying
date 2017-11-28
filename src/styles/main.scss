@@ -26,20 +26,7 @@ p{
   box-sizing: border-box;
   padding: 15px;
 }
-.history_article_list{
-    box-sizing: border-box;
-    border: solid 1px transparent;
-    cursor: pointer;
-    &.on{
-      border-color: #4787e1;
-    }
-    div:first-of-type{
-      height: 98px !important;
-    }
-    div:last-of-type{
-      height: 74px !important;
-    }
-  }
+
 .cf:after,
 .cf:before {
     content: '';
@@ -121,7 +108,7 @@ ul {
   width: 168px !important;
 }
 
-.scrollbar::-webkit-scrollbar { 
+.scrollbar::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
@@ -146,9 +133,9 @@ ul {
 .el-transfer-panel__list.is-filterable {
     height: 460px!important;
   }
-  .el-transfer-panel__list.is-filterable::-webkit-scrollbar { 
+  .el-transfer-panel__list.is-filterable::-webkit-scrollbar {
     width: 6px;
-    height: 6px; 
+    height: 6px;
   }
   .el-transfer-panel__list.is-filterable::-webkit-scrollbar-thumb {
     background: #DDDEE4;
@@ -213,7 +200,7 @@ ul {
       }
     }
   }
-  
+
 .w-e-text-container{
   height: calc(100% - 28px) !important;
   box-sizing: border-box;

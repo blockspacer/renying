@@ -98,6 +98,7 @@ export default class Grapes3km extends Vue {
   @Watch('date')
   dateChanged(val: any, oldVal: any): void {
     this.computeHouAndMinute()
+    this.draw()
   }
   @Watch('hourSelected')
   hourSelectedChanged(val: any, oldVal: any): void {
@@ -109,7 +110,19 @@ export default class Grapes3km extends Vue {
   }
   @Watch('regionSelected')
   regionSelectedChange(val) {
+    for (let i in productData) {
+      for (let el of productData[i]) {
+        for (let opt of el.sub) {
+          opt.isSelected = false
+        }
+      }
+    }
     this.optionData = this.productData[val]
+    let ele = Object.keys(this.productData[val])[0]
+    this.elementSelected = this.productData[val][ele].sub[0].value
+    this.draw()
+    this.optionData[0]["isSelected"] = true
+    this.optionData[0].sub[0].isSelected = true
   }
   @Watch('forecastHour')
   forecastHourChanged(val: any, oldVal: any): void {

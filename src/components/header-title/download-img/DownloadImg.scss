@@ -31,12 +31,16 @@
     padding: 15px 30px!important;
   }
   .actually_product_title,.forecast_product_title{
-    height: 30px;
+    height: 28px;
     line-height: 30px;
     color: #1c1c1c;
     font-size: 15px;
     font-weight: bold;
     margin-bottom: 10px;
+  }
+  .actually_product_title{
+    margin-top: 12px;
+    margin-left: 30px;
   }
   .forecast_product_titleIn{
     margin-right: 15px;
@@ -64,12 +68,18 @@
   }
   .forecast_product_con{
     float: left;
-    width: 384px;
-    height: 110px;
+    width: 442px;
+    height: 132px;
     background-color: #f0f1f4;
+    border: 1px solid #f0f1f4;
     font-size: 14px;
-    padding: 12px 30px;
-    margin-bottom: 10px;;
+    margin-bottom: 10px;
+    &.on{
+      border: 1px solid #4787E1;
+    }
+    dl{
+      margin-left: 30px;
+    }
   }
   .forecast_product_con:nth-child(2n+1){
     margin-right: 10px;

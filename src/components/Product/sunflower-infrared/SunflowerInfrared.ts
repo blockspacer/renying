@@ -50,6 +50,11 @@ export default class SunflowerInfrared extends Vue {
     }
   }
 
+  beforeDestroy() {
+    if (this.intervalHolder)
+      clearInterval(this.intervalHolder)
+  }
+
   async initTimeRanger() {
     let t = await this.getLatestHour()
     let nextTime = new Date(t).getTime()
@@ -119,7 +124,7 @@ export default class SunflowerInfrared extends Vue {
 
   toggleProTime(index) {
     this.timeIndexSelected = index
-    let time = moment(new Date(this.timeRange[0] - this.timeRange[0] % (10 * 60 * 1000))).add('minute', (index - 1) * 10).get('milliseconds')
+    let time: any = moment(new Date(this.timeRange[0] - this.timeRange[0] % (10 * 60 * 1000))).add((index - 1) * 10, 'minutes')
     this.productTime = new Date(time)
     this.changeUrl(this.areaSelected, this.productSelected, moment(this.productTime).format('YYYY-MM-DD HH:mm:00'))
   }
@@ -133,7 +138,8 @@ export default class SunflowerInfrared extends Vue {
       prog.scrollTop = inner.offsetHeight
     }
     this.timeIndexSelected--
-    this.productTime = new Date(moment(this.productTime).subtract('minutes', 10).get('milliseconds'))
+    let time: any = moment(this.productTime).subtract(10, 'minutes')
+    this.productTime = new Date(time)
     this.changeUrl(this.areaSelected, this.productSelected, moment(this.productTime).format('YYYY-MM-DD HH:mm:00'))
     if (this.intervalHolder) this.play()
   }
@@ -145,7 +151,8 @@ export default class SunflowerInfrared extends Vue {
       prog.scrollTop = 0
     }
     this.timeIndexSelected++
-    this.productTime = new Date(moment(this.productTime).add('minutes', 10).get('milliseconds'))
+    let time: any = moment(this.productTime).add(10, 'minutes')
+    this.productTime = new Date(time)
     this.changeUrl(this.areaSelected, this.productSelected, moment(this.productTime).format('YYYY-MM-DD HH:mm:00'))
     if (this.intervalHolder) this.play()
   }
@@ -178,7 +185,7 @@ export default class SunflowerInfrared extends Vue {
             prog.scrollTop = innerHeight / (this.totalRangeNum - 31) * 30 * remainder
           }
           this.timeIndexSelected++
-          this.productTime = new Date(moment(this.productTime).add('minutes', 10).get('milliseconds'))
+          this.productTime = new Date(new Date(this.productTime).getTime() + 10*60*1000)
         }
         this.changeUrl(this.areaSelected, this.productSelected, moment(this.productTime).format('YYYY-MM-DD HH:mm:00'))
       }, 1000 / this.unitSelected)
@@ -210,8 +217,8 @@ export default class SunflowerInfrared extends Vue {
 
   goNextDate() {
     let tomorrow = moment().add(1, 'days').format('YYYY/MM/DD 00:00:00')
-    let nextDate = moment(this.timeRange[1]).add('days', 1)
-    if (new Date(nextDate.get('milliseconds')).getTime() > new Date(tomorrow).getTime()) {
+    let nextDate: any = moment(this.timeRange[1]).add(1, 'days')
+    if (new Date(nextDate).getTime() > new Date(tomorrow).getTime()) {
       Vue.prototype['$message']({
         type: 'warning',
         message: '时间不能超过当前天'

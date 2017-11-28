@@ -70,6 +70,7 @@ import GroundControl from '../Product/ground-control/GroundControl'
 import PhoneLiveMonitor from '../Product/phoneLive-monitor/PhoneLiveMonitor'
 import GroundMsgCollection from '../Product/groundMsg-collection/GroundMsgCollection'
 import AirQuality from '../Product/air-quality/AirQuality'
+import OrderDispatch from '../Product/order-dispatch/OrderDispatch'
 @WithRender
 @Component
 export default class ProductEntry extends Vue {
@@ -126,6 +127,7 @@ export default class ProductEntry extends Vue {
   phoneLiveMonitorView = null
   groundMsgCollectionView = null
   airQualityView = null
+  orderDispatchView = null
 
   operateDemandAnalysisPublishView = null
   operateDemandAnalysisHistoryView = null
@@ -235,6 +237,7 @@ export default class ProductEntry extends Vue {
     this.groundMsgCollectionView = val[CONFIG.groundMsgCollection] ? GroundMsgCollection : null
     this.repoMonitorView = val[CONFIG.repoMonitor] ? RepoMonitor : null
     this.airQualityView = val[CONFIG.airQuality] ? AirQuality : null
+    this.orderDispatchView = val[CONFIG.orderDispatch] ? OrderDispatch : null
   }
   @Watch('isDisasterManageImg_global')
   onisDisasterManageImg_globalChanged(val: any, oldVal: any) {

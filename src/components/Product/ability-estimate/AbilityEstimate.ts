@@ -16,18 +16,18 @@ export default class AbilityEstimate extends Vue {
   pageSize: number = 6
   currentPage: number = 1       // 当前页数
   questionType: any = {
-    '0': { text: '填空题', value: ''}, 
-    '1': { text: '判断题', value: ''}, 
-    '2': { text: '单选题', value: ''}, 
-    '3': { text: '多选题', value: ''},
-    '4': { text: '简答题', value: ''},
+    '0': { text: '填空题', value: '', number: ''}, 
+    '1': { text: '判断题', value: '', number: ''}, 
+    '2': { text: '单选题', value: '', number: ''}, 
+    '3': { text: '多选题', value: '', number: ''},
+    '4': { text: '简答题', value: '', number: ''},
   }
   questionTypeSelected: string = ''
   questionSelectedList : any = {    //选中的题目列表
     0: {}, 1: {}, 2: {}, 3: {}, 4:{}
   }
   downloadSelectedList: any = []      // 生成试卷题目列表
-  allScores: number = 0
+  // allScores: number = 0
   uploadExamPoppup: boolean = false
   createExamPoppup: boolean = false
   selectQue: string = '0'      //选择题型
@@ -52,7 +52,6 @@ export default class AbilityEstimate extends Vue {
   numList: string[] = ['一', '二', '三', '四', '五']
   downloadUrl: string = ''
   downloadAnswerUrl: string = ''
-  
   mounted() {
     this.getQuestion()
   }
@@ -81,28 +80,29 @@ export default class AbilityEstimate extends Vue {
     this.getQuestion()
   }
 
-  toggleQuestion(item) {     //选择题目
-    item.questionSelected = !item.questionSelected
-    if(item.questionSelected)
-      this.questionSelectedList[item.questionType][item.id] = item
-    else
-      delete this.questionSelectedList[item.questionType][item.id]
-    this.calculateScores()
-  }
-  calculateScores() {
-    this.allScores = 0
-    for (let i in this.questionSelectedList) {       //总分计算
-      let item = this.questionSelectedList[i]
-      for (let j in item) {
-        this.allScores += Number(this.questionType[i].value)
-      }
+  // toggleQuestion(item) {     //选择题目
+  //   item.questionSelected = !item.questionSelected
+  //   if(item.questionSelected)
+  //     this.questionSelectedList[item.questionType][item.id] = item
+  //   else
+  //     delete this.questionSelectedList[item.questionType][item.id]
+  //   this.calculateScores()
+  // }
+
+  //computed
+  get allScores() {
+    let score = 0
+    for (let i in this.questionType) {       //总分计算
+      let item = this.questionType[i]
+      if (!item.value || !item.number) continue
+      score += Number(item.value)* Number(item.number)
     }
+    return score
   }
 
+
   async creatExams() {     //生成试卷
-    
       this.createExamPoppup = !this.createExamPoppup
-      // this.creatExam()
   }
   async creatExam() {     //生成试卷接口
     if(this.allScores === 0){
@@ -118,15 +118,40 @@ export default class AbilityEstimate extends Vue {
         list.push(this.questionSelectedList[item][el].id + '')
       }
     }
-    let param = {
+    let param: any = {
       userId:  this.userInfo_global.id + '',
       examName: this.examName,
-      score_tk: this.questionType[0].value,
-      score_pd: this.questionType[1].value,
-      score_sc: this.questionType[2].value,
-      score_mc: this.questionType[3].value,
-      score_jd: this.questionType[4].value,
-      list
+      // score_tk: this.questionType[0].value,
+      // score_pd: this.questionType[1].value,
+      // score_sc: this.questionType[2].value,
+      // score_mc: this.questionType[3].value,
+      // score_jd: this.questionType[4].value,
+      // count_tk: this.questionType[0].number,
+      // count_pd: this.questionType[1].number,
+      // count_sc: this.questionType[2].number,
+      // count_mc: this.questionType[3].number,
+      // count_jd: this.questionType[4].number,
+      // list
+    }
+    if (this.questionType[0].value && this.questionType[0].number) {
+      param.score_tk = this.questionType[0].value
+      param.count_tk = this.questionType[0].number
+    }
+    if (this.questionType[1].value && this.questionType[1].number) {
+      param.score_pd = this.questionType[1].value
+      param.count_pd = this.questionType[1].number
+    }
+    if (this.questionType[2].value && this.questionType[2].number) {
+      param.score_sc = this.questionType[2].value
+      param.count_sc = this.questionType[2].number
+    }
+    if (this.questionType[3].value && this.questionType[3].number) {
+      param.score_mc = this.questionType[3].value
+      param.count_mc = this.questionType[3].number
+    }
+    if (this.questionType[4].value && this.questionType[4].number) {
+      param.score_jd = this.questionType[4].value
+      param.count_jd = this.questionType[4].number
     }
     let data = await examinationClient.creatExam(param)
     if(!data){
@@ -143,7 +168,7 @@ export default class AbilityEstimate extends Vue {
         let opt = this.questionSelectedList[i]
         if (Object.keys(opt).length) this.downloadSelectedList.push(i)
       }
-      this.downloadPoppup = true
+      // this.downloadPoppup = true
     }
     
   }
@@ -211,16 +236,44 @@ export default class AbilityEstimate extends Vue {
     this.answers.splice(index,1)
   }
   clearScore() {    // 清空输入分数 并关闭分数窗口
+    this.examName = ''
     for (let i in this.questionType) {
       this.questionType[i].value = ''
+      this.questionType[i].number = ''
     }
     this.createExamPoppup = false
   }
 
   confirmScore(){                //分数框填写确认键
+    if(!this.examName) {
+      Vue.prototype['$message']({
+        type: 'warning',
+        message: '试卷名不得为空'
+      })
+      return
+    }
+    let flag = false
+    for (let i in this.questionType) {       //总分计算
+      let item = this.questionType[i]
+      if (item.value && item.number) {
+        flag = true
+        break
+      }
+    }
+    if (!flag) {
+      Vue.prototype['$message']({
+        type: 'warning',
+        message: '请至少选择一种考试题型并填写题目数量与题目分数'
+      })
+      return
+    }
     this.createExamPoppup = false
     this.btnPoppup = true
-    this.calculateScores()
+    this.creatExam()
+    this.clearScore()
+
+    window.open(this.downloadUrl)  //下载
+    window.open(this.downloadAnswerUrl)
   }
 
   // downloadExam() {             //下载试卷按钮
@@ -241,7 +294,7 @@ export default class AbilityEstimate extends Vue {
 
   }
   closeDownloadPoppup() {
-    this.allScores = 0
+    // this.allScores = 0
     this.downloadPoppup=false
     this.cancelBtn()
   }

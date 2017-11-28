@@ -23,6 +23,7 @@ import CappiProfile from './components/GlobalPopup/cappi-profile/CappiProfile'
 import AirQualityDetail from './components/GlobalPopup/air-quality-detail/AirQualityDetail'
 import { CookieHelper } from 'util/cookie';
 import ZmapTool from './components/zmap-tool/ZmapTool'
+import ColorBar from './components/color-bar/ColorBar'
 
 
 @WithRender
@@ -47,11 +48,13 @@ export default class App extends Vue {
   @Getter('systemStore/isCappiProfileOn_global') isCappiProfileOn_global
   @Getter('systemStore/aqiDetailInfo_global') aqiDetailInfo_global
   @Action('systemStore/changeUserInfo_global') changeUserInfo_global
+  @Getter('systemStore/colorbarElements_global') colorbarElements_global
 
   loginPageView = null
   leftNavView: any = null
   CappiProfileView: any = null
   AQIDetailView: any = null
+  colorbarView: any = null
 
   closeLoginPage() {
     this.loginPageView = null
@@ -87,5 +90,10 @@ export default class App extends Vue {
   @Watch('aqiDetailInfo_global')
   onaqiDetailInfo_globalChanged(val: any, oldVal: any) {
     this.AQIDetailView = Object.keys(val).length ? AirQualityDetail : null
+  }
+
+  @Watch('colorbarElements_global')
+  oncolorbarElements_globalChanged (val: any, oldVal: any) {
+    this.colorbarView = Object.keys(val).length ? ColorBar : null
   }
 }

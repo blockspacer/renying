@@ -88,9 +88,15 @@
           </li>
           <div class="progress_btn"
                :style="{transform: `translateY(${(operateSelected.stage - 1) * 118}px)`}">
+            <button @click="changeStage('previous')"
+                    v-show="operateSelected.stage !== 1"
+                    class="return"
+                    :style="{marginTop: operateSelected.stage == 5 ? '24px' : '0px'}">返回上阶段</button>
+            </button>
             <button @click="changeStage('next')"
                     v-show="operateSelected.stage !== 5"
-                    class="enter">进入下阶段</button>
+                    class="enter"
+                    :style="{marginTop: operateSelected.stage == 1 ? '24px' : '0px'}">进入下阶段</button>
             <button @click="changeStage('stop')"
                     class="stop">中止</button>
           </div>

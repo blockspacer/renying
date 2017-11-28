@@ -10,6 +10,10 @@
   </header>
 
   <section class="editor_msg scrollbar">
+    <figure>
+      <img id="imageShow" :src="'http://10.148.16.217:11160/renyin5/appuser/'+userInfo.imageUrl" @click="selectImage" />
+      <input type="file" id="image" @change="imageChange" v-show="false"/>
+    </figure>
     <dl class="cf">
       <dt>姓名</dt>
       <dd class="name">

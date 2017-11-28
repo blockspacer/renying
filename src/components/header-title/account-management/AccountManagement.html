@@ -30,7 +30,7 @@
               :class="['person_list_list',{on: accountSelected === item.id}]">
           <span :title="item.username">{{ item.username }}</span>
           <span :title="item.password">{{ item.password }}</span>
-          <span :title="item.power">{{ item.power === '1' ? '省' : (item.power === '2' ? '市'  : '县' ) }}</span>
+          <span :title="item.cityname">{{ item.cityname }}</span>
           <span class="icon">
               <i class="editor" @click="toggleModifyAirspace(item)"></i>
               <i class="delete" @click="deleteAirspace(item)"></i>
@@ -65,20 +65,16 @@
         v-if="key !== 'id'">
       <dt>{{ el.name }}</dt>
       <dd class="name" v-if="popupType === 'add'">
-        <!-- <p v-if="key==='power'">{{ el.value=== '1' ? '省' : (el.value === '2' ? '市'  : '县' )}}</p> -->
-        <select v-model="el.value" v-if="key==='power'">
-          <option value="1">省</option>
-          <option value="2">市</option>
-          <option value="3">区</option>
+        <select v-model="el.value" v-if="key==='cityname'">
+          <option :value="item" v-for="item of allCities">{{ item }}</option>
         </select>
         <input v-else type="text" v-model="el.value">
       </dd>
       <dd class="name" v-if="popupType === 'modify'">
-          <p v-if="key==='username'">{{ el.value }}</p>
-          <p v-else-if="key==='power'">{{ el.value=== '1' ? '省' : (el.value === '2' ? '市'  : '县' )}}</p>
-          <input v-else type="text" v-model="el.value">
-          <!-- <input type="text" v-model="el.value" v-if="key==='power'" > -->
-        </dd>
+        <p v-if="key === 'username'">{{ el.value }}</p>
+        <p v-else-if="key === 'cityname'">{{ el.value }}</p>
+        <input v-else type="text" v-model="el.value">
+      </dd>
     </dl>
     </section>
     <section class="eitor_btn cf">

@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import { Component, Watch, Prop } from 'vue-property-decorator'
+import {Component, Watch, Prop} from 'vue-property-decorator'
 import WithRender from './CreateGroup.html?style=./CreateGroup.scss'
-import { groupsClient } from '../../../../util/clientHelper'
+import {groupsClient} from '../../../../util/clientHelper'
 
 
 @WithRender
@@ -83,7 +83,7 @@ export default class CreateGroup extends Vue {
     }).then(async () => {
       let res = await groupsClient.deleteGroup(item.id)
       if (res) {
-        if (this.itemSelected !== null && this.itemSelected.id == item.id) {
+        if (this.itemSelected.id == item.id) {
           this.toggleAll()
         }
         this.updateGroup()

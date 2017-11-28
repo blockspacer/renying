@@ -59,6 +59,10 @@ export function storeaqiDetailInfo_global (store:ActionContext<State, any>, data
   store.commit('storeaqiDetailInfo', data)
 }
 
+export function storecolorbarElements_global (store:ActionContext<State, any>,action) {
+  store.commit('storecolorbarElements',action)
+}
+
 
 export default <ActionTree<State, any>>{
   changeUserInfo_global,
@@ -76,4 +80,5 @@ export default <ActionTree<State, any>>{
   storeCappiProfile_global,
   storeisCappiProfileOn_global,
   storeaqiDetailInfo_global,
+  storecolorbarElements_global,
 }
